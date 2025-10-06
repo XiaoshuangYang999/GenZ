@@ -107,9 +107,11 @@ extendT l pt@(HP (h, Node fs Nothing)) =
   -- At least one unsafe rule can be applied:
   ([], rs@(_:_)) -> List.concatMap applyRule rs
     where
-      applyRule r
-        | any isClosedPfT nps = List.take 1 (List.filter isClosedPfT nps)
-        | otherwise = [HP (h, Node fs Nothing)]
+      applyRule r = case List.filter isClosedPfT nps of
+                    tp : _ -> [tp]
+                    [] -> [HP (h, Node fs Nothing)]
+        -- | any isClosedPfT nps = List.take 1 (List.filter isClosedPfT nps)
+        -- | otherwise = [HP (h, Node fs Nothing)]
         where
           gs = Set.filter (\g -> isApplicable h fs g r) fs
           nps = concat $ List.concatMap tryExtendT gs
@@ -189,9 +191,11 @@ extendZ l zp@(ZP (Node fs Nothing) p) =
   -- At least one unsafe rule can be applied:
   ([], rs@(_:_))    -> List.concatMap applyRule rs
     where
-      applyRule r
-        | any isClosedZP nps = List.take 1 (List.filter isClosedZP nps)
-        | otherwise = [ZP (Node fs Nothing) p]
+      applyRule r = case List.filter isClosedZP nps of
+                    np : _ -> [np]
+                    [] -> [ZP (Node fs Nothing) p]
+        -- | any isClosedZP nps = List.take 1 (List.filter isClosedZP nps)
+        -- | otherwise = [ZP (Node fs Nothing) p]
         where
           gs = Set.filter (\g -> isApplicable (histOf zp) fs g r) fs
           nps = concat $ List.concatMap tryExtendZ gs
