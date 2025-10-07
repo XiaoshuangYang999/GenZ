@@ -11,7 +11,7 @@ clean:
 	stack clean
 	rm -f *.aux *.log *.out *.snm *.toc *.vrb *.nav *.synctex.gz *.blg *.bbl *.fdb_latexmk *.fls *.ind *.idx *.ilg *.bcf *.run.xml *.xdv
 
-SELECTION = conPieL-IPL- conPieR-IPL- boxesTop-K- lobBoxes-K4- lobBoxes-GL-
+SELECTION = conPie-L-IPL- conPie-R-IPL- boxesTop-K- lobBoxes-K4- lobBoxes-GL-
 
 bench/runtime.pdf: bench/runtime.hs lib/*.hs
 	@(which pdflatex > /dev/null)|| (echo "Could not find pdflatex, please install it first." && false)
