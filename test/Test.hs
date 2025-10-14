@@ -610,8 +610,8 @@ main = hspec $ do
         \ f -> discardAfter limit $ isProvableZ gl f === isProvableT gl f
 
     describe "Proofs are at most binary" $ do
-        let hasLeqTwoChildren (Node _ Nothing) = True
-            hasLeqTwoChildren (Node _ (Just (_, ts))) = length ts <= 2 && all hasLeqTwoChildren ts
+        let hasLeqTwoChildren (Node _ Nothing _) = True
+            hasLeqTwoChildren (Node _ (Just (_, ts)) _ ) = length ts <= 2 && all hasLeqTwoChildren ts
         prop "GenZ for CPL" $
           \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveZ classical f
         prop "GenT for CPL" $
