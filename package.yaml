@@ -8,6 +8,7 @@ category: Logic
 ghc-options: -Wall
 
 dependencies:
+  - array
   - base
   - random
   - QuickCheck
@@ -20,8 +21,21 @@ dependencies:
   - process
   - containers
 
+build-tools:
+  - alex
+  - happy
+
 library:
   source-dirs: lib
+
+executables:
+  genz:
+    source-dirs: exec
+    main: genz.hs
+    ghc-options: -Wall -threaded
+    dependencies:
+      - base >= 4.8 && < 5
+      - seqzip
 
 tests:
   Test:

@@ -3,11 +3,11 @@ cradle:
     - path: "./lib"
       component: "seqzip:lib"
 
-    - path: "./exec/Main.hs"
-      component: "seqzip:exe:myprogram"
+    - path: "./exec/genz.hs"
+      component: "seqzip:exe:genz"
 
     - path: "./exec/Paths_seqzip.hs"
-      component: "seqzip:exe:myprogram"
+      component: "seqzip:exe:genz"
 
     - path: "./test"
       component: "seqzip:test:Test"
