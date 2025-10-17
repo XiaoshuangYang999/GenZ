@@ -53,7 +53,7 @@ FormM : TOP { topM }
      | FormM '&'   FormM { ConM $1 $3 }
      | FormM '|'   FormM { DisM $1 $3 }
      | FormM '<->' FormM { iffM $1 $3 }
-     | 'p' INT { AtM (head $ show $2) }
+     | 'p' INT { AtM $2 }
      | '[]' FormM { Box $2 }
      | '<>' FormM { diaM $2 }
 

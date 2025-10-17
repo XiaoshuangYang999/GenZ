@@ -11,7 +11,7 @@ import Data.List as List
 -- import GL
 
 a1,b1,c1,d1,e1 :: FormM
-[a1,b1,c1,d1,e1] = map AtM ['a','b','c','d','e']
+[a1,b1,c1,d1,e1] = map AtM [1..5]
 
 -- * Axioms
 
@@ -74,17 +74,17 @@ lobBoxes n = ImpM (Box (ImpM (Box a1) a1)) (boxes n a1)
 
 -- Generate a list of n variables
 listOfAt :: Int -> [FormM]
-listOfAt n = map AtM $ take n ['c'..]
+listOfAt n = map AtM $ take n [3..]
 
 -- Multi-version of the K axiom
 multiVerK :: Int -> FormM
-multiVerK n = ImpM (Box (List.foldr ImpM (AtM 'a') (listOfAt n)))
-                $ foldr (ImpM . Box) (Box (AtM 'a')) (listOfAt n)
+multiVerK n = ImpM (Box (List.foldr ImpM (AtM 1) (listOfAt n)))
+                $ foldr (ImpM . Box) (Box (AtM 1)) (listOfAt n)
 
 -- Similar to multiVerK, but with an extra atom in the premise. False
 extraAtK :: Int -> FormM
-extraAtK n = ImpM (Box (List.foldr ImpM (AtM 'a') (listOfAt n ++ [AtM 'b'])))
-                $ foldr (ImpM . Box) (Box (AtM 'a')) (listOfAt n)
+extraAtK n = ImpM (Box (List.foldr ImpM (AtM 1) (listOfAt n ++ [AtM 2])))
+                $ foldr (ImpM . Box) (Box (AtM 1)) (listOfAt n)
 
 -- Bench formula for S4. Not provable
 negBoxes :: Int -> FormM

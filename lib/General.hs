@@ -367,7 +367,7 @@ instance (Show f, TeX f, Ord f) => TeX (Proof f) where
 
 -- * The Propositional language
 
-type Atom = Char
+type Atom = Int
 
 -- | Propositional Formulas
 data FormP = BotP | AtP Atom | ConP FormP FormP | DisP FormP FormP | ImpP FormP FormP
@@ -395,14 +395,14 @@ iffP f g = ConP (ImpP f g) (ImpP g f)
 
 instance Show FormP where
   show BotP       = "⊥"
-  show (AtP a)    = [a]
+  show (AtP a)    = show a
   show (ConP f g) = "(" ++ show f ++ " ∧ " ++ show g ++ ")"
   show (DisP f g) = "(" ++ show f ++ " v " ++ show g ++ ")"
   show (ImpP f g) = "(" ++ show f ++ " → " ++ show g ++ ")"
 
 instance TeX FormP where
   tex BotP       = "\\bot"
-  tex (AtP a)    = [a]
+  tex (AtP a)    = show a
   tex (ConP f g) = "(" ++ tex f ++ " \\land " ++ tex g ++ ")"
   tex (DisP f g) = "(" ++ tex f ++ " \\lor " ++ tex g ++ ")"
   tex (ImpP f g) = "(" ++ tex f ++ " \\to " ++ tex g ++ ")"
@@ -410,11 +410,11 @@ instance TeX FormP where
 instance Arbitrary FormP where
   arbitrary = sized genForm where
     factor = 2
-    genForm 0 = oneof [ pure BotP, AtP <$> choose ('p','t') ]
-    genForm 1 = AtP <$> choose ('p','t')
+    genForm 0 = oneof [ pure BotP, AtP <$> chooseInt (1,10000000) ]
+    genForm 1 = AtP <$> chooseInt (1,10000000)
     genForm n = oneof
       [ pure BotP
-      , AtP <$> choose ('p','t')
+      , AtP <$> chooseInt (1,10000000)
       , ImpP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
       , ConP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
       , DisP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
@@ -452,7 +452,7 @@ diaM f = negM $ Box $ negM f
 
 instance Show FormM where
   show BotM       = "⊥"
-  show (AtM a)    = [a]
+  show (AtM a)    = show a
   show (ConM f g) = "(" ++ show f ++ " ∧ " ++ show g ++ ")"
   show (DisM f g) = "(" ++ show f ++ " v " ++ show g ++ ")"
   show (ImpM f g) = "(" ++ show f ++ " → " ++ show g ++ ")"
@@ -460,7 +460,7 @@ instance Show FormM where
 
 instance TeX FormM where
   tex BotM       = "\\bot"
-  tex (AtM a)    = [a]
+  tex (AtM a)    = show a
   tex (ConM f g) = "(" ++ tex f ++ " \\land " ++ tex g ++ ")"
   tex (DisM f g) = "(" ++ tex f ++ " \\lor " ++ tex g ++ ")"
   tex (ImpM f g) = "(" ++ tex f ++ " \\to " ++ tex g ++ ")"
@@ -469,11 +469,11 @@ instance TeX FormM where
 instance Arbitrary FormM where
   arbitrary = sized genForm where
     factor = 2
-    genForm 0 = oneof [ pure BotM, AtM <$> choose ('p','t') ]
-    genForm 1 = AtM <$> choose ('p','t')
+    genForm 0 = oneof [ pure BotM, AtM <$> chooseInt (1,10000000) ]
+    genForm 1 = AtM <$> chooseInt (1,10000000)
     genForm n = oneof
       [ pure BotM
-      , AtM <$> choose ('p','t')
+      , AtM <$> chooseInt (1,10000000)
       , ImpM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
       , ConM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
       , DisM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
