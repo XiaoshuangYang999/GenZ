@@ -6,6 +6,9 @@ cradle:
     - path: "./exec/genz.hs"
       component: "seqzip:exe:genz"
 
+    - path: "./exec/genz-web.hs"
+      component: "seqzip:exe:genz-web"
+
     - path: "./exec/Paths_seqzip.hs"
       component: "seqzip:exe:genz"
 

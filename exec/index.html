@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>GenZ prover</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+    <script src="jquery.js"></script>
+    <script>
+      MathJax = {
+          tex: {
+              inlineMath: {'[+]': [['$', '$']]}
+          }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.1.2/es5/tex-mml-chtml.min.js"
+            integrity="sha512-7rZgZU/u5XjLaO7dBpkcvZ2+ilGXbdIak0FXUgMoO+adNy7RUceort055Wn7LkZY3VLwEsSDpi8Ui+32N1vrfw=="
+            crossorigin="anonymous"></script> -->
+    <style type="text/css">
+      #textinput {
+          font-size:110%;
+          min-width: 500px;
+          width:50%;
+      }
+      #runbutton {
+          font-size:110%;
+      }
+      #output {
+          border: 2px solid #666;
+          margin-top: 1em;
+          padding: 1em;
+          width:auto;
+          overflow-x: hidden;
+      }
+      pre, svg {
+          overflow-x: auto;
+          max-width:100%;
+          height:auto;
+      }
+      .success {
+          color: green;
+      }
+      .error {
+          color: red;
+          font-weight:bold;
+      }
+      #running {
+          color: orange;
+          display: none;
+          float: right;
+      }
+      details {
+          margin-top:1em;
+          border: 1px solid #ddd;
+          border-radius:2px;
+          padding-left:5px;
+      }
+      summary h3 {
+          display:inline;
+      }
+      .linker {
+          color:gray;
+          float:right;
+          cursor:pointer;
+      }
+      .linker:active {
+          color: black;
+          text-shadow: 1px 2px #666;
+          transform: translateY(2px) translateX(2px);
+      }
+    </style>
+    <link rel="icon" href="data:,">
+  </head>
+  <body>
+    <p>
+      This is the web interface of
+      <a href="https://github.com/XiaoshuangYang999/Sequent-Calculus-With-Zippers/">GenZ</a>.
+    </p>
+    <p>
+      Please enter a formula below or
+      <label for="examples">choose an example:</label>
+      <select name="examples" id="examples">
+        <optgroup label="K">
+        <option value="K">[r1](p1 &amp; p2) -&gt; ([r1]p1 | [r1]p2)</option>
+        <option value="K">[r1][r1][r1][r1]true</option>
+        <option value="K">~&lt;r1&gt;&lt;r1&gt;&lt;r1&gt;false</option>
+        <!-- below are not valid -->
+        <option value="K">~~~~false</option>
+        <option value="K">[r1]p1 -> [r1][r1]p1</option>
+        </optgroup>
+      </select>
+    </p>
+    <div>
+      <input id="textinput" name="textinput" value="[r1](p1 &amp; p2) -&gt; ([r1]p1 | [r1]p2)" />
+      <!--
+          <input type="radio" id="PDL" name="logic" value="PDL" checked="checked" onclick="prove()" /><label for="PDL">PDL</label>
+          <input type="radio" id="K" name="logic" value="K" onclick="prove()" /><label for="K">K</label>
+      -->
+      <input id="runbutton" type="submit" value="Try to prove this!" onclick="prove()" />
+      <div id="running">running</div>
+    </div>
+    <div id="output"></div>
+    <script>
+      "use strict";
+      function prove() {
+          $('#running').css("display", "block");
+          $.ajax({
+              type: "POST",
+              url: "prove",
+              data: { "logic": $('input[name=\"logic\"]:checked').val(), "extra": $('input[name=\"extra\"]:checked').length, "textinput": $('#textinput').val() },
+              success:
+              function(data,textStatus,jqXHR) {
+                  $('#output').html(data);
+                  $('#running').css("display", "none");
+                  MathJax.typesetPromise();
+              },
+              timeout: 7000,
+              error:
+              function(jqXHR,textStatus,errorThrown) {
+                  $('#output').html("<pre>" + textStatus + " " + errorThrown + "</pre>" );
+                  $('#running').css("display", "none");
+              }
+          });
+      }
+      $('#textinput').on('keypress', function (e) {
+          if(e.which === 13){
+              prove();
+          }
+      });
+      $('#examples').change(function (e) {
+          $('#textinput').val( $('#examples option:selected').text() );
+          $('input:radio[name="logic"]').val([ $('#examples option:selected').val() ]);
+          prove();
+      });
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+          $('#textinput').val(decodeURIComponent(hash));
+          $('#runbutton').click();
+          // remove hash?
+          // history.pushState("", document.title, window.location.pathname + window.location.search);
+      }
+      </script>
+  </body>
+</html>

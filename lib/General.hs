@@ -312,14 +312,14 @@ class TeX a where
                    , "\\usepackage[pdftex]{hyperref}"
                    , "\\hypersetup{pdfborder={0 0 0},breaklinks=true}"
                    , "\\begin{document}" ]
-      post = "\\end{document}"
+      post = "\\DisplayProof\n\\end{document}"
     writeFile "temp.tex" (pre ++ tex x ++ post)
     (_inp, _out, err, pid) <- runInteractiveCommand "pdflatex -interaction=nonstopmode temp.tex"
     _ <- waitForProcess pid
     hGetContents err >>= (\e -> unless (null e) (putStrLn e))
 
 instance (Ord f, TeX f) => TeX (Sequent f) where
-  tex xs = "\\ensuremath{" ++ texList (Set.toList $ leftsSet xs) ++ " \\Rightarrow " ++ texList (Set.toList $ rightsSet xs) ++ "} "
+  tex xs = texList (Set.toList $ leftsSet xs) ++ " \\Rightarrow " ++ texList (Set.toList $ rightsSet xs)
 
 texList :: TeX f => [f] -> String
 texList = intercalate " , " . map (removeOutsideBrackets . tex) where
@@ -348,19 +348,19 @@ texRuleName r = "$" ++ concatMap f r ++ "$" where
     '☐' -> "\\Box"
     c -> [c]
 
--- | General LaTeX code to show a proof using the buss package.
+-- | Generate LaTeX code to show a proof using the buss package.
+-- Does not include @\DisplayProof@ yet.
 toBuss :: (Show f, TeX f, Ord f) => Proof f -> String
-toBuss p = toB p ++ "\\DisplayProof\n" where
-  toB (Node fs Nothing _) = "\\AxiomC{" ++ tex fs ++ " }"
-  toB (Node fs (Just (rule', ts)) _) =
-    concatMap toB ts
-    ++
-    case length ts of
-    0 -> "\\AxiomC{\\phantom{I}}\n " ++ r ++ "\\UnaryInfC{ " ++ tex fs ++  "}\n"
-    1 -> r ++ "\\UnaryInfC{ " ++ tex fs ++  "}\n"
-    2 -> r ++ "\\BinaryInfC{ " ++ tex fs ++  "}\n"
-    _ -> error "too many premises"
-    where r = "\\LeftLabel{" ++ texRuleName rule' ++ "}\n"
+toBuss (Node fs Nothing _) = "\\AxiomC{ $ " ++ tex fs ++ " $ }"
+toBuss (Node fs (Just (rule', ts)) _) =
+  concatMap toBuss ts
+  ++
+  case length ts of
+  0 -> "\\AxiomC{\\phantom{I}}\n " ++ r ++ "\\UnaryInfC{ $" ++ tex fs ++ "$ }\n"
+  1 -> r ++ "\\UnaryInfC{ $" ++ tex fs ++  "$ }\n"
+  2 -> r ++ "\\BinaryInfC{ $" ++ tex fs ++  "$ }\n"
+  _ -> error "too many premises"
+  where r = "\\LeftLabel{" ++ texRuleName rule' ++ "}\n"
 
 instance (Show f, TeX f, Ord f) => TeX (Proof f) where
   tex = toBuss

@@ -7,6 +7,15 @@ category: Logic
 
 ghc-options: -Wall
 
+extra-source-files:
+  - README.md
+  - LICENSE
+  - stack.yaml
+  - package.yaml
+  - lib/FormM/Parse.y
+  - lib/FormM/Lex.x
+  - exec/index.html
+
 dependencies:
   - array
   - base
@@ -36,6 +45,19 @@ executables:
     dependencies:
       - base >= 4.8 && < 5
       - seqzip
+  genz-web:
+    source-dirs: exec
+    main: genz-web.hs
+    ghc-options: -Wall -threaded
+    dependencies:
+      - base >= 4.8 && < 5
+      - file-embed
+      - js-jquery >= 3
+      - scotty
+      - seqzip
+      - template-haskell
+      - text
+      - warp
 
 tests:
   Test:
