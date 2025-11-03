@@ -367,7 +367,7 @@ instance (Show f, TeX f, Ord f) => TeX (Proof f) where
 
 -- * The Propositional language
 
-type Atom = Int
+type Atom = String
 
 -- | Propositional Formulas
 data FormP = BotP | AtP Atom | ConP FormP FormP | DisP FormP FormP | ImpP FormP FormP
@@ -410,11 +410,11 @@ instance TeX FormP where
 instance Arbitrary FormP where
   arbitrary = sized genForm where
     factor = 2
-    genForm 0 = oneof [ pure BotP, AtP <$> chooseInt (1,10000000) ]
-    genForm 1 = AtP <$> chooseInt (1,10000000)
+    genForm 0 = oneof [ pure BotP, AtP <$> elements (map return "pqrst") ]
+    genForm 1 = AtP <$> elements (map return "pqrst")
     genForm n = oneof
       [ pure BotP
-      , AtP <$> chooseInt (1,10000000)
+      , AtP <$> elements (map return "pqrst")
       , ImpP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
       , ConP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
       , DisP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
@@ -452,7 +452,7 @@ diaM f = negM $ Box $ negM f
 
 instance Show FormM where
   show BotM       = "⊥"
-  show (AtM a)    = show a
+  show (AtM a)    = a
   show (ConM f g) = "(" ++ show f ++ " ∧ " ++ show g ++ ")"
   show (DisM f g) = "(" ++ show f ++ " v " ++ show g ++ ")"
   show (ImpM f g) = "(" ++ show f ++ " → " ++ show g ++ ")"
@@ -460,7 +460,8 @@ instance Show FormM where
 
 instance TeX FormM where
   tex BotM       = "\\bot"
-  tex (AtM a)    = show a
+  tex (AtM ('p':s)) = "p_{" ++ s ++ "}"
+  tex (AtM a)    = a
   tex (ConM f g) = "(" ++ tex f ++ " \\land " ++ tex g ++ ")"
   tex (DisM f g) = "(" ++ tex f ++ " \\lor " ++ tex g ++ ")"
   tex (ImpM f g) = "(" ++ tex f ++ " \\to " ++ tex g ++ ")"
@@ -469,11 +470,11 @@ instance TeX FormM where
 instance Arbitrary FormM where
   arbitrary = sized genForm where
     factor = 2
-    genForm 0 = oneof [ pure BotM, AtM <$> chooseInt (1,10000000) ]
-    genForm 1 = AtM <$> chooseInt (1,10000000)
+    genForm 0 = oneof [ pure BotM, AtM <$> elements (map return "pqrst")]
+    genForm 1 = AtM <$> elements (map return "pqrst")
     genForm n = oneof
       [ pure BotM
-      , AtM <$> chooseInt (1,10000000)
+      , AtM <$> elements (map return "pqrst")
       , ImpM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
       , ConM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
       , DisM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
@@ -497,4 +498,3 @@ translation (AtP x) = Box $ AtM x
 translation (ConP x y) = ConM (translation x) (translation y)
 translation (DisP x y) = DisM (translation x) (translation y)
 translation (ImpP x y) = Box $ ImpM (translation x) (translation y)
-

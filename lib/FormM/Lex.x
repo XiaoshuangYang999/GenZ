@@ -28,11 +28,12 @@ tokens :-
   "-->"             { \ p _ -> TokenImpl              p }
   "<->"             { \ p _ -> TokenEqui              p }
   "<-->"            { \ p _ -> TokenEqui              p }
-  "p"               { \ p _ -> TokenP                 p }
-  "<r1>"            { \ p _ -> TokenDia               p }
-  "[r1]"            { \ p _ -> TokenBox               p }
-  -- Ints:
-  $dig+             { \ p s -> TokenInt (read s)      p }
+  "<"               { \ p _ -> TokenDiaL              p }
+  ">"               { \ p _ -> TokenDiaR              p }
+  "["               { \ p _ -> TokenBoxL              p }
+  "]"               { \ p _ -> TokenBoxR              p }
+  -- Strings:
+  [$alf $dig]+      { \ p s -> TokenString s          p }
 
 {
 type LexResult a = Either (Int,Int) a

@@ -2,11 +2,10 @@
 module PForm where
 
 import General
-import Data.List as List
 
 top,o,p,q,r :: FormP
 top = negP BotP
-[o,p,q,r] = List.map AtP [1..4]
+[o,p,q,r] = map (AtP . return) "opqr"
 
 -- | Contradiction
 contradiction :: FormP
