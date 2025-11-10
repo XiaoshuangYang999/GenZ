@@ -1,0 +1,131 @@
+s4_45_n
+1
+GenZ: Timeout
+GenT: Timeout
+
+s4_45_p
+1
+GenZ: Timeout
+GenT: Timeout
+--------------
+s4_branch_n
+1
+GenZ: False
+GenT: False
+2
+GenZ: False
+GenT: Timeout
+3
+GenZ: Timeout
+GenT: Timeout
+
+s4_branch_p
+1
+GenZ: True
+GenT: True
+2
+GenZ: Timeout
+GenT: Timeout
+-------
+s4_grz_n
+1
+GenZ: False
+GenT: Timeout
+21
+GenZ: False
+GenT: Timeout
+
+s4_grz_p
+1
+GenZ: Timeout
+GenT: Timeout
+---------
+s4_ipc_n
+2
+GenZ: False
+GenT: False
+3
+GenZ: Timeout
+GenT: False
+4
+GenZ: Timeout
+GenT: Timeout
+
+s4_ipc_p
+4
+GenZ: True
+GenT: True
+5
+GenZ: Timeout
+GenT: Timeout
+-------------
+s4_md_n
+3
+GenZ: False
+GenT: False
+4
+GenZ: Timeout
+GenT: Timeout
+
+s4_md_p
+2
+GenZ: True
+GenT: True
+3
+GenZ: Timeout
+GenT: Timeout
+------
+s4_path_n
+1
+GenZ: Timeout
+GenT: Timeout
+
+s4_path_p
+1
+GenZ: True
+GenT: True
+2
+GenZ: Timeout
+GenT: Timeout
+------
+s4_ph_n
+2
+GenZ: False
+GenT: False
+3
+GenZ: Timeout
+GenT: Timeout
+
+s4_ph_p
+2
+GenZ: True
+GenT: True
+3
+GenZ: Timeout
+GenT: Timeout
+------
+s4_s5_n
+1
+GenZ: False
+GenT: False
+2
+GenZ: Timeout
+GenT: Timeout
+
+s4_s5_p
+4
+GenZ: True
+GenT: True
+5
+GenZ: Timeout
+GenT: Timeout
+------
+s4_t4p_n
+1
+GenZ: Timeout
+GenT: Timeout
+
+s4_t4p_p
+1
+GenZ: Timeout
+GenT: Timeout

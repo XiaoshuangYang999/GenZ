@@ -38,9 +38,16 @@ library:
   source-dirs: lib
 
 executables:
-  genz:
+  lwb-k:
     source-dirs: exec
-    main: genz.hs
+    main: lwb-k.hs
+    ghc-options: -Wall -threaded
+    dependencies:
+      - base >= 4.8 && < 5
+      - seqzip
+  lwb-s4:
+    source-dirs: exec
+    main: lwb-s4.hs
     ghc-options: -Wall -threaded
     dependencies:
       - base >= 4.8 && < 5
