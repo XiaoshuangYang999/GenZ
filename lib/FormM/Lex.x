@@ -13,7 +13,11 @@ $alf = [a-zA-Z] -- alphabetic characters
 
 tokens :-
   -- ignore whitespace:
-  $white+           ;
+  $white+           ;  
+  -- ignore the word "begin"
+  "begin"           ;  
+  -- ignore the word "end"
+  "end"             ;
   -- keywords and punctuation:
   "("               { \ p _ -> TokenOB                p }
   ")"               { \ p _ -> TokenCB                p }
