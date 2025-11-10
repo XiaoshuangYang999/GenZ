@@ -377,9 +377,13 @@ isatomP :: FormP -> Bool
 isatomP (AtP _) = True
 isatomP _ = False
 
+swap :: Either a b -> Either b a
+swap (Left x) = Right x
+swap (Right x) = Left x
+
 isAxiomP :: Rule FormP
 isAxiomP _ fs _ = [ ("ax", [])
-                  | any (\f -> isatomP f && Right f `Set.member` fs) (leftsSet fs) ]
+                  | any (\f -> swap f `Set.member` fs) fs ]
 
 leftBotP :: Rule FormP
 leftBotP _ fs _ = [ ("⊥L", []) | Left BotP `Set.member` fs ]
@@ -432,7 +436,7 @@ isatomM _ = False
 
 isAxiomM :: Rule FormM
 isAxiomM _ fs _ = [ ("ax", [])
-                  | any (\f -> isatomM f && Right f `Set.member` fs) (leftsSet fs) ]
+                  | any (\f -> swap f `Set.member` fs) fs ]
 
 leftBotM :: Rule FormM
 leftBotM _ fs _ = [ ("L⊥", [])
