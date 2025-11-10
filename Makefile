@@ -49,3 +49,7 @@ bench/memory-all.pdf: bench/memory.hs lib/*.hs
 	cd bench && (cat table-all.md | gsed '0,/--:/d' | sed '$d' | sort) >> memory-all.md
 	cd bench && (pandoc -t latex -V geometry:margin=2cm -s memory-all.md > memory-all.tex)
 	cd bench && pdflatex -interaction=nonstopmode memory-all && pdflatex -interaction=nonstopmode memory-all
+
+profile-bench-example:
+	stack build --profile
+	time stack exec --profile -- genz +RTS -p -RTS benchmarks/LWB/lwb_s4/s4_grz_p.txt.1.intohylo

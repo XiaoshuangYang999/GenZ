@@ -3,6 +3,9 @@ cradle:
     - path: "./lib"
       component: "seqzip:lib"
 
+    - path: "./exec/genz.hs"
+      component: "seqzip:exe:lwb-k"
+
     - path: "./exec/lwb-k.hs"
       component: "seqzip:exe:lwb-k"
 
