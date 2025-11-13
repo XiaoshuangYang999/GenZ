@@ -15,7 +15,9 @@ data Token a -- == AlexPn
   | TokenEqui              {apn :: a}
   | TokenDiaL              {apn :: a}
   | TokenDiaR              {apn :: a}
+  | TokenDia               {apn :: a}
   | TokenBoxL              {apn :: a}
   | TokenBoxR              {apn :: a}
+  | TokenBox               {apn :: a}
 
   deriving (Eq,Show)

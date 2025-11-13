@@ -25,16 +25,22 @@ tokens :-
   "true"            { \ p _ -> TokenTop               p }
   "false"           { \ p _ -> TokenBot               p }
   "~"               { \ p _ -> TokenNeg               p }
+  "¬"               { \ p _ -> TokenNeg               p }
   "&"               { \ p _ -> TokenCon               p }
   "|"               { \ p _ -> TokenDis               p }
   "=>"              { \ p _ -> TokenImpl              p }
+  "→"               { \ p _ -> TokenImpl              p }
   "->"              { \ p _ -> TokenImpl              p }
   "-->"             { \ p _ -> TokenImpl              p }
   "<->"             { \ p _ -> TokenEqui              p }
   "<=>"             { \ p _ -> TokenEqui              p }
   "<-->"            { \ p _ -> TokenEqui              p }
+  "↔"               { \ p _ -> TokenEqui              p }
+  "◇"               { \ p _ -> TokenDia               p }
   "<"               { \ p _ -> TokenDiaL              p }
   ">"               { \ p _ -> TokenDiaR              p }
+  "☐"               { \ p _ -> TokenBox               p }
+  "[]"              { \ p _ -> TokenBox               p }
   "["               { \ p _ -> TokenBoxL              p }
   "]"               { \ p _ -> TokenBoxR              p }
   -- Strings:

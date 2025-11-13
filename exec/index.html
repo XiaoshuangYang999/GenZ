@@ -89,18 +89,38 @@
     <p>
       Then enter a formula below or <label for="examples">choose an example:</label>
       <select name="examples" id="examples">
+        <optgroup label="IPL">
+          <option value="IPL">p → p</option>
+          <option value="IPL">p → ¬¬p</option>
+          <option value="IPL">p ↔ ¬¬p</option>
+        </optgroup>
+        <optgroup label="CPL">
+          <option value="CPL">p → p</option>
+          <option value="CPL">p → ¬¬p</option>
+          <option value="CPL">p ↔ ¬¬p</option>
+        </optgroup>
         <optgroup label="K">
-          <option value="K">[r1](p1 &amp; p2) -&gt; ([r1]p1 | [r1]p2)</option>
-          <option value="K">~&lt;r1&gt;&lt;r1&gt;&lt;r1&gt;false</option>
-          <option value="K">[r1][r1][r1][r1]true</option>
-          <!-- below are not valid -->
-          <option value="K">~~~~false</option>
-          <option value="K">[r1]p1 -> [r1][r1]p1</option>
+          <option value="K">☐(p1 &amp; p2) → (☐p1 | ☐p2)</option>
+          <option value="K">¬◇false</option>
+          <option value="K">☐☐☐☐true</option>
+          <option value="K">¬¬¬¬false</option><!-- not valid -->
+          <option value="K">☐p1 -> ☐☐p1</option><!-- not valid -->
+        </optgroup>
+        <optgroup label="K4">
+          <option value="K4">☐☐p → ☐p</option>
+          <option value="K4">☐☐☐☐☐☐p → ☐☐☐p</option>
+        </optgroup>
+        <optgroup label="S4">
+          <option value="S4">☐☐p → ☐p</option>
+          <option value="S4">p → &lt;&gt;p</option>
+        </optgroup>
+        <optgroup label="GL">
+          <option value="GL">☐(☐p→p)→☐p</option>
         </optgroup>
       </select>
     </p>
     <div>
-      <input id="textinput" name="textinput" value="[r1](p1 &amp; p2) -&gt; ([r1]p1 | [r1]p2)" />
+      <input id="textinput" name="textinput" value="☐(p1 &amp; p2) → (☐p1 | ☐p2)" />
       <input id="runbutton" type="submit" value="Try to prove this!" onclick="prove()" />
       <div id="running">running</div>
     </div>

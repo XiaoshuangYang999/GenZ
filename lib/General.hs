@@ -345,7 +345,7 @@ texRuleName r = "$" ++ concatMap f r ++ "$" where
     '⊥' -> "\\bot"
     '4' -> "_{\\mathsf{4}}"
     'k' -> "_{\\mathsf{k}}"
-    '☐' -> "\\Box"
+    '☐' -> "\\Box "
     c -> [c]
 
 -- | Generate LaTeX code to show a proof using the buss package.
