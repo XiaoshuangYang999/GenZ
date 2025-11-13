@@ -89,13 +89,14 @@
         <option value="K">[r1]p1 -> [r1][r1]p1</option>
         </optgroup>
       </select>
+      <select name="logic" id="logic">
+        <option value="K">K</option>
+        <option value="IPL">IPL</option>
+        </optgroup>
+      </select>
     </p>
     <div>
       <input id="textinput" name="textinput" value="[r1](p1 &amp; p2) -&gt; ([r1]p1 | [r1]p2)" />
-      <!--
-          <input type="radio" id="PDL" name="logic" value="PDL" checked="checked" onclick="prove()" /><label for="PDL">PDL</label>
-          <input type="radio" id="K" name="logic" value="K" onclick="prove()" /><label for="K">K</label>
-      -->
       <input id="runbutton" type="submit" value="Try to prove this!" onclick="prove()" />
       <div id="running">running</div>
     </div>
@@ -107,7 +108,8 @@
           $.ajax({
               type: "POST",
               url: "prove",
-              data: { "logic": $('input[name=\"logic\"]:checked').val(), "extra": $('input[name=\"extra\"]:checked').length, "textinput": $('#textinput').val() },
+              data: { "logic": $('#logic').val()
+                    , "textinput": $('#textinput').val() },
               success:
               function(data,textStatus,jqXHR) {
                   $('#output').html(data);

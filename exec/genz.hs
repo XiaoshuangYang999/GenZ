@@ -5,7 +5,7 @@ import Control.Exception
 import System.Environment (getArgs)
 
 import General
-import FormM.Lex
+import General.Lex
 import FormM.Parse
 
 import K

@@ -1,4 +1,4 @@
-module FormM.Token where
+module General.Token where
 
 data Token a -- == AlexPn
   = TokenInt    {i::Int,    apn :: a}

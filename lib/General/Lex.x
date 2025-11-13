@@ -1,9 +1,9 @@
 {
 {-# OPTIONS_GHC -w #-}
 {-# OPTIONS_GHC -fno-warn-tabs -fno-warn-missing-signatures #-}
-module FormM.Lex where
+module General.Lex where
 
-import FormM.Token
+import General.Token
 }
 
 %wrapper "posn"
@@ -13,9 +13,9 @@ $alf = [a-zA-Z] -- alphabetic characters
 
 tokens :-
   -- ignore whitespace:
-  $white+           ;  
+  $white+           ;
   -- ignore the word "begin"
-  "begin"           ;  
+  "begin"           ;
   -- ignore the word "end"
   "end"             ;
   -- keywords and punctuation:
@@ -31,6 +31,7 @@ tokens :-
   "->"              { \ p _ -> TokenImpl              p }
   "-->"             { \ p _ -> TokenImpl              p }
   "<->"             { \ p _ -> TokenEqui              p }
+  "<=>"             { \ p _ -> TokenEqui              p }
   "<-->"            { \ p _ -> TokenEqui              p }
   "<"               { \ p _ -> TokenDiaL              p }
   ">"               { \ p _ -> TokenDiaR              p }

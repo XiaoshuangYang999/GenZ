@@ -399,14 +399,15 @@ iffP f g = ConP (ImpP f g) (ImpP g f)
 
 instance Show FormP where
   show BotP       = "⊥"
-  show (AtP a)    = show a
+  show (AtP a)    = a
   show (ConP f g) = "(" ++ show f ++ " ∧ " ++ show g ++ ")"
   show (DisP f g) = "(" ++ show f ++ " v " ++ show g ++ ")"
   show (ImpP f g) = "(" ++ show f ++ " → " ++ show g ++ ")"
 
 instance TeX FormP where
   tex BotP       = "\\bot"
-  tex (AtP a)    = show a
+  tex (AtP ('p':s)) = "p_{" ++ s ++ "}"
+  tex (AtP a)    = a
   tex (ConP f g) = "(" ++ tex f ++ " \\land " ++ tex g ++ ")"
   tex (DisP f g) = "(" ++ tex f ++ " \\lor " ++ tex g ++ ")"
   tex (ImpP f g) = "(" ++ tex f ++ " \\to " ++ tex g ++ ")"

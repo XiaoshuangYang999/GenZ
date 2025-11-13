@@ -4,7 +4,7 @@ import System.Timeout
 import Control.Exception
 
 import General
-import FormM.Lex
+import General.Lex
 import FormM.Parse
 
 -- TODO import multiple logics, qualified, add command line arg to choose it

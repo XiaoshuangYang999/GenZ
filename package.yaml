@@ -13,7 +13,8 @@ extra-source-files:
   - stack.yaml
   - package.yaml
   - lib/FormM/Parse.y
-  - lib/FormM/Lex.x
+  - lib/FormP/Parse.y
+  - lib/General/Lex.x
   - exec/index.html
 
 dependencies:
