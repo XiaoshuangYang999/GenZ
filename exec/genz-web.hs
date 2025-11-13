@@ -20,8 +20,15 @@ import General.Lex
 import FormM.Parse (parseFormM)
 import FormP.Parse (parseFormP)
 
-import K
-import IPL
+-- Prop logics
+import qualified CPL
+import qualified IPL
+
+-- Modal logics
+import qualified K
+import qualified K4
+import qualified S4
+import qualified GL
 
 main :: IO ()
 main = do
@@ -37,44 +44,58 @@ main = do
     get (capture $ path ++ "/index.html") index
     get (capture $ path ++ "/jquery.js") . (\t -> addHeader "Content-Type" "text/javascript" >> html t) . TL.fromStrict $ embeddedFile "jquery.js"
     post (capture $ path ++ "/prove") $ do
-      logic <- param "logic"
       textinput <- param "textinput"
       let lexResult = alexScanTokensSafe textinput
-      html $ mconcat $ map TL.pack $ case lexResult of
-        Left (_,col) ->
+      output <- case lexResult of
+        Left (_,col) -> return
           [ "<pre>INPUT: " ++ textinput ++ "</pre>"
           , "<pre>" ++ replicate (col + length ("INPUT:" :: String)) ' ' ++ "^</pre>"
           , "<pre>Lexing error in column " ++ show col ++ ".</pre>" ]
         Right tokenList -> do
-
-          let myParser = if (logic :: String) == "K" then fmap Left . parseFormM else fmap Right . parseFormP
-          case myParser tokenList of
+          useProp <- (== ("prop" :: String)) <$> param "syntax"
+          s_logic <- param "logic"
+          let myParserLogic = if useProp
+                then (fmap Left . parseFormP, Left (propLogic s_logic))
+                else (fmap Right . parseFormM, Right (modLogic s_logic))
+          case fst myParserLogic tokenList of
             Left (_,col) ->
+              return
               [ "<pre>INPUT: " ++ textinput ++ "</pre>"
               , "<pre>" ++ replicate (col + length ("INPUT:" :: String)) ' ' ++ "^</pre>"
               , "<pre>Parse error in column " ++ show col ++ ".</pre>" ]
-            Right m_or_p_f ->
-              let (f_str, closed, p_tex) = case m_or_p_f of
-                                              Left m_f ->
-                                                  ( show m_f
-                                                  , isProvableZ k m_f
-                                                  , case proveZ k m_f of
-                                                      [] -> ""
-                                                      (p:_) -> tex p
-                                                  )
-                                              Right p_f ->
-                                                  ( show p_f
-                                                  , isProvableZ intui p_f
-                                                  , case proveZ intui p_f of
-                                                      [] -> ""
-                                                      (p:_) -> tex p
-                                                  )              in
-              [ "<pre>Parsed input: " ++ f_str ++ "</pre>" -- TODO pretty? tex?
-              , if closed
-                  then "PROVED. <style type='text/css'> #output { border-color: green; } </style>\n"
-                  else "NOT proved. <style type='text/css'> #output { border-color: red; } </style>\n"
-              , if p_tex /= "" then "<div align='center'>\\( \\begin{prooftree}" ++ p_tex ++ " \\end{prooftree} \\)</div>" else ""
-              ]
+            Right lr_frm ->
+              return $ webProveWrap (snd myParserLogic) lr_frm
+      html $ mconcat $ map TL.pack output
+
+propLogic :: String -> Logic FormP
+propLogic s = case s of "CPL" -> CPL.classical
+                        "IPL" -> IPL.intui
+                        _ -> error $ "Unknown propositional logic: " ++ s
+
+modLogic :: String -> Logic FormM
+modLogic s = case s of"K" -> K.k
+                      "K4" -> K4.kfour
+                      "S4" -> S4.sfour
+                      "GL" -> GL.gl
+                      _ -> error $ "Unknown modal logic: " ++ s
+
+webProveWrap :: Either (Logic FormP) (Logic FormM) -> Either FormP FormM -> [String]
+webProveWrap (Left l) (Left f) = webProve l f
+webProveWrap (Right l) (Right f) = webProve l f
+webProveWrap _ _ = error "Wrong combination of logic an syntax."
+
+webProve :: (Eq f, Ord f, Show f, TeX f) => Logic f -> f -> [String]
+webProve logic frm =
+  let p_tex = case proveZ logic frm of
+        [] -> ""
+        (p:_) -> tex p
+  in
+    [ "<pre>Parsed input: " ++ show frm ++ "</pre>" -- TODO pretty? tex?
+    , if isProvableZ logic frm
+        then "PROVED. <style type='text/css'> #output { border-color: green; } </style>\n"
+        else "NOT proved. <style type='text/css'> #output { border-color: red; } </style>\n"
+    , if p_tex /= "" then "<div align='center'>\\( \\begin{prooftree}" ++ p_tex ++ " \\end{prooftree} \\)</div>" else ""
+    ]
 
 embeddedFile :: String -> T.Text
 embeddedFile str = case str of

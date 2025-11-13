@@ -53,3 +53,6 @@ bench/memory-all.pdf: bench/memory.hs lib/*.hs
 profile-bench-example:
 	stack build --profile
 	time stack exec --profile -- genz +RTS -p -RTS benchmarks/LWB/lwb_s4/s4_grz_p.txt.1.intohylo
+
+webdev-live-reload:
+	stack build :genz-web --file-watch --exec "bash -c \"pkill genz-web; stack exec genz-web &\""

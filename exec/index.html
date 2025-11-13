@@ -13,9 +13,6 @@
       };
     </script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.1.2/es5/tex-mml-chtml.min.js"
-            integrity="sha512-7rZgZU/u5XjLaO7dBpkcvZ2+ilGXbdIak0FXUgMoO+adNy7RUceort055Wn7LkZY3VLwEsSDpi8Ui+32N1vrfw=="
-            crossorigin="anonymous"></script> -->
     <style type="text/css">
       #textinput {
           font-size:110%;
@@ -75,23 +72,30 @@
     <p>
       This is the web interface of
       <a href="https://github.com/XiaoshuangYang999/Sequent-Calculus-With-Zippers/">GenZ</a>.
-    </p>
-    <p>
-      Please enter a formula below or
-      <label for="examples">choose an example:</label>
-      <select name="examples" id="examples">
-        <optgroup label="K">
-        <option value="K">[r1](p1 &amp; p2) -&gt; ([r1]p1 | [r1]p2)</option>
-        <option value="K">[r1][r1][r1][r1]true</option>
-        <option value="K">~&lt;r1&gt;&lt;r1&gt;&lt;r1&gt;false</option>
-        <!-- below are not valid -->
-        <option value="K">~~~~false</option>
-        <option value="K">[r1]p1 -> [r1][r1]p1</option>
+      <label for="logic">Please choose a logic:</label>
+      <select name="logic" id="logic">
+        <optgroup label="Modal">
+          <option value="modal">K</option>
+          <option value="modal">K4</option>
+          <option value="modal">S4</option>
+          <option value="modal">GL</option>
+        </optgroup>
+        <optgroup label="Propositional">
+          <option value="prop">IPL</option>
+          <option value="prop">CPL</option>
         </optgroup>
       </select>
-      <select name="logic" id="logic">
-        <option value="K">K</option>
-        <option value="IPL">IPL</option>
+    </p>
+    <p>
+      Then enter a formula below or <label for="examples">choose an example:</label>
+      <select name="examples" id="examples">
+        <optgroup label="K">
+          <option value="K">[r1](p1 &amp; p2) -&gt; ([r1]p1 | [r1]p2)</option>
+          <option value="K">~&lt;r1&gt;&lt;r1&gt;&lt;r1&gt;false</option>
+          <option value="K">[r1][r1][r1][r1]true</option>
+          <!-- below are not valid -->
+          <option value="K">~~~~false</option>
+          <option value="K">[r1]p1 -> [r1][r1]p1</option>
         </optgroup>
       </select>
     </p>
@@ -108,7 +112,8 @@
           $.ajax({
               type: "POST",
               url: "prove",
-              data: { "logic": $('#logic').val()
+              data: { "syntax": $('#logic').val()
+                    , "logic": $('#logic option:selected').text()
                     , "textinput": $('#textinput').val() },
               success:
               function(data,textStatus,jqXHR) {
@@ -131,7 +136,10 @@
       });
       $('#examples').change(function (e) {
           $('#textinput').val( $('#examples option:selected').text() );
-          $('input:radio[name="logic"]').val([ $('#examples option:selected').val() ]);
+          // also adjust chosen logic to the example
+          $('#logic option').filter(function(index) {
+            return $(this).text() === $('#examples option:selected').val();
+          }).prop('selected', true);
           prove();
       });
       const hash = window.location.hash.substring(1);
