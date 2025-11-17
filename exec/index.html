@@ -16,11 +16,13 @@
     <style type="text/css">
       #textinput {
           font-size:110%;
-          min-width: 500px;
+          margin: 0.1em;
+          padding: 0.1em;
           width:50%;
       }
       #runbutton {
           font-size:110%;
+          width:40%;
       }
       #output {
           border: 2px solid #666;
@@ -65,6 +67,13 @@
           text-shadow: 1px 2px #666;
           transform: translateY(2px) translateX(2px);
       }
+
+      /* responsiveness */
+      @media screen and (max-width: 600px) {
+        #textinput { width:97% !important; }
+        #runbutton { width:100%; }
+      }
+
     </style>
     <link rel="icon" href="data:,">
   </head>
@@ -72,7 +81,9 @@
     <p>
       This is the web interface of
       <a href="https://github.com/XiaoshuangYang999/Sequent-Calculus-With-Zippers/">GenZ</a>.
-      <label for="logic">Please choose a logic:</label>
+    </p>
+    <p>
+      <label  for="logic">Please choose a logic:</label>
       <select name="logic" id="logic">
         <optgroup label="Modal">
           <option value="modal">K</option>
