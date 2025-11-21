@@ -64,7 +64,7 @@ boxesBot n = boxes n BotM
 boxToMoreBox :: Int -> FormM
 boxToMoreBox n = ImpM (boxes n a1) (boxes (n + 1) a1)
 
--- Holds in S4
+-- Holds in T,S4
 boxToFewerBox :: Int -> FormM
 boxToFewerBox n = ImpM (boxes (n + 1) a1) (boxes n a1)
 
