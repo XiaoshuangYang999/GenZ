@@ -22,11 +22,12 @@ safeML _                  = []
 -- | The K rule.
 krule :: Rule FormM
 krule _ fs (Right (Box f)) = Set.toList $ Set.map (func f) $ Set.powerSet . removeBoxLeft $ fs where
-  removeBoxLeft :: Sequent FormM -> Sequent FormM
-  removeBoxLeft  = setComprehension isLeftBox fromBox
   func :: FormM -> Sequent FormM -> (RuleName,[Sequent FormM])
   func g seqs = ("☐k", [Set.insert (Right g) seqs])
 krule _ _ _ = []
+
+removeBoxLeft :: Sequent FormM -> Sequent FormM
+removeBoxLeft  = setComprehension isLeftBox fromBox
 
 isLeftBox :: Either FormM FormM -> Bool
 isLeftBox (Left (Box _)) = True

@@ -39,6 +39,10 @@ consistency = negM . Box $ BotM
 density :: FormM
 density = ImpM (Box (Box a1)) (Box a1)
 
+-- Holds in D, T, S4
+seriality :: FormM
+seriality = ImpM (Box a1) (diaM a1)
+
 -- Holds in all modal logics
 f1 :: FormM
 f1 = ImpM (ConM (Box a1) (Box (ImpM a1 b1))) (Box b1)

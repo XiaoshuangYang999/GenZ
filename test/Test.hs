@@ -189,6 +189,7 @@ main = hspec $ parallel $ do
         it "t axiom"            $ not $ isProvableZ k taxiom
         it "Consistency"        $ not $ isProvableZ k consistency
         it "Density"            $ not $ isProvableZ k density
+        it "Seriality"          $ not $ isProvableZ k seriality        
         it (show f2)            $ not $ isProvableZ k f2
         it "boxesBot 10"        $ not $ isProvableZ k $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableZ k $ extraAtK 10
@@ -243,6 +244,7 @@ main = hspec $ parallel $ do
         it "t axiom"            $ not $ isProvableT k taxiom
         it "Consistency"        $ not $ isProvableT k consistency
         it "Density"            $ not $ isProvableT k density
+        it "Seriality"          $ not $ isProvableT k seriality 
         it (show f2)            $ not $ isProvableT k f2
         it "boxesBot 10"        $ not $ isProvableT k $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableT k $ extraAtK 10
@@ -299,6 +301,7 @@ main = hspec $ parallel $ do
         it "t axiom"            $ not $ isProvableZ kfour taxiom
         it "Consistency"        $ not $ isProvableZ kfour consistency
         it "Density"            $ not $ isProvableZ kfour density
+        it "Seriality"          $ not $ isProvableZ kfour seriality 
         it (show f2)            $ not $ isProvableZ kfour f2
         it "boxesBot 10"        $ not $ isProvableZ kfour $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableZ kfour $ extraAtK 10
@@ -353,6 +356,7 @@ main = hspec $ parallel $ do
         it "t axiom"            $ not $ isProvableT kfour taxiom
         it "Consistency"        $ not $ isProvableT kfour consistency
         it "Density"            $ not $ isProvableT kfour density
+        it "Seriality"          $ not $ isProvableT kfour seriality 
         it (show f2)            $ not $ isProvableT kfour f2
         it "boxesBot 10"        $ not $ isProvableT kfour $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableT kfour $ extraAtK 10
@@ -388,6 +392,7 @@ main = hspec $ parallel $ do
         it "t axiom"           $ isProvableZ t taxiom
         it "Consistency"       $ isProvableZ t consistency
         it "Density"           $ isProvableZ t density
+        it "Seriality"         $ isProvableZ t seriality
         it (show f1)           $ isProvableZ t f1
         it "boxesTop 10"       $ isProvableZ t $ boxesTop 10
         it "multiVerK 10"      $ isProvableZ t $ multiVerK 10
@@ -439,6 +444,7 @@ main = hspec $ parallel $ do
         it "t axiom"           $ isProvableT t taxiom
         it "Consistency"       $ isProvableT t consistency
         it "Density"           $ isProvableT t density
+        it "Seriality"         $ isProvableZ t seriality
         it (show f1)           $ isProvableT t f1
         it "boxesTop 10"       $ isProvableT t $ boxesTop 10
         it "multiVerK 10"      $ isProvableT t $ multiVerK 10
@@ -494,6 +500,7 @@ main = hspec $ parallel $ do
         it "t axiom"            $ isProvableZ sfour taxiom
         it "Consistency"        $ isProvableZ sfour consistency
         it "Density"            $ isProvableZ sfour density
+        it "Seriality"         $ isProvableZ sfour seriality
         it (show f1)            $ isProvableZ sfour f1
         it "boxesTop 10"        $ isProvableZ sfour $ boxesTop 10
         it "multiVerK 10"       $ isProvableZ sfour $ multiVerK 10
@@ -548,6 +555,7 @@ main = hspec $ parallel $ do
         it "t axiom"            $ isProvableT sfour taxiom
         it "Consistency"        $ isProvableT sfour consistency
         it "Density"            $ isProvableT sfour density
+        it "Seriality"          $ isProvableT sfour seriality
         it (show f1)            $ isProvableT sfour f1
         it "boxesTop 10"        $ isProvableT sfour $ boxesTop 10
         it "multiVerK 10"       $ isProvableT sfour $ multiVerK 10
@@ -622,6 +630,7 @@ main = hspec $ parallel $ do
         it "t axiom"            $ not $ isProvableZ gl taxiom
         it "Consistency"        $ not $ isProvableZ gl consistency
         it "Density"            $ not $ isProvableZ gl density
+        it "Seriality"          $ not $ isProvableZ gl seriality 
         it (show f2)            $ not $ isProvableZ gl f2
         it "boxesBot 10"        $ not $ isProvableZ gl $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableZ gl $ extraAtK 10
@@ -675,7 +684,8 @@ main = hspec $ parallel $ do
       describe "Modal formulas" $ do
         it "t axiom"            $ not $ isProvableT gl taxiom
         it "Consistency"        $ not $ isProvableT gl consistency
-        it "Density"            $ not $ isProvableT gl density
+        it "Density"            $ not $ isProvableT gl density        
+        it "Seriality"          $ not $ isProvableZ gl seriality
         it (show f2)            $ not $ isProvableT gl f2
         it "boxesBot 10"        $ not $ isProvableT gl $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableT gl $ extraAtK 10
