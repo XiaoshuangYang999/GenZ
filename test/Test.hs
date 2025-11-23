@@ -12,6 +12,7 @@ import K4
 import GL
 import S4
 import T
+import D
 import PForm
 import MForm
 
@@ -470,6 +471,112 @@ main = hspec $ parallel $ do
         it "lobBoxes 10"        $ not $ isProvableT t $ lobBoxes 10
         it "boxToMoreBox 5"    $ not $ isProvableT t $ boxToMoreBox 5
 
+-- New tests for D  
+    describe "D.isProvableZ" $ do
+      describe "Propositional formulas" $ do
+        it "Top"                                                $ isProvableZ d $ pTom doubleNegation
+        it ("Double negation right: " ++ show doubleNegationR)  $ isProvableZ d $ pTom doubleNegationR
+        it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableZ d $ pTom excludedMiddle
+        it ("Pierce's law: " ++ show pierce)                    $ isProvableZ d $ pTom pierce
+        it ("Double negation of excluded middle " ++ show dnEM) $ isProvableZ d $ pTom dnEM
+        it (show phi)                                           $ isProvableZ d $ pTom phi
+        it (show t1)                                            $ isProvableZ d $ pTom t1
+        it (show t2)                                            $ isProvableZ d $ pTom t2
+        it (show t3)                                            $ isProvableZ d $ pTom t3
+        it "conTopR 10"                                         $ isProvableZ d $ pTom $ conTopR 10
+        it "conTopL 10"                                         $ isProvableZ d $ pTom $ conTopL 10
+        it "disTopR 10"                                         $ isProvableZ d $ pTom $ disTopR 10
+        it "disTopL 10"                                         $ isProvableZ d $ pTom $ disTopL 10
+        it "conPieR 10"                                         $ isProvableZ d $ pTom $ conPieR 10
+        it "conPieL 10"                                         $ isProvableZ d $ pTom $ conPieL 10
+        it "disPieR 10"                                         $ isProvableZ d $ pTom $ disPieR 10
+        it "disPieL 10"                                         $ isProvableZ d $ pTom $ disPieL 10
+        it "disPhiPieR 10"                                      $ isProvableZ d $ pTom $ disPhiPieR 10
+        it "disPhiPieL 10"                                      $ isProvableZ d $ pTom $ disPhiPieL 10
+        it "phiImpPie 10"                                       $ isProvableZ d $ pTom $ phiImpPie 10
+      describe "Modal formulas" $ do
+        it "k axiom"           $ isProvableZ d kaxiom        
+        it "Consistency"       $ isProvableZ d consistency
+        it "Seriality"         $ isProvableZ d seriality
+        it (show f1)           $ isProvableZ d f1
+        it "boxesTop 10"       $ isProvableZ d $ boxesTop 10
+        it "multiVerK 10"      $ isProvableZ d $ multiVerK 10
+    describe "not.D.isProvableZ" $ do
+      describe "Propositional formulas" $ do
+        it "Bot"                $ not $ isProvableZ d BotM
+        it (show contradiction) $ not $ isProvableZ d $ pTom contradiction
+        it (show t4)            $ not $ isProvableZ d $ pTom t4
+        it (show t5)            $ not $ isProvableZ d $ pTom t5
+        it (show t6)            $ not $ isProvableZ d $ pTom t6
+        it "conBotR 10"         $ not $ isProvableZ d $ pTom $ conBotR 10
+        it "conBotL 10"         $ not $ isProvableZ d $ pTom $ conBotL 10
+        it "disBotR 10"         $ not $ isProvableZ d $ pTom $ disBotR 10
+        it "disBotL 10"         $ not $ isProvableZ d $ pTom $ disBotL 10
+      describe "Modal formulas" $ do
+        it "Lob axiom"          $ not $ isProvableZ d lobaxiom
+        it "t axiom"            $ not $ isProvableZ d taxiom
+        it "4 axiom"            $ not $ isProvableZ d fouraxiom
+        it "Density"            $ not $ isProvableZ d density
+        it (show f2)            $ not $ isProvableZ d f2
+        it "boxesBot 10"        $ not $ isProvableZ d $ boxesBot 10
+        it "extraAtK 10"        $ not $ isProvableZ d $ extraAtK 10
+        it "negBoxes 10"        $ not $ isProvableZ d $ negBoxes 10        
+        it "lobBoxes 10"        $ not $ isProvableZ d $ lobBoxes 10
+        it "boxToMoreBox 5"     $ not $ isProvableZ d $ boxToMoreBox 5
+        it "boxToFewerBox 10"   $ not $ isProvableZ d $ boxToFewerBox 5
+    describe "D.isProvableT" $ do
+      describe "Propositional formulas" $ do
+        it "Top"                                                $ isProvableT d $ pTom doubleNegation
+        it ("Double negation right: " ++ show doubleNegationR)  $ isProvableT d $ pTom doubleNegationR
+        it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableT d $ pTom excludedMiddle
+        it ("Pierce's law: " ++ show pierce)                    $ isProvableT d $ pTom pierce
+        it ("Double negation of excluded middle " ++ show dnEM) $ isProvableT d $ pTom dnEM
+        it (show phi)                                           $ isProvableT d $ pTom phi
+        it (show t1)                                            $ isProvableT d $ pTom t1
+        it (show t2)                                            $ isProvableT d $ pTom t2
+        it (show t3)                                            $ isProvableT d $ pTom t3
+        it "conTopR 10"                                         $ isProvableT d $ pTom $ conTopR 10
+        it "conTopL 10"                                         $ isProvableT d $ pTom $ conTopL 10
+        it "disTopR 10"                                         $ isProvableT d $ pTom $ disTopR 10
+        it "disTopL 10"                                         $ isProvableT d $ pTom $ disTopL 10
+        it "conPieR 10"                                         $ isProvableT d $ pTom $ conPieR 10
+        it "conPieL 10"                                         $ isProvableT d $ pTom $ conPieL 10
+        it "disPieR 10"                                         $ isProvableT d $ pTom $ disPieR 10
+        it "disPieL 10"                                         $ isProvableT d $ pTom $ disPieL 10
+        it "disPhiPieR 10"                                      $ isProvableT d $ pTom $ disPhiPieR 10
+        it "disPhiPieL 10"                                      $ isProvableT d $ pTom $ disPhiPieL 10
+        it "phiImpPie 10"                                       $ isProvableT d $ pTom $ phiImpPie 10
+      describe "Modal formulas" $ do
+        it "k axiom"           $ isProvableT d kaxiom        
+        it "Consistency"       $ isProvableT d consistency
+        it "Seriality"         $ isProvableT d seriality
+        it (show f1)           $ isProvableT d f1
+        it "boxesTop 10"       $ isProvableT d $ boxesTop 10
+        it "multiVerK 10"      $ isProvableT d $ multiVerK 10
+    describe "not.D.isProvableT" $ do
+      describe "Propositional formulas" $ do
+        it "Bot"                $ not $ isProvableT d BotM
+        it (show contradiction) $ not $ isProvableT d $ pTom contradiction
+        it (show t4)            $ not $ isProvableT d $ pTom t4
+        it (show t5)            $ not $ isProvableT d $ pTom t5
+        it (show t6)            $ not $ isProvableT d $ pTom t6
+        it "conBotR 10"         $ not $ isProvableT d $ pTom $ conBotR 10
+        it "conBotL 10"         $ not $ isProvableT d $ pTom $ conBotL 10
+        it "disBotR 10"         $ not $ isProvableT d $ pTom $ disBotR 10
+        it "disBotL 10"         $ not $ isProvableT d $ pTom $ disBotL 10
+      describe "Modal formulas" $ do
+        it "Lob axiom"          $ not $ isProvableT d lobaxiom
+        it "t axiom"            $ not $ isProvableT d taxiom
+        it "4 axiom"            $ not $ isProvableT d fouraxiom
+        it "Density"            $ not $ isProvableT d density
+        it (show f2)            $ not $ isProvableT d f2
+        it "boxesBot 10"        $ not $ isProvableT d $ boxesBot 10
+        it "extraAtK 10"        $ not $ isProvableT d $ extraAtK 10
+        it "negBoxes 10"        $ not $ isProvableT d $ negBoxes 10        
+        it "lobBoxes 10"        $ not $ isProvableT d $ lobBoxes 10
+        it "boxToMoreBox 5"     $ not $ isProvableT d $ boxToMoreBox 5
+        it "boxToFewerBox 10"   $ not $ isProvableZ d $ boxToFewerBox 5
+
 -- S4
     describe "S4.isProvableZ" $ do
       describe "Propositional formulas" $ do
@@ -708,6 +815,8 @@ main = hspec $ parallel $ do
         \ f -> discardAfter limit $ isProvableZ gl f === isProvableT gl f
       prop "In T" $
         \ f -> discardAfter limit $ isProvableZ t f === isProvableT t f
+      prop "In D" $
+        \ f -> discardAfter limit $ isProvableZ d f === isProvableT d f
 
     describe "Proofs are at most binary" $ do
         let hasLeqTwoChildren (Node _ Nothing _) = True
@@ -740,10 +849,14 @@ main = hspec $ parallel $ do
           \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveZ t f
         prop "GenT for T" $
           \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveT t f
+        prop "GenZ for D" $
+          \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveZ d f
+        prop "GenT for D" $
+          \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveT d f
 
     conCheck [("CPL", classical), ("IPL", intui)]
 
-    conCheck [("K", k), ("K4", kfour), ("S4",sfour), ("GL",gl), ("T", t)]
+    conCheck [("K", k), ("K4", kfour), ("S4",sfour), ("GL",gl), ("T", t), ("D", d)]
 
     agreeTestTranslated classical intui (negP . negP)
     agreeTestTranslated classical k pTom
@@ -751,12 +864,15 @@ main = hspec $ parallel $ do
     agreeTestTranslated classical sfour pTom
     agreeTestTranslated classical gl pTom
     agreeTestTranslated classical t pTom
+    agreeTestTranslated classical d pTom
+
 
     containTest k kfour
     containTest k sfour
     containTest kfour gl
-    containTest k t
     containTest t sfour
+    containTest k d
+    containTest d t
 
     agreeTestTranslated intui sfour translation
 
