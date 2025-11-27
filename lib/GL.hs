@@ -6,7 +6,8 @@ import General
 import FormM
 
 gl :: Logic FormM
-gl = Log { safeRules   = [leftBot, isAxiom, isCycle, replaceRule safeML]
+gl = Log { name = "GL"
+         , safeRules   = [leftBot, isAxiom, isCycle, replaceRule safeML]
          , unsafeRules = [fourrule] }
 
 isCycle :: Rule FormM

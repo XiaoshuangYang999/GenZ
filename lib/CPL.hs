@@ -6,7 +6,8 @@ import General
 import FormP
 
 classical :: Logic FormP
-classical = Log { safeRules   = [leftBot, isAxiom, replaceRule safeCPL]
+classical = Log { name = "CPL"
+                , safeRules   = [leftBot, isAxiom, replaceRule safeCPL]
                 , unsafeRules = [] }
 
 safeCPL :: Either FormP FormP -> [(RuleName,[Sequent FormP])]

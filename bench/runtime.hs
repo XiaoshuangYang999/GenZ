@@ -22,8 +22,8 @@ import K
 import GL
 import K4
 import S4
-import PForm
-import MForm
+import FormP
+import FormM
 
 type Case = (String, Int -> Bool, [Int])
 
@@ -70,7 +70,7 @@ makeCases logics forms sizes =
 benchMain :: IO ()
 benchMain =
   defaultMainWith myConfig (map mybench allItems) where
-  mybench (name,f,range) = bgroup name $ map (run f) range
+  mybench (name1,f,range) = bgroup name1 $ map (run f) range
   run f n = bench (show n) $ whnf f n
   myConfig = defaultConfig
     { Criterion.Types.csvFile = Just theCSVname
@@ -118,7 +118,7 @@ convertMain = do
       writeFile (theCSVname ++ ".dat") (intercalate "\n" (firstLine:resultrows) ++ "\n")
   where
     parseLine [namestr,numberstr] = case splitOn "/" namestr of
-      [name,nstr] -> ((name,n),valuestr) where
+      [name1,nstr] -> ((name1,n),valuestr) where
         n = read nstr :: Integer
         value = toRealFloat (read numberstr :: Scientific) :: Double
         valuestr = Numeric.showFFloat (Just 7) value ""

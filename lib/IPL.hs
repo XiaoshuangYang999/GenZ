@@ -8,7 +8,8 @@ import Basics
 import FormP
 
 intui :: Logic FormP
-intui = Log { safeRules   = [leftBot, isAxiom, additionRule safeIPL]
+intui = Log { name = "IPL"
+            , safeRules   = [leftBot, isAxiom, additionRule safeIPL]
             , unsafeRules = [additionRuleNoLoop unsafeIPL] }
 
 -- | Safe rules

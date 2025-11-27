@@ -7,5 +7,6 @@ import T
 import FormM
 
 sfour :: Logic FormM
-sfour = Log { safeRules   = [leftBot, isAxiom, additionRule safeML, trule]
+sfour = Log { name = "S4"
+            , safeRules   = [leftBot, isAxiom, additionRule safeML, trule]
             , unsafeRules = [fourrule] }

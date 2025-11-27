@@ -6,7 +6,8 @@ import K
 import FormM
 
 d :: Logic FormM
-d = Log { safeRules   = [leftBot, isAxiom, replaceRule safeML]
+d = Log { name = "D"
+        , safeRules   = [leftBot, isAxiom, replaceRule safeML]
         , unsafeRules = [krule,drule]}
 
 -- | The D rule.

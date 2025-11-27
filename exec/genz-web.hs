@@ -41,7 +41,7 @@ main = do
   let mySettings = Options 1 (setHost "127.0.0.1" $ setPort port defaultSettings)
   let index = html . TL.fromStrict $ embeddedFile "index.html"
   scottyOpts mySettings $ do
-    get (capture $ path) index
+    get (capture   path) index
     get (capture $ path ++ "/") index
     get (capture $ path ++ "/index.html") index
     get (capture $ path ++ "/jquery.js") . (\t -> addHeader "Content-Type" "text/javascript" >> html t) . TL.fromStrict $ embeddedFile "jquery.js"
@@ -90,7 +90,7 @@ webProve :: (Eq f, Ord f, Show f, TeX f) => Logic f -> f -> [String]
 webProve logic frm =
   let p_tex = case proveZ logic frm of
         [] -> ""
-        (p:_) -> tex p
+        (p1:_) -> tex p1
   in
     [ "<pre>Parsed input: " ++ show frm ++ "</pre>" -- TODO pretty? tex?
     , if isProvableZ logic frm

@@ -11,8 +11,8 @@ import K4
 import GL
 import CPL
 import S4
-import PForm
-import MForm
+import FormM
+import FormP
 
 main :: IO ()
 main = do

@@ -7,7 +7,8 @@ import K
 import FormM
 
 kfour :: Logic FormM
-kfour = Log { safeRules   = [leftBot, isAxiom, replaceRule safeML]
+kfour = Log { name = "K4"
+            , safeRules   = [leftBot, isAxiom, replaceRule safeML]
             , unsafeRules = [fourrule] }
 
 -- | The 4 box rule.

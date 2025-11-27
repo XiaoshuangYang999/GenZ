@@ -8,10 +8,8 @@ import Data.GraphViz.Types.Monadic hiding ((-->))
 import Data.List as List
 import Data.Set (Set)
 import qualified Data.Set as Set
-import GHC.Generics
 import System.IO (hGetContents)
 import System.Process
-import Test.QuickCheck
 import Basics
 
 type Sequent f = Set (Either f f)
@@ -60,7 +58,8 @@ isApplicableRule :: History f -> Sequent f -> Rule f -> Bool
 isApplicableRule hs fs r = any (\f -> isApplicable hs fs f r) fs
 
 -- | A Logic for a formula type `f`.
-data Logic f = Log { safeRules   :: [Rule f]
+data Logic f = Log { name :: String
+                   , safeRules   :: [Rule f]
                    , unsafeRules :: [Rule f] }
 
 -- | A prover takes a logic and a formula and returns a Boolean.
@@ -365,8 +364,7 @@ toBuss (Node fs (Just (rule', ts)) _) =
 instance (Show f, TeX f, Ord f) => TeX (Proof f) where
   tex = toBuss
 
--- * The Propositional language
-
+-- * The Language
 type Atom = String
 
 -- | This formula type contains propositional logic.

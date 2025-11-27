@@ -42,10 +42,10 @@ main = do
   --     print f
   --     print $ isProvableZ k f
   putStrLn "Give me the formula's name: "
-  name <- getLine
+  name1 <- getLine
   putStrLn "Give me the size of the formula: "
   size <- getLine
-  content <- readFile $ "benchmarks/LWB/lwb_k/" ++ name ++ ".txt." ++ size ++ ".intohylo"
+  content <- readFile $ "benchmarks/LWB/lwb_k/" ++ name1 ++ ".txt." ++ size ++ ".intohylo"
   case parseFormM (alexScanTokens content) of
     Left e -> print e
     Right f -> do

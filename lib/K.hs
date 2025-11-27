@@ -7,7 +7,8 @@ import General
 import FormM
 
 k :: Logic FormM
-k = Log { safeRules   = [leftBot, isAxiom, replaceRule safeML]
+k = Log { name = "K"
+        , safeRules   = [leftBot, isAxiom, replaceRule safeML]
         , unsafeRules = [krule] }
 
 -- | Propositional rules for Modal Logic.

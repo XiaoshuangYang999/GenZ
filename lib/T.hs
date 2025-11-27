@@ -7,7 +7,8 @@ import K
 import FormM
 
 t :: Logic FormM
-t = Log { safeRules   = [leftBot, isAxiom, additionRule safeML,trule]
+t = Log { name = "T"
+        , safeRules   = [leftBot, isAxiom, additionRule safeML,trule]
         , unsafeRules = [krule]}
 
 -- | The T box rule. Involve local loopcheck
