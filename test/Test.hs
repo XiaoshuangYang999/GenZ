@@ -14,77 +14,64 @@ import S4
 import PForm
 import MForm
 
+testsFor :: (Show f, Ord f) => Logic f -> String -> [(String,f)] -> [(String,f)] -> SpecWith ()
+testsFor l description posExamples negExamples = do
+  describe description $ do
+    describe "isProvableZ" $ do
+      mapM_ (\(s, f) -> it s $ isProvableZ l f) posExamples
+    describe "not.isProvableZ" $ do
+      mapM_ (\(s, f) -> it s $ not $ isProvableZ l f) negExamples
+    describe "isProvableT" $ do
+      mapM_ (\(s, f) -> it s $ isProvableT l f) posExamples
+    describe "not.isProvableT" $ do
+      mapM_ (\(s, f) -> it s $ not $ isProvableT l f) negExamples
+
+
+-- | Set a time limit.
+-- Test cases will be discarded if they take more than 5 seconds.
+limit :: Int
+limit = 5 * 1000000 -- in microseconds
+
+-- | Ensure laziness
+implies :: Bool -> Bool -> Bool
+implies x = if x then id else const True
+
 main :: IO ()
-main = hspec $ do
+main = hspec $ parallel $ do
   describe "Unit tests" $ do
-    describe "CPL.isProvableZ" $ do
-      it "Top"                                                $ isProvableZ classical topP
-      it ("Double negation: " ++ show doubleNegation)         $ isProvableZ classical doubleNegation
-      it ("Double negation right: " ++ show doubleNegationR)  $ isProvableZ classical doubleNegationR
-      it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableZ classical excludedMiddle
-      it ("Pierce's law: " ++ show pierce)                    $ isProvableZ classical pierce
-      it ("Double negation of excluded middle " ++ show dnEM) $ isProvableZ classical dnEM
-      it (show phi)                                           $ isProvableZ classical phi
-      it (show t1)                                            $ isProvableZ classical t1
-      it (show t2)                                            $ isProvableZ classical t2
-      it (show t3)                                            $ isProvableZ classical t3
-      it "conTopR 10"                                         $ isProvableZ classical $ conTopR 10
-      it "conTopL 10"                                         $ isProvableZ classical $ conTopL 10
-      it "disTopR 10"                                         $ isProvableZ classical $ disTopR 10
-      it "disTopL 10"                                         $ isProvableZ classical $ disTopL 10
-      it "conPieR 10"                                         $ isProvableZ classical $ conPieR 10
-      it "conPieL 10"                                         $ isProvableZ classical $ conPieL 10
-      it "disPieR 10"                                         $ isProvableZ classical $ disPieR 10
-      it "disPieL 10"                                         $ isProvableZ classical $ disPieL 10
-      it "disPhiPieR 10"                                      $ isProvableZ classical $ disPhiPieR 10
-      it "disPhiPieL 10"                                      $ isProvableZ classical $ disPhiPieL 10
-      it "phiImpPie 10"                                       $ isProvableZ classical $ phiImpPie 10
-
-    describe "not.CPL.isProvableZ" $ do
-      it "Bot"                $ not . isProvableZ classical $ BotP
-      it (show contradiction) $ not $ isProvableZ classical contradiction
-      it (show t4)            $ not $ isProvableZ classical t4
-      it (show t5)            $ not $ isProvableZ classical t5
-      it (show t6)            $ not $ isProvableZ classical t6
-      it "conBotR 10"         $ not $ isProvableZ classical $ conBotR 10
-      it "conBotL 10"         $ not $ isProvableZ classical $ conBotL 10
-      it "disBotR 10"         $ not $ isProvableZ classical $ disBotR 10
-      it "disBotL 10"         $ not $ isProvableZ classical $ disBotL 10
-
-    describe "CPL.isProvableT" $ do
-      it "Top"                                                $ isProvableT classical topP
-      it ("Double negation: " ++ show doubleNegation)         $ isProvableT classical doubleNegation
-      it ("Double negation right: " ++ show doubleNegationR)  $ isProvableT classical doubleNegationR
-      it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableT classical excludedMiddle
-      it ("Pierce's law: " ++ show pierce)                    $ isProvableT classical pierce
-      it ("Double negation of excluded middle " ++ show dnEM) $ isProvableT classical dnEM
-      it (show phi)                                           $ isProvableT classical phi
-      it (show t1)                                            $ isProvableT classical t1
-      it (show t2)                                            $ isProvableT classical t2
-      it (show t3)                                            $ isProvableT classical t3
-      it "conTopR 10"                                         $ isProvableT classical $ conTopR 10
-      it "conTopL 10"                                         $ isProvableT classical $ conTopL 10
-      it "disTopR 10"                                         $ isProvableT classical $ disTopR 10
-      it "disTopL 10"                                         $ isProvableT classical $ disTopL 10
-      it "conPieR 10"                                         $ isProvableT classical $ conPieR 10
-      it "conPieL 10"                                         $ isProvableT classical $ conPieL 10
-      it "disPieR 10"                                         $ isProvableT classical $ disPieR 10
-      it "disPieL 10"                                         $ isProvableT classical $ disPieL 10
-      it "disPhiPieR 10"                                      $ isProvableT classical $ disPhiPieR 10
-      it "disPhiPieL 10"                                      $ isProvableT classical $ disPhiPieL 10
-      it "phiImpPie 10"                                       $ isProvableT classical $ phiImpPie 10
-
-    describe "not.CPL.isProvableT" $ do
-      it "Bot"                $ not . isProvableT classical $ BotP
-      it (show contradiction) $ not $ isProvableT classical contradiction
-      it (show t4)            $ not $ isProvableT classical t4
-      it (show t5)            $ not $ isProvableT classical t5
-      it (show t6)            $ not $ isProvableT classical t6
-      it "conBotR 10"         $ not $ isProvableT classical $ conBotR 10
-      it "conBotL 10"         $ not $ isProvableT classical $ conBotL 10
-      it "disBotR 10"         $ not $ isProvableT classical $ disBotR 10
-      it "disBotL 10"         $ not $ isProvableZ classical $ disBotL 10
-
+    testsFor classical "CPL"
+      [ ( "Top"                                              , topP )
+      , ( "Double negation: " ++ show doubleNegation         , doubleNegation )
+      , ( "Double negation right: " ++ show doubleNegationR  , doubleNegationR )
+      , ( "Excluded middle: " ++ show excludedMiddle         , excludedMiddle )
+      , ( "Pierce's law: " ++ show pierce                    , pierce )
+      , ( "Double negation of excluded middle " ++ show dnEM , dnEM )
+      , ( show phi                                           , phi )
+      , ( show t1                                            , t1 )
+      , ( show t2                                            , t2 )
+      , ( show t3                                            , t3 )
+      , ( "conTopR 10"                                       , conTopR 10 )
+      , ( "conTopL 10"                                       , conTopL 10 )
+      , ( "disTopR 10"                                       , disTopR 10 )
+      , ( "disTopL 10"                                       , disTopL 10 )
+      , ( "conPieR 10"                                       , conPieR 10 )
+      , ( "conPieL 10"                                       , conPieL 10 )
+      , ( "disPieR 10"                                       , disPieR 10 )
+      , ( "disPieL 10"                                       , disPieL 10 )
+      , ( "disPhiPieR 10"                                    , disPhiPieR 10 )
+      , ( "disPhiPieL 10"                                    , disPhiPieL 10 )
+      , ( "phiImpPie 10"                                     , phiImpPie 10 )
+      ]
+      [ ( "Bot"                , BotP)
+      , ( (show contradiction) , contradiction)
+      , ( (show t4)            , t4)
+      , ( (show t5)            , t5)
+      , ( (show t6)            , t6)
+      , ( "conBotR 10"         , conBotR 10)
+      , ( "conBotL 10"         , conBotL 10)
+      , ( "disBotR 10"         , disBotR 10)
+      , ( "disBotL 10"         , disBotL 10)
+      ]
 
     describe "IPL.isProvableZ" $ do
       it "Top"                                                $ isProvableZ intui topP
@@ -106,7 +93,7 @@ main = hspec $ do
       it (show contradiction)                                 $ not $ isProvableZ intui contradiction
       it ("Double negation: " ++ show doubleNegation)         $ not $ isProvableZ intui doubleNegation
       it ("Excluded middle: " ++ show excludedMiddle)         $ not $ isProvableZ intui excludedMiddle
-      it ("Pierce's law: " ++ show pierce)                    $ not $ isProvableZ intui pierce      
+      it ("Pierce's law: " ++ show pierce)                    $ not $ isProvableZ intui pierce
       it (show t4)                                            $ not $ isProvableZ intui t4
       it (show t5)                                            $ not $ isProvableZ intui t5
       it (show t6)                                            $ not $ isProvableZ intui t6
@@ -118,7 +105,7 @@ main = hspec $ do
       it "conPieL 10"                                         $ not $ isProvableZ intui $ conPieL 10
       it "disPieR 10"                                         $ not $ isProvableZ intui $ disPieR 10
       it "disPieL 10"                                         $ not $ isProvableZ intui $ disPieL 10
-      it "phiImpPie 10"                                       $ not $ isProvableZ intui $ phiImpPie 10   
+      it "phiImpPie 10"                                       $ not $ isProvableZ intui $ phiImpPie 10
 
     describe "IPL.isProvableT" $ do
       it "Top"                                                $ isProvableT intui topP
@@ -134,13 +121,13 @@ main = hspec $ do
       it "disTopL 10"                                         $ isProvableT intui $ disTopL 10
       it "disPhiPieR 10"                                      $ isProvableT intui $ disPhiPieR 10
       it "disPhiPieL 10"                                      $ isProvableT intui $ disPhiPieL 10
-      
+
     describe "not.IPL.isProvableT" $ do
       it "Bot" $ not . isProvableT intui $ BotP
       it (show contradiction)                                 $ not $ isProvableT intui contradiction
       it ("Double negation: " ++ show doubleNegation)         $ not $ isProvableT intui doubleNegation
       it ("Excluded middle: " ++ show excludedMiddle)         $ not $ isProvableT intui excludedMiddle
-      it ("Pierce's law: " ++ show pierce)                    $ not $ isProvableT intui pierce      
+      it ("Pierce's law: " ++ show pierce)                    $ not $ isProvableT intui pierce
       it (show t4)                                            $ not $ isProvableT intui t4
       it (show t5)                                            $ not $ isProvableT intui t5
       it (show t6)                                            $ not $ isProvableT intui t6
@@ -152,7 +139,7 @@ main = hspec $ do
       it "conPieL 10"                                         $ not $ isProvableT intui $ conPieL 10
       it "disPieR 10"                                         $ not $ isProvableT intui $ disPieR 10
       it "disPieL 10"                                         $ not $ isProvableT intui $ disPieL 10
-      it "phiImpPie 10"                                       $ not $ isProvableZ intui $ phiImpPie 10   
+      it "phiImpPie 10"                                       $ not $ isProvableZ intui $ phiImpPie 10
 
 
     describe "K.isProvableZ" $ do
@@ -204,7 +191,7 @@ main = hspec $ do
         it (show f2)            $ not $ isProvableZ k f2
         it "boxesBot 10"        $ not $ isProvableZ k $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableZ k $ extraAtK 10
-        it "negBoxes 10"        $ not $ isProvableZ k $ negBoxes 10        
+        it "negBoxes 10"        $ not $ isProvableZ k $ negBoxes 10
         it "lobBoxes 10"        $ not $ isProvableZ k $ lobBoxes 10
         it "boxToMoreBox 10"    $ not $ isProvableZ k $ boxToMoreBox 10
         it "boxToFewerBox 5"    $ not $ isProvableZ k $ boxToFewerBox 5
@@ -258,7 +245,7 @@ main = hspec $ do
         it (show f2)            $ not $ isProvableT k f2
         it "boxesBot 10"        $ not $ isProvableT k $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableT k $ extraAtK 10
-        it "negBoxes 10"        $ not $ isProvableT k $ negBoxes 10        
+        it "negBoxes 10"        $ not $ isProvableT k $ negBoxes 10
         it "lobBoxes 10"        $ not $ isProvableT k $ lobBoxes 10
         it "boxToMoreBox 10"    $ not $ isProvableT k $ boxToMoreBox 10
         it "boxToFewerBox 5"    $ not $ isProvableT k $ boxToFewerBox 5
@@ -314,7 +301,7 @@ main = hspec $ do
         it (show f2)            $ not $ isProvableZ kfour f2
         it "boxesBot 10"        $ not $ isProvableZ kfour $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableZ kfour $ extraAtK 10
-        it "negBoxes 10"        $ not $ isProvableZ kfour $ negBoxes 10        
+        it "negBoxes 10"        $ not $ isProvableZ kfour $ negBoxes 10
         it "lobBoxes 10"        $ not $ isProvableZ kfour $ lobBoxes 10
         it "boxToFewerBox 5"    $ not $ isProvableZ kfour $ boxToFewerBox 5
 
@@ -368,11 +355,11 @@ main = hspec $ do
         it (show f2)            $ not $ isProvableT kfour f2
         it "boxesBot 10"        $ not $ isProvableT kfour $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableT kfour $ extraAtK 10
-        it "negBoxes 10"        $ not $ isProvableT kfour $ negBoxes 10        
+        it "negBoxes 10"        $ not $ isProvableT kfour $ negBoxes 10
         it "lobBoxes 10"        $ not $ isProvableT kfour $ lobBoxes 10
         it "boxToFewerBox 5"    $ not $ isProvableT kfour $ boxToFewerBox 5
-  
-  
+
+
     describe "S4.isProvableZ" $ do
       describe "Propositional formulas" $ do
         it "Top"                                                $ isProvableZ sfour topM
@@ -406,7 +393,7 @@ main = hspec $ do
         it "boxesTop 10"        $ isProvableZ sfour $ boxesTop 10
         it "multiVerK 10"       $ isProvableZ sfour $ multiVerK 10
         it "boxToMoreBox 10"    $ isProvableZ sfour $ boxToMoreBox 10
-        it "boxToFewerBox 5"    $ isProvableZ sfour $ boxToFewerBox 5  
+        it "boxToFewerBox 5"    $ isProvableZ sfour $ boxToFewerBox 5
 
     describe "not.S4.isProvableZ" $ do
       describe "Propositional formulas" $ do
@@ -420,11 +407,11 @@ main = hspec $ do
         it "disBotR 10"         $ not $ isProvableZ sfour $ pTom $ disBotR 10
         it "disBotL 10"         $ not $ isProvableZ sfour $ pTom $ disBotL 10
       describe "Modal formulas" $ do
-        it "Lob axiom"          $ not $ isProvableZ sfour lobaxiom 
+        it "Lob axiom"          $ not $ isProvableZ sfour lobaxiom
         it (show f2)            $ not $ isProvableZ sfour f2
         it "boxesBot 10"        $ not $ isProvableZ sfour $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableZ sfour $ extraAtK 10
-        it "negBoxes 10"        $ not $ isProvableZ sfour $ negBoxes 10        
+        it "negBoxes 10"        $ not $ isProvableZ sfour $ negBoxes 10
         it "lobBoxes 10"        $ not $ isProvableZ sfour $ lobBoxes 10
 
     describe "S4.isProvableT" $ do
@@ -460,7 +447,7 @@ main = hspec $ do
         it "boxesTop 10"        $ isProvableT sfour $ boxesTop 10
         it "multiVerK 10"       $ isProvableT sfour $ multiVerK 10
         it "boxToMoreBox 10"    $ isProvableT sfour $ boxToMoreBox 10
-        it "boxToFewerBox 5"    $ isProvableT sfour $ boxToFewerBox 5  
+        it "boxToFewerBox 5"    $ isProvableT sfour $ boxToFewerBox 5
 
     describe "not.S4.isProvableT" $ do
       describe "Propositional formulas" $ do
@@ -474,12 +461,12 @@ main = hspec $ do
         it "disBotR 10"         $ not $ isProvableT sfour $ pTom $ disBotR 10
         it "disBotL 10"         $ not $ isProvableT sfour $ pTom $ disBotL 10
       describe "Modal formulas" $ do
-        it "Lob axiom"          $ not $ isProvableT sfour lobaxiom 
+        it "Lob axiom"          $ not $ isProvableT sfour lobaxiom
         it (show f2)            $ not $ isProvableT sfour f2
         it "boxesBot 10"        $ not $ isProvableT sfour $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableT sfour $ extraAtK 10
-        it "negBoxes 10"        $ not $ isProvableT sfour $ negBoxes 10        
-        it "lobBoxes 10"        $ not $ isProvableT sfour $ lobBoxes 10        
+        it "negBoxes 10"        $ not $ isProvableT sfour $ negBoxes 10
+        it "lobBoxes 10"        $ not $ isProvableT sfour $ lobBoxes 10
 
 
     describe "GL.isProvableZ" $ do
@@ -526,14 +513,14 @@ main = hspec $ do
         it "conBotL 10"         $ not $ isProvableZ gl $ pTom $ conBotL 10
         it "disBotR 10"         $ not $ isProvableZ gl $ pTom $ disBotR 10
         it "disBotL 10"         $ not $ isProvableZ gl $ pTom $ disBotL 10
-      describe "Modal formulas" $ do        
+      describe "Modal formulas" $ do
         it "t axiom"            $ not $ isProvableZ gl taxiom
         it "Consistency"        $ not $ isProvableZ gl consistency
         it "Density"            $ not $ isProvableZ gl density
         it (show f2)            $ not $ isProvableZ gl f2
         it "boxesBot 10"        $ not $ isProvableZ gl $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableZ gl $ extraAtK 10
-        it "negBoxes 10"        $ not $ isProvableZ gl $ negBoxes 10        
+        it "negBoxes 10"        $ not $ isProvableZ gl $ negBoxes 10
         it "boxToFewerBox 5"    $ not $ isProvableZ gl $ boxToFewerBox 5
 
     describe "GL.isProvableT" $ do
@@ -580,19 +567,15 @@ main = hspec $ do
         it "conBotL 10"         $ not $ isProvableT gl $ pTom $ conBotL 10
         it "disBotR 10"         $ not $ isProvableT gl $ pTom $ disBotR 10
         it "disBotL 10"         $ not $ isProvableT gl $ pTom $ disBotL 10
-      describe "Modal formulas" $ do        
+      describe "Modal formulas" $ do
         it "t axiom"            $ not $ isProvableT gl taxiom
         it "Consistency"        $ not $ isProvableT gl consistency
         it "Density"            $ not $ isProvableT gl density
         it (show f2)            $ not $ isProvableT gl f2
         it "boxesBot 10"        $ not $ isProvableT gl $ boxesBot 10
         it "extraAtK 10"        $ not $ isProvableT gl $ extraAtK 10
-        it "negBoxes 10"        $ not $ isProvableT gl $ negBoxes 10        
+        it "negBoxes 10"        $ not $ isProvableT gl $ negBoxes 10
         it "boxToFewerBox 5"    $ not $ isProvableT gl $ boxToFewerBox 5
-
-  -- Set a time limit.
-  -- Test cases will be discarded if they take more than 5 seconds.
-  let limit = 5 * 1000000 -- in microseconds
 
   describe "Integration tests" $ do
     describe "Equivalence between GenZ and GenT" $ modifyMaxSuccess (const 1000) $ do
@@ -637,82 +620,55 @@ main = hspec $ do
         prop "GenT for GL" $
           \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveT gl f
 
-    -- to ensure laziness
-    let implies x = if x then id else const True
+    conCheck [("CPL", classical), ("IPL", intui)]
 
-    describe "If f and g isProvable, then Con f g isProvable" $ do
-        prop "GenZ for CPL" $
-          \ f g -> discardAfter limit $ (isProvableZ classical f && isProvableZ classical g) `implies` isProvableZ classical (ConP f g)
-        prop "GenT for CPL" $
-          \ f g -> discardAfter limit $ (isProvableT classical f && isProvableT classical g) `implies` isProvableT classical (ConP f g)
-        prop "GenZ for IPL" $
-          \ f g -> discardAfter limit $ (isProvableZ intui f && isProvableZ intui g) `implies` isProvableZ intui (ConP f g)
-        prop "GenT for IPL" $
-          \ f g -> discardAfter limit $ (isProvableT intui f && isProvableT intui g) `implies` isProvableT intui (ConP f g)
-        prop "GenZ for K" $
-          \ f g -> discardAfter limit $ (isProvableZ k f && isProvableZ k g) `implies` isProvableZ k (ConM f g)
-        prop "GenT for K" $
-          \ f g -> discardAfter limit $ (isProvableT k f && isProvableT k g) `implies` isProvableT k (ConM f g)
-        prop "GenZ for K4" $
-          \ f g -> discardAfter limit $ (isProvableZ kfour f && isProvableZ kfour g) `implies` isProvableZ kfour (ConM f g)
-        prop "GenT for K4" $
-          \ f g -> discardAfter limit $ (isProvableT kfour f && isProvableT kfour g) `implies` isProvableT kfour (ConM f g)
-        prop "GenZ for S4" $
-          \ f g -> discardAfter limit $ (isProvableZ sfour f && isProvableZ sfour g) `implies` isProvableZ sfour (ConM f g)
-        prop "GenT for S4" $
-          \ f g -> discardAfter limit $ (isProvableT sfour f && isProvableT sfour g) `implies` isProvableT sfour (ConM f g)
-        prop "GenZ for GL" $
-          \ f g -> discardAfter limit $ (isProvableZ gl f && isProvableZ gl g) `implies` isProvableZ gl (ConM f g)
-        prop "GenT for GL" $
-          \ f g -> discardAfter limit $ (isProvableT gl f && isProvableT gl g) `implies` isProvableT gl (ConM f g)
+    conCheck [("K", k), ("K4", kfour), ("S4",sfour), ("GL",gl)]
 
+    agreeTestTranslated classical intui (negP . negP)
+    agreeTestTranslated classical k pTom
+    agreeTestTranslated classical kfour pTom
+    agreeTestTranslated classical sfour pTom
+    agreeTestTranslated classical gl pTom
 
-    describe "If f isProvable in CPL, then neg neg f isProvable in IPL" $ do
-        prop "GenZ" $
-          \ f -> discardAfter limit $ isProvableZ classical f `implies` isProvableZ intui (negP (negP f))
-        prop "GenT" $
-          \ f -> discardAfter limit $ isProvableT classical f `implies` isProvableT intui (negP (negP f))
+    containTest k kfour
+    containTest k sfour
+    containTest kfour gl
 
-    describe "Propositional tautologies in modal logics (GenZ)" $ modifyMaxSuccess (const 1000) $ do
-      prop "K" $
-        \ f -> discardAfter limit $ isProvableZ classical f === isProvableZ k (pTom f)
-      prop "K4" $
-        \ f -> discardAfter limit $ isProvableZ classical f === isProvableZ kfour (pTom f)
-      prop "S4" $
-        \ f -> discardAfter limit $ isProvableZ classical f === isProvableZ sfour (pTom f)
-      prop "GL" $
-        \ f -> discardAfter limit $ isProvableZ classical f === isProvableZ gl (pTom f)
+    agreeTestTranslated intui sfour translation
 
-    describe "Propositional tautologies in modal logics (GenT)" $ modifyMaxSuccess (const 1000) $ do
-      prop "K" $
-        \ f -> discardAfter limit $ isProvableT classical f === isProvableT k (pTom f)
-      prop "K4" $
-        \ f -> discardAfter limit $ isProvableT classical f === isProvableT kfour (pTom f)
-      prop "S4" $
-        \ f -> discardAfter limit $ isProvableT classical f === isProvableT sfour (pTom f)
-      prop "GL" $
-        \ f -> discardAfter limit $ isProvableT classical f === isProvableT gl (pTom f)
+-- | This formula type contains propositional logic.
+class PropLog f where
+  neg :: f -> f
+  con :: f -> f ->f
+  dis :: f -> f ->f
 
-    describe "What is provable in K is also provable in K4" $ do
-      prop "GenZ" $
-        \ f -> discardAfter limit $ isProvableZ k f `implies` isProvableZ kfour f
-      prop "GenT" $
-        \ f -> discardAfter limit $ isProvableT k f `implies` isProvableT kfour f
+instance PropLog FormP where
+  neg = negP
+  dis = DisP
+  con = ConP
 
-    describe "What is provable in K4 is also provable in S4" $ do
-      prop "GenZ" $
-        \ f -> discardAfter limit $ isProvableZ kfour f `implies` isProvableZ sfour f
-      prop "GenT" $
-        \ f -> discardAfter limit $ isProvableT kfour f `implies` isProvableT sfour f
+instance PropLog FormM where
+  neg = negM
+  dis = DisM
+  con = ConM
 
-    describe "What is provable in K4 is also provable in GL" $ do
-      prop "GenZ" $
-        \ f -> discardAfter limit $ isProvableZ kfour f `implies` isProvableZ gl f
-      prop "GenT" $
-        \ f -> discardAfter limit $ isProvableT kfour f `implies` isProvableT gl f
+conCheck :: (Arbitrary f, Show f, Ord f, PropLog f) => [(String, Logic f)] -> SpecWith ()
+conCheck = mapM_ $ \ (s,l) -> do
+  prop ("GenZ for " ++ s) $
+    \ f g -> discardAfter limit $ (isProvableZ l f && isProvableZ l g) `implies` isProvableZ l (con f g)
+  prop ("GenT for " ++ s) $
+    \ f g -> discardAfter limit $ (isProvableT l f && isProvableT l g) `implies` isProvableT l (con f g)
 
-    describe "f is provable in IPL iff its translation is provable in S4" $ do
-      prop "GenZ" $
-        \ f -> discardAfter limit $ isProvableZ intui f === isProvableZ sfour (translation f)
-      prop "GenT" $
-        \ f -> discardAfter limit $ isProvableT intui f === isProvableT sfour (translation f)
+containTest :: (Arbitrary f, Show f, Ord f, PropLog f) => Logic f -> Logic f -> SpecWith ()
+containTest l1 l2 = do
+  prop "GenZ" $
+    \ f -> discardAfter limit $ isProvableZ l1 f `implies` isProvableZ l2 f
+  prop "GenT" $
+    \ f -> discardAfter limit $ isProvableT l1 f `implies` isProvableT l2 f
+
+agreeTestTranslated :: (Arbitrary f, Show f, Ord f, PropLog f, Arbitrary f', Show f', Ord f', PropLog f')  => Logic f -> Logic f' -> (f -> f') -> SpecWith ()
+agreeTestTranslated l1 l2 tr = do
+  prop "GenZ" $
+    \ f -> discardAfter limit $ isProvableZ l1 f === isProvableZ l2 (tr f)
+  prop "GenT" $
+    \ f -> discardAfter limit $ isProvableT l1 f === isProvableT l2 (tr f)
