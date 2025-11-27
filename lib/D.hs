@@ -3,9 +3,10 @@ module D where
 import qualified Data.Set as Set
 import General
 import K
+import FormM
 
 d :: Logic FormM
-d = Log { safeRules   = [leftBotM, isAxiomM, replaceRule safeML]
+d = Log { safeRules   = [leftBot, isAxiom, replaceRule safeML]
         , unsafeRules = [krule,drule]}
 
 -- | The D rule.

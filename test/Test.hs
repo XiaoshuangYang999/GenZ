@@ -5,6 +5,8 @@ import Test.Hspec.QuickCheck
 import Test.QuickCheck
 
 import General
+import FormP
+import FormM
 import CPL
 import IPL
 import K
@@ -14,8 +16,6 @@ import S4
 import T
 import D
 import D4
-import PForm
-import MForm
 
 testsFor :: (Show f, Ord f) => Logic f -> String -> [(String,f)] -> [(String,f)] -> SpecWith ()
 testsFor l description posExamples negExamples = do
@@ -43,7 +43,7 @@ main :: IO ()
 main = hspec $ parallel $ do
   describe "Unit tests" $ do
     testsFor classical "CPL"
-      [ ( "Top"                                              , topP )
+      [ ( "Top"                                              , top )
       , ( "Double negation: " ++ show doubleNegation         , doubleNegation )
       , ( "Double negation right: " ++ show doubleNegationR  , doubleNegationR )
       , ( "Excluded middle: " ++ show excludedMiddle         , excludedMiddle )
@@ -77,7 +77,7 @@ main = hspec $ parallel $ do
       ]
 
     describe "IPL.isProvableZ" $ do
-      it "Top"                                                $ isProvableZ intui topP
+      it "Top"                                                $ isProvableZ intui top
       it ("Double negation right: " ++ show doubleNegationR)  $ isProvableZ intui doubleNegationR
       it ("Double negation of excluded middle " ++ show dnEM) $ isProvableZ intui dnEM
       it (show phi)                                           $ isProvableZ intui phi
@@ -111,7 +111,7 @@ main = hspec $ parallel $ do
       it "phiImpPie 10"                                       $ not $ isProvableZ intui $ phiImpPie 10
 
     describe "IPL.isProvableT" $ do
-      it "Top"                                                $ isProvableT intui topP
+      it "Top"                                                $ isProvableT intui top
       it ("Double negation right: " ++ show doubleNegationR)  $ isProvableT intui doubleNegationR
       it ("Double negation of excluded middle " ++ show dnEM) $ isProvableT intui dnEM
       it (show phi)                                           $ isProvableT intui phi
@@ -147,7 +147,7 @@ main = hspec $ parallel $ do
 
     describe "K.isProvableZ" $ do
       describe "Propositional formulas" $ do
-        it "Top"                                                $ isProvableZ k topM
+        it "Top"                                                $ isProvableZ k top
         it ("Double negation: " ++ show doubleNegation)         $ isProvableZ k $ pTom doubleNegation
         it ("Double negation right: " ++ show doubleNegationR)  $ isProvableZ k $ pTom doubleNegationR
         it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableZ k $ pTom excludedMiddle
@@ -202,7 +202,7 @@ main = hspec $ parallel $ do
 
     describe "K.isProvableT" $ do
       describe "Propositional formulas" $ do
-        it "Top"                                                $ isProvableT k topM
+        it "Top"                                                $ isProvableT k top
         it ("Double negation: " ++ show doubleNegation)         $ isProvableT k $ pTom doubleNegation
         it ("Double negation right: " ++ show doubleNegationR)  $ isProvableT k $ pTom doubleNegationR
         it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableT k $ pTom excludedMiddle
@@ -258,7 +258,7 @@ main = hspec $ parallel $ do
 
     describe "K4.isProvableZ" $ do
       describe "Propositional formulas" $ do
-        it "Top"                                                $ isProvableZ kfour topM
+        it "Top"                                                $ isProvableZ kfour top
         it ("Double negation: " ++ show doubleNegation)         $ isProvableZ kfour$ pTom doubleNegation
         it ("Double negation right: " ++ show doubleNegationR)  $ isProvableZ kfour $ pTom doubleNegationR
         it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableZ kfour $ pTom excludedMiddle
@@ -313,7 +313,7 @@ main = hspec $ parallel $ do
 
     describe "K4.isProvableT" $ do
       describe "Propositional formulas" $ do
-        it "Top"                                                $ isProvableT kfour topM
+        it "Top"                                                $ isProvableT kfour top
         it ("Double negation: " ++ show doubleNegation)         $ isProvableT kfour$ pTom doubleNegation
         it ("Double negation right: " ++ show doubleNegationR)  $ isProvableT kfour $ pTom doubleNegationR
         it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableT kfour $ pTom excludedMiddle
@@ -686,7 +686,7 @@ main = hspec $ parallel $ do
 -- S4
     describe "S4.isProvableZ" $ do
       describe "Propositional formulas" $ do
-        it "Top"                                                $ isProvableZ sfour topM
+        it "Top"                                                $ isProvableZ sfour top
         it ("Double negation: " ++ show doubleNegation)         $ isProvableZ sfour$ pTom doubleNegation
         it ("Double negation right: " ++ show doubleNegationR)  $ isProvableZ sfour $ pTom doubleNegationR
         it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableZ sfour $ pTom excludedMiddle
@@ -741,7 +741,7 @@ main = hspec $ parallel $ do
 
     describe "S4.isProvableT" $ do
       describe "Propositional formulas" $ do
-        it "Top"                                                $ isProvableT sfour topM
+        it "Top"                                                $ isProvableT sfour top
         it ("Double negation: " ++ show doubleNegation)         $ isProvableT sfour$ pTom doubleNegation
         it ("Double negation right: " ++ show doubleNegationR)  $ isProvableT sfour $ pTom doubleNegationR
         it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableT sfour $ pTom excludedMiddle
@@ -797,7 +797,7 @@ main = hspec $ parallel $ do
 
     describe "GL.isProvableZ" $ do
       describe "Propositional formulas" $ do
-        it "Top"                                                $ isProvableZ gl topM
+        it "Top"                                                $ isProvableZ gl top
         it ("Double negation: " ++ show doubleNegation)         $ isProvableZ gl$ pTom doubleNegation
         it ("Double negation right: " ++ show doubleNegationR)  $ isProvableZ gl $ pTom doubleNegationR
         it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableZ gl $ pTom excludedMiddle
@@ -852,7 +852,7 @@ main = hspec $ parallel $ do
 
     describe "GL.isProvableT" $ do
       describe "Propositional formulas" $ do
-        it "Top"                                                $ isProvableT gl topM
+        it "Top"                                                $ isProvableT gl top
         it ("Double negation: " ++ show doubleNegation)         $ isProvableT gl$ pTom doubleNegation
         it ("Double negation right: " ++ show doubleNegationR)  $ isProvableT gl $ pTom doubleNegationR
         it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableT gl $ pTom excludedMiddle
@@ -970,7 +970,7 @@ main = hspec $ parallel $ do
 
     conCheck [("K", k), ("K4", kfour), ("S4",sfour), ("GL",gl), ("T", t), ("D", d), ("D4", dfour)]
 
-    agreeTestTranslated classical intui (negP . negP)
+    agreeTestTranslated classical intui (neg . neg)
     agreeTestTranslated classical k pTom
     agreeTestTranslated classical kfour pTom
     agreeTestTranslated classical sfour pTom
@@ -989,22 +989,6 @@ main = hspec $ parallel $ do
     containTest dfour sfour
 
     agreeTestTranslated intui sfour translation
-
--- | This formula type contains propositional logic.
-class PropLog f where
-  neg :: f -> f
-  con :: f -> f ->f
-  dis :: f -> f ->f
-
-instance PropLog FormP where
-  neg = negP
-  dis = DisP
-  con = ConP
-
-instance PropLog FormM where
-  neg = negM
-  dis = DisM
-  con = ConM
 
 conCheck :: (Arbitrary f, Show f, Ord f, PropLog f) => [(String, Logic f)] -> SpecWith ()
 conCheck = mapM_ $ \ (s,l) -> do

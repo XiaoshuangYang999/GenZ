@@ -4,9 +4,10 @@ import qualified Data.Set as Set
 import Data.List as List
 import General
 import K
+import FormM
 
 t :: Logic FormM
-t = Log { safeRules   = [leftBotM, isAxiomM, additionRule safeML,trule]
+t = Log { safeRules   = [leftBot, isAxiom, additionRule safeML,trule]
         , unsafeRules = [krule]}
 
 -- | The T box rule. Involve local loopcheck

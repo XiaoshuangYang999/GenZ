@@ -5,9 +5,10 @@ import qualified Data.Set as Set
 
 import General
 import Basics
+import FormP
 
 intui :: Logic FormP
-intui = Log { safeRules   = [leftBotP, isAxiomP, additionRule safeIPL]
+intui = Log { safeRules   = [leftBot, isAxiom, additionRule safeIPL]
             , unsafeRules = [additionRuleNoLoop unsafeIPL] }
 
 -- | Safe rules

@@ -7,7 +7,7 @@ import Data.String( IsString(..) )
 
 import General.Token
 import General.Lex
-
+import FormP
 import General
 }
 
@@ -37,14 +37,14 @@ import General
 
 %%
 
-FormP : TOP { topP }
+FormP : TOP { top }
      | BOT { BotP }
      | '(' FormP ')' { $2 }
-     | '~' FormP { negP $2 }
+     | '~' FormP { neg $2 }
      | FormP '=>'  FormP { ImpP $1 $3 }
      | FormP '&'   FormP { ConP $1 $3 }
      | FormP '|'   FormP { DisP $1 $3 }
-     | FormP '<->' FormP { iffP $1 $3 }
+     | FormP '<->' FormP { iff $1 $3 }
      | STR { AtP $1 }
 
 {
@@ -63,7 +63,7 @@ scanParseSafe pfunc input =
       Left pos -> Left pos
       Right x  -> Right x
 
-instance IsString General.FormP where
+instance IsString FormP where
   fromString s = case parseFormP (alexScanTokens s) of
     Left e  -> error ("Error at " ++ show e ++ " when parsing " ++ s ++ " \n")
     Right f -> f

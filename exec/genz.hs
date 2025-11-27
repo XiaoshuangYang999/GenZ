@@ -20,7 +20,7 @@ main = do
   case parseFormM (alexScanTokens input) of
     Left e -> putStrLn $ "Parse error at" ++ show e
     Right f -> do
-      r <- timeout limit (evaluate $ myIsProvable myLogic (negM f))
+      r <- timeout limit (evaluate $ myIsProvable myLogic (neg f))
       case r of
         Nothing -> putStrLn "Timeout"
         Just b  -> print b

@@ -3,9 +3,10 @@ module GL (gl) where
 import qualified Data.Set as Set
 import K
 import General
+import FormM
 
 gl :: Logic FormM
-gl = Log { safeRules   = [leftBotM, isAxiomM, isCycle, replaceRule safeML]
+gl = Log { safeRules   = [leftBot, isAxiom, isCycle, replaceRule safeML]
          , unsafeRules = [fourrule] }
 
 isCycle :: Rule FormM

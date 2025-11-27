@@ -7,7 +7,7 @@ import Data.String( IsString(..) )
 
 import General.Token
 import General.Lex
-
+import FormM
 import General
 }
 
@@ -45,22 +45,22 @@ import General
 
 %%
 
-FormM : TOP { topM }
+FormM : TOP { top }
      | BOT { BotM }
      | '(' FormM ')' { $2 }
-     | '~' FormM { negM $2 }
+     | '~' FormM { neg $2 }
      | FormM '=>'  FormM { ImpM $1 $3 }
      | FormM '&'   FormM { ConM $1 $3 }
      | FormM '|'   FormM { DisM $1 $3 }
-     | FormM '<->' FormM { iffM $1 $3 }
+     | FormM '<->' FormM { iff $1 $3 }
      | STR { AtM $1 }
      -- TODO multi-modal?
      | '[]' FormM { Box $2 }
      | '[' ']' FormM { Box $3 }
      | '[' STR ']' FormM { Box $4 }
-     | '<>' FormM { diaM $2 }
-     | '<' '>' FormM { diaM $3 }
-     | '<' STR '>' FormM { diaM $4 }
+     | '<>' FormM { dia $2 }
+     | '<' '>' FormM { dia $3 }
+     | '<' STR '>' FormM { dia $4 }
 
 {
 type ParseResult a = Either (Int,Int) a
@@ -78,7 +78,7 @@ scanParseSafe pfunc input =
       Left pos -> Left pos
       Right x  -> Right x
 
-instance IsString General.FormM where
+instance IsString FormM where
   fromString s = case parseFormM (alexScanTokens s) of
     Left e  -> error ("Error at " ++ show e ++ " when parsing " ++ s ++ " \n")
     Right f -> f

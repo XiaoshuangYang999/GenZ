@@ -4,9 +4,10 @@ import qualified Data.Set as Set
 
 import Basics
 import General
+import FormM
 
 k :: Logic FormM
-k = Log { safeRules   = [leftBotM, isAxiomM, replaceRule safeML]
+k = Log { safeRules   = [leftBot, isAxiom, replaceRule safeML]
         , unsafeRules = [krule] }
 
 -- | Propositional rules for Modal Logic.

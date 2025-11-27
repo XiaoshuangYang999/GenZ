@@ -369,137 +369,17 @@ instance (Show f, TeX f, Ord f) => TeX (Proof f) where
 
 type Atom = String
 
--- | Propositional Formulas
-data FormP = BotP | AtP Atom | ConP FormP FormP | DisP FormP FormP | ImpP FormP FormP
-  deriving (Eq,Ord,Generic)
-
-isatomP :: FormP -> Bool
-isatomP (AtP _) = True
-isatomP _ = False
+-- | This formula type contains propositional logic.
+class PropLog f where
+  neg :: f -> f
+  con :: f -> f ->f
+  dis :: f -> f ->f
+  top :: f
+  iff :: f -> f -> f
+  isAtom :: f -> Bool
+  isAxiom :: Rule f
+  leftBot :: Rule f
 
 swap :: Either a b -> Either b a
 swap (Left x) = Right x
 swap (Right x) = Left x
-
-isAxiomP :: Rule FormP
-isAxiomP _ fs _ = [ ("ax", [])
-                  | any (\f -> swap f `Set.member` fs) fs ]
-
-leftBotP :: Rule FormP
-leftBotP _ fs _ = [ ("⊥L", []) | Left BotP `Set.member` fs ]
-
-negP :: FormP -> FormP
-negP f = ImpP f BotP
-
-topP :: FormP
-topP = negP BotP
-
-iffP :: FormP -> FormP -> FormP
-iffP f g = ConP (ImpP f g) (ImpP g f)
-
-instance Show FormP where
-  show BotP       = "⊥"
-  show (AtP a)    = a
-  show (ConP f g) = "(" ++ show f ++ " ∧ " ++ show g ++ ")"
-  show (DisP f g) = "(" ++ show f ++ " v " ++ show g ++ ")"
-  show (ImpP f g) = "(" ++ show f ++ " → " ++ show g ++ ")"
-
-instance TeX FormP where
-  tex BotP       = "\\bot"
-  tex (AtP ('p':s)) = "p_{" ++ s ++ "}"
-  tex (AtP a)    = a
-  tex (ConP f g) = "(" ++ tex f ++ " \\land " ++ tex g ++ ")"
-  tex (DisP f g) = "(" ++ tex f ++ " \\lor " ++ tex g ++ ")"
-  tex (ImpP f g) = "(" ++ tex f ++ " \\to " ++ tex g ++ ")"
-
-instance Arbitrary FormP where
-  arbitrary = sized genForm where
-    factor = 2
-    genForm 0 = oneof [ pure BotP, AtP <$> elements (map return "pqrst") ]
-    genForm 1 = AtP <$> elements (map return "pqrst")
-    genForm n = oneof
-      [ pure BotP
-      , AtP <$> elements (map return "pqrst")
-      , ImpP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
-      , ConP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
-      , DisP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
-      ]
-  shrink = nub . genericShrink
-
--- * The Modal Language
-
-data FormM = BotM | AtM Atom | ConM FormM FormM | DisM FormM FormM | ImpM FormM FormM | Box FormM
-  deriving (Eq,Ord,Generic)
-
-isatomM :: FormM -> Bool
-isatomM (AtM _) = True
-isatomM _ = False
-
-isAxiomM :: Rule FormM
-isAxiomM _ fs _ = [ ("ax", [])
-                  | any (\f -> swap f `Set.member` fs) fs ]
-
-leftBotM :: Rule FormM
-leftBotM _ fs _ = [ ("L⊥", [])
-                  | Left BotM `Set.member` fs ]
-
-negM :: FormM -> FormM
-negM f = ImpM f BotM
-
-topM :: FormM
-topM = negM BotM
-
-iffM :: FormM -> FormM -> FormM
-iffM f g = ConM (ImpM f g) (ImpM g f)
-
-diaM :: FormM -> FormM
-diaM f = negM $ Box $ negM f
-
-instance Show FormM where
-  show BotM       = "⊥"
-  show (AtM a)    = a
-  show (ConM f g) = "(" ++ show f ++ " ∧ " ++ show g ++ ")"
-  show (DisM f g) = "(" ++ show f ++ " v " ++ show g ++ ")"
-  show (ImpM f g) = "(" ++ show f ++ " → " ++ show g ++ ")"
-  show (Box f)    = "☐" ++ show f
-
-instance TeX FormM where
-  tex BotM       = "\\bot"
-  tex (AtM ('p':s)) = "p_{" ++ s ++ "}"
-  tex (AtM a)    = a
-  tex (ConM f g) = "(" ++ tex f ++ " \\land " ++ tex g ++ ")"
-  tex (DisM f g) = "(" ++ tex f ++ " \\lor " ++ tex g ++ ")"
-  tex (ImpM f g) = "(" ++ tex f ++ " \\to " ++ tex g ++ ")"
-  tex (Box f)    = " \\Box " ++ tex f
-
-instance Arbitrary FormM where
-  arbitrary = sized genForm where
-    factor = 2
-    genForm 0 = oneof [ pure BotM, AtM <$> elements (map return "pqrst")]
-    genForm 1 = AtM <$> elements (map return "pqrst")
-    genForm n = oneof
-      [ pure BotM
-      , AtM <$> elements (map return "pqrst")
-      , ImpM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
-      , ConM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
-      , DisM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
-      , Box <$> genForm (n `div` factor)
-      ]
-  shrink = nub . genericShrink
-
--- * Embedding Propositional language into Modal language
-
-pTom :: FormP -> FormM
-pTom BotP = BotM
-pTom (AtP x) = AtM x
-pTom (ConP x y) = ConM (pTom x) (pTom y)
-pTom (DisP x y) = DisM (pTom x) (pTom y)
-pTom (ImpP x y) = ImpM (pTom x) (pTom y)
-
--- The Gödel–McKinsey–Tarski Translation
-translation :: FormP -> FormM
-translation BotP = BotM
-translation (AtP x) = Box $ AtM x
-translation (ConP x y) = ConM (translation x) (translation y)
-translation (DisP x y) = DisM (translation x) (translation y)
-translation (ImpP x y) = Box $ ImpM (translation x) (translation y)

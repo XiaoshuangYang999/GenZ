@@ -1,14 +1,65 @@
+{-# LANGUAGE DeriveGeneric, FlexibleInstances #-}
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
-module MForm where
+module FormM where
 
-import General
-import PForm
+import qualified Data.Set as Set
+import GHC.Generics
+import Test.QuickCheck
 import Data.List as List
--- Added temporarily for ghci test purpose
--- import K
--- import K4
--- import S4
--- import GL
+import General
+import FormP
+
+-- * The Modal Language
+
+data FormM = BotM | AtM Atom | ConM FormM FormM | DisM FormM FormM | ImpM FormM FormM | Box FormM
+  deriving (Eq,Ord,Generic)
+
+instance PropLog FormM where
+  neg f = ImpM f BotM
+  dis = DisM
+  con = ConM
+  top = neg BotM
+  iff f g = ConM (ImpM f g) (ImpM g f)
+  isAtom (AtM _) = True
+  isAtom _ = False
+  isAxiom _ fs _ = [ ("ax", [])
+                  | any (\f -> swap f `Set.member` fs) fs ]
+  leftBot _ fs _ = [ ("⊥L", []) | Left BotM `Set.member` fs ]
+
+dia :: FormM -> FormM
+dia f = neg $ Box $ neg f
+
+instance Show FormM where
+  show BotM       = "⊥"
+  show (AtM a)    = a
+  show (ConM f g) = "(" ++ show f ++ " ∧ " ++ show g ++ ")"
+  show (DisM f g) = "(" ++ show f ++ " v " ++ show g ++ ")"
+  show (ImpM f g) = "(" ++ show f ++ " → " ++ show g ++ ")"
+  show (Box f)    = "☐" ++ show f
+
+instance TeX FormM where
+  tex BotM       = "\\bot"
+  tex (AtM ('p':s)) = "p_{" ++ s ++ "}"
+  tex (AtM a)    = a
+  tex (ConM f g) = "(" ++ tex f ++ " \\land " ++ tex g ++ ")"
+  tex (DisM f g) = "(" ++ tex f ++ " \\lor " ++ tex g ++ ")"
+  tex (ImpM f g) = "(" ++ tex f ++ " \\to " ++ tex g ++ ")"
+  tex (Box f)    = " \\Box " ++ tex f
+
+instance Arbitrary FormM where
+  arbitrary = sized genForm where
+    factor = 2
+    genForm 0 = oneof [ pure BotM, AtM <$> elements (map return "pqrst")]
+    genForm 1 = AtM <$> elements (map return "pqrst")
+    genForm n = oneof
+      [ pure BotM
+      , AtM <$> elements (map return "pqrst")
+      , ImpM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
+      , ConM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
+      , DisM <$> genForm (n `div` factor) <*> genForm (n `div` factor)
+      , Box <$> genForm (n `div` factor)
+      ]
+  shrink = nub . genericShrink
 
 a1,b1,c1,d1,e1 :: FormM
 [a1,b1,c1,d1,e1] = map (AtM . return) "12345"
@@ -33,7 +84,7 @@ lobaxiom = ImpM (Box (ImpM (Box a1) a1)) (Box a1)
 
 -- Holds in D, D4, T, S4, S5
 consistency :: FormM
-consistency = negM . Box $ BotM
+consistency = neg . Box $ BotM
 
 -- Holds in T, S4
 density :: FormM
@@ -42,7 +93,7 @@ density = ImpM (Box (Box a1)) (Box a1)
 -- The d axiom
 -- Holds in D, D4, T, S4
 seriality :: FormM
-seriality = ImpM (Box a1) (diaM a1)
+seriality = ImpM (Box a1) (dia a1)
 
 -- Holds in all modal logics
 f1 :: FormM
@@ -60,7 +111,7 @@ boxes 0 f = f
 boxes n f = Box (boxes (n-1) f)
 
 boxesTop :: Int -> FormM
-boxesTop n = boxes n topM
+boxesTop n = boxes n top
 
 boxesBot :: Int -> FormM
 boxesBot n = boxes n BotM
@@ -93,7 +144,23 @@ extraAtK n = ImpM (Box (List.foldr ImpM (AtM "1") (listOfAt n ++ [AtM "2"])))
 
 -- Bench formula for S4. Not provable
 negBoxes :: Int -> FormM
-negBoxes n = negM $ Box $ negM $ boxes n a1
+negBoxes n = neg $ Box $ neg $ boxes n a1
+
+-- * Embedding Propositional language into Modal language
+pTom :: FormP -> FormM
+pTom BotP = BotM
+pTom (AtP x) = AtM x
+pTom (ConP x y) = ConM (pTom x) (pTom y)
+pTom (DisP x y) = DisM (pTom x) (pTom y)
+pTom (ImpP x y) = ImpM (pTom x) (pTom y)
+
+-- The Gödel–McKinsey–Tarski Translation
+translation :: FormP -> FormM
+translation BotP = BotM
+translation (AtP x) = Box $ AtM x
+translation (ConP x y) = ConM (translation x) (translation y)
+translation (DisP x y) = DisM (translation x) (translation y)
+translation (ImpP x y) = Box $ ImpM (translation x) (translation y)
 
 propFormulasM :: [(String, Int -> FormM)]
 propFormulasM =  map (fmap (pTom .)) allFormulasP

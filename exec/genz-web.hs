@@ -16,6 +16,8 @@ import System.Environment (lookupEnv)
 import Text.Read (readMaybe)
 
 import General
+import FormP
+import FormM
 import General.Lex
 import FormM.Parse (parseFormM)
 import FormP.Parse (parseFormP)

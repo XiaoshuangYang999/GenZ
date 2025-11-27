@@ -4,8 +4,9 @@ import General
 import K
 import D
 import K4
+import FormM
 
 dfour :: Logic FormM
-dfour = Log { safeRules   = [leftBotM, isAxiomM, replaceRule safeML]
+dfour = Log { safeRules   = [leftBot, isAxiom, replaceRule safeML]
             , unsafeRules = [fourrule,drule]}
 -- Global and local loopchecks needed

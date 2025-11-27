@@ -50,12 +50,12 @@ main = do
     Left e -> print e
     Right f -> do
       putStr "GenZ: "
-      r <- timeout limit (evaluate $ isProvableZ sfour (negM f))
+      r <- timeout limit (evaluate $ isProvableZ sfour (neg f))
       case r of
         Nothing -> putStrLn "Timeout"
         Just b  -> print b
       putStr "GenT: "
-      r2 <- timeout limit (evaluate $ isProvableT sfour (negM f))
+      r2 <- timeout limit (evaluate $ isProvableT sfour (neg f))
       case r2 of
         Nothing -> putStrLn "Timeout"
         Just b  -> print b

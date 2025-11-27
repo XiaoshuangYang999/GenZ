@@ -1,27 +1,79 @@
-{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
-module PForm where
 
+{-# LANGUAGE DeriveGeneric, FlexibleInstances #-}
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
+{-# LANGUAGE InstanceSigs #-}
+module FormP where
+
+import Data.List as List
+import qualified Data.Set as Set
+import GHC.Generics
+import Test.QuickCheck
 import General
 
-top,o,p,q,r :: FormP
-top = negP BotP
+-- | Propositional Formulas
+data FormP = BotP | AtP Atom | ConP FormP FormP | DisP FormP FormP | ImpP FormP FormP
+  deriving (Eq,Ord,Generic)
+
+instance PropLog FormP where
+  neg f = ImpP f BotP
+  dis :: FormP -> FormP -> FormP
+  dis = DisP
+  con = ConP
+  top = neg BotP
+  iff f g = ConP (ImpP f g) (ImpP g f)
+  isAtom (AtP _) = True
+  isAtom _ = False
+  isAxiom _ fs _ = [ ("ax", [])
+                  | any (\f -> swap f `Set.member` fs) fs ]
+  leftBot _ fs _ = [ ("⊥L", []) | Left BotP `Set.member` fs ]
+
+instance Show FormP where
+  show BotP       = "⊥"
+  show (AtP a)    = a
+  show (ConP f g) = "(" ++ show f ++ " ∧ " ++ show g ++ ")"
+  show (DisP f g) = "(" ++ show f ++ " v " ++ show g ++ ")"
+  show (ImpP f g) = "(" ++ show f ++ " → " ++ show g ++ ")"
+
+instance TeX FormP where
+  tex BotP       = "\\bot"
+  tex (AtP ('p':s)) = "p_{" ++ s ++ "}"
+  tex (AtP a)    = a
+  tex (ConP f g) = "(" ++ tex f ++ " \\land " ++ tex g ++ ")"
+  tex (DisP f g) = "(" ++ tex f ++ " \\lor " ++ tex g ++ ")"
+  tex (ImpP f g) = "(" ++ tex f ++ " \\to " ++ tex g ++ ")"
+
+instance Arbitrary FormP where
+  arbitrary = sized genForm where
+    factor = 2
+    genForm 0 = oneof [ pure BotP, AtP <$> elements (map return "pqrst") ]
+    genForm 1 = AtP <$> elements (map return "pqrst")
+    genForm n = oneof
+      [ pure BotP
+      , AtP <$> elements (map return "pqrst")
+      , ImpP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
+      , ConP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
+      , DisP <$> genForm (n `div` factor) <*> genForm (n `div` factor)
+      ]
+  shrink = nub . genericShrink
+
+o,p,q,r :: FormP
 [o,p,q,r] = map (AtP . return) "opqr"
 
 -- | Contradiction
 contradiction :: FormP
-contradiction = ConP p (negP p)
+contradiction = ConP p (neg p)
 
 -- | Excluded middle
 excludedMiddle :: FormP
-excludedMiddle = DisP p (negP p)
+excludedMiddle = DisP p (neg p)
 
 -- | Double negation
 doubleNegation :: FormP
-doubleNegation = iffP (negP (negP p)) p
+doubleNegation = iff (neg (neg p)) p
 
 -- | Right Double negation
 doubleNegationR :: FormP
-doubleNegationR = ImpP p (negP (negP p))
+doubleNegationR = ImpP p (neg (neg p))
 
 -- | Pierce's Law
 pierce :: FormP
@@ -29,7 +81,7 @@ pierce = ImpP (ImpP (ImpP p q) p) p
 
 -- | Double negation of excluded middle
 dnEM :: FormP
-dnEM = negP $ negP excludedMiddle
+dnEM = neg $ neg excludedMiddle
 
 -- | List of tests
 t1,t2,t3,t4,t5,t6:: FormP
@@ -37,14 +89,13 @@ t1,t2,t3,t4,t5,t6:: FormP
                 , ImpP (ImpP p (ImpP p q)) (ImpP p q)
                 , ImpP (ImpP pierce q) q
                 , ConP r excludedMiddle
-                , negP $ negP $ ImpP p (ImpP q r)
-                , negP $ negP $ DisP p $ negP q
+                , neg $ neg $ ImpP p (ImpP q r)
+                , neg $ neg $ DisP p $ neg q
                 ]
 
 -- True in IPL
 phi :: FormP
 phi = ImpP (ConP p (ImpP p q)) (ImpP (ImpP p q) q)
-
 
 -- * For benchmarks
 -- False
@@ -61,16 +112,16 @@ disBotL :: Int -> FormP
 disBotL k = foldl DisP BotP (replicate k BotP )
 -- True
 conTopR :: Int -> FormP
-conTopR k = foldr ConP topP (replicate k topP )
+conTopR k = foldr ConP top (replicate k top )
 -- True
 conTopL :: Int -> FormP
-conTopL k = foldl ConP topP (replicate k topP )
+conTopL k = foldl ConP top (replicate k top )
 -- True
 disTopR :: Int -> FormP
-disTopR k = foldr DisP topP (replicate k topP )
+disTopR k = foldr DisP top (replicate k top )
 -- True
 disTopL :: Int -> FormP
-disTopL k = foldl DisP topP (replicate k topP )
+disTopL k = foldl DisP top (replicate k top )
 -- True in CPL, false in IPL
 conPieR :: Int -> FormP
 conPieR k = foldr ConP pierce (replicate (2*k) pierce )
@@ -93,7 +144,6 @@ disPhiPieL k = foldl DisP phi (replicate (2*k) pierce )
 phiImpPie :: Int -> FormP
 phiImpPie 0 = pierce
 phiImpPie n = ImpP phi $ phiImpPie (n-1)
-
 
 allFormulasP :: [(String, Int -> FormP)]
 allFormulasP =

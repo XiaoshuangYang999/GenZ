@@ -4,9 +4,10 @@ import qualified Data.Set as Set
 
 import General
 import K
+import FormM
 
 kfour :: Logic FormM
-kfour = Log { safeRules   = [leftBotM, isAxiomM, replaceRule safeML]
+kfour = Log { safeRules   = [leftBot, isAxiom, replaceRule safeML]
             , unsafeRules = [fourrule] }
 
 -- | The 4 box rule.
