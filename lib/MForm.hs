@@ -19,7 +19,7 @@ a1,b1,c1,d1,e1 :: FormM
 kaxiom :: FormM
 kaxiom = ImpM (Box (ImpM a1 b1)) (ImpM (Box a1) (Box b1))
 
--- Holds in K4,S4
+-- Holds in D4,K4,S4
 fouraxiom :: FormM
 fouraxiom = ImpM (Box a1) (Box (Box a1))
 
@@ -31,7 +31,7 @@ taxiom = ImpM (Box a1) a1
 lobaxiom :: FormM
 lobaxiom = ImpM (Box (ImpM (Box a1) a1)) (Box a1)
 
--- Holds in D, T, S4, S5
+-- Holds in D, D4, T, S4, S5
 consistency :: FormM
 consistency = negM . Box $ BotM
 
@@ -39,7 +39,8 @@ consistency = negM . Box $ BotM
 density :: FormM
 density = ImpM (Box (Box a1)) (Box a1)
 
--- Holds in D, T, S4
+-- The d axiom
+-- Holds in D, D4, T, S4
 seriality :: FormM
 seriality = ImpM (Box a1) (diaM a1)
 
@@ -64,11 +65,11 @@ boxesTop n = boxes n topM
 boxesBot :: Int -> FormM
 boxesBot n = boxes n BotM
 
--- Holds in K4, S4, GL
+-- Holds in D4, K4, S4, GL (in logics that have 4)
 boxToMoreBox :: Int -> FormM
 boxToMoreBox n = ImpM (boxes n a1) (boxes (n + 1) a1)
 
--- Holds in T,S4
+-- Holds in T,S4 (in logics that have T)
 boxToFewerBox :: Int -> FormM
 boxToFewerBox n = ImpM (boxes (n + 1) a1) (boxes n a1)
 

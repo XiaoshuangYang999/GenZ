@@ -13,6 +13,7 @@ import GL
 import S4
 import T
 import D
+import D4
 import PForm
 import MForm
 
@@ -577,6 +578,111 @@ main = hspec $ parallel $ do
         it "boxToMoreBox 5"     $ not $ isProvableT d $ boxToMoreBox 5
         it "boxToFewerBox 10"   $ not $ isProvableZ d $ boxToFewerBox 5
 
+-- New tests for D4  
+    describe "D4.isProvableZ" $ do
+      describe "Propositional formulas" $ do
+        it "Top"                                                $ isProvableZ dfour $ pTom doubleNegation
+        it ("Double negation right: " ++ show doubleNegationR)  $ isProvableZ dfour $ pTom doubleNegationR
+        it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableZ dfour $ pTom excludedMiddle
+        it ("Pierce's law: " ++ show pierce)                    $ isProvableZ dfour $ pTom pierce
+        it ("Double negation of excluded middle " ++ show dnEM) $ isProvableZ dfour $ pTom dnEM
+        it (show phi)                                           $ isProvableZ dfour $ pTom phi
+        it (show t1)                                            $ isProvableZ dfour $ pTom t1
+        it (show t2)                                            $ isProvableZ dfour $ pTom t2
+        it (show t3)                                            $ isProvableZ dfour $ pTom t3
+        it "conTopR 10"                                         $ isProvableZ dfour $ pTom $ conTopR 10
+        it "conTopL 10"                                         $ isProvableZ dfour $ pTom $ conTopL 10
+        it "disTopR 10"                                         $ isProvableZ dfour $ pTom $ disTopR 10
+        it "disTopL 10"                                         $ isProvableZ dfour $ pTom $ disTopL 10
+        it "conPieR 10"                                         $ isProvableZ dfour $ pTom $ conPieR 10
+        it "conPieL 10"                                         $ isProvableZ dfour $ pTom $ conPieL 10
+        it "disPieR 10"                                         $ isProvableZ dfour $ pTom $ disPieR 10
+        it "disPieL 10"                                         $ isProvableZ dfour $ pTom $ disPieL 10
+        it "disPhiPieR 10"                                      $ isProvableZ dfour $ pTom $ disPhiPieR 10
+        it "disPhiPieL 10"                                      $ isProvableZ dfour $ pTom $ disPhiPieL 10
+        it "phiImpPie 10"                                       $ isProvableZ dfour $ pTom $ phiImpPie 10
+      describe "Modal formulas" $ do
+        it "k axiom"           $ isProvableZ dfour kaxiom 
+        it "4 axiom"           $ isProvableZ dfour fouraxiom      
+        it "Consistency"       $ isProvableZ dfour consistency
+        it "Seriality"         $ isProvableZ dfour seriality
+        it (show f1)           $ isProvableZ dfour f1
+        it "boxesTop 10"       $ isProvableZ dfour $ boxesTop 10
+        it "multiVerK 10"      $ isProvableZ dfour $ multiVerK 10
+        it "boxToMoreBox 5"    $ isProvableZ dfour $ boxToMoreBox 5
+    describe "not.D4.isProvableZ" $ do
+      describe "Propositional formulas" $ do
+        it "Bot"                $ not $ isProvableZ dfour BotM
+        it (show contradiction) $ not $ isProvableZ dfour $ pTom contradiction
+        it (show t4)            $ not $ isProvableZ dfour $ pTom t4
+        it (show t5)            $ not $ isProvableZ dfour $ pTom t5
+        it (show t6)            $ not $ isProvableZ dfour $ pTom t6
+        it "conBotR 10"         $ not $ isProvableZ dfour $ pTom $ conBotR 10
+        it "conBotL 10"         $ not $ isProvableZ dfour $ pTom $ conBotL 10
+        it "disBotR 10"         $ not $ isProvableZ dfour $ pTom $ disBotR 10
+        it "disBotL 10"         $ not $ isProvableZ dfour $ pTom $ disBotL 10
+      describe "Modal formulas" $ do
+        it "Lob axiom"          $ not $ isProvableZ dfour lobaxiom
+        it "t axiom"            $ not $ isProvableZ dfour taxiom
+        it "Density"            $ not $ isProvableZ dfour density
+        it (show f2)            $ not $ isProvableZ dfour f2
+        it "boxesBot 10"        $ not $ isProvableZ dfour $ boxesBot 10
+        it "extraAtK 10"        $ not $ isProvableZ dfour $ extraAtK 10
+        it "negBoxes 10"        $ not $ isProvableZ dfour $ negBoxes 10        
+        it "lobBoxes 10"        $ not $ isProvableZ dfour $ lobBoxes 10
+        it "boxToFewerBox 10"   $ not $ isProvableZ dfour $ boxToFewerBox 5
+    describe "D4.isProvableT" $ do
+      describe "Propositional formulas" $ do
+        it "Top"                                                $ isProvableT dfour $ pTom doubleNegation
+        it ("Double negation right: " ++ show doubleNegationR)  $ isProvableT dfour $ pTom doubleNegationR
+        it ("Excluded middle: " ++ show excludedMiddle)         $ isProvableT dfour $ pTom excludedMiddle
+        it ("Pierce's law: " ++ show pierce)                    $ isProvableT dfour $ pTom pierce
+        it ("Double negation of excluded middle " ++ show dnEM) $ isProvableT dfour $ pTom dnEM
+        it (show phi)                                           $ isProvableT dfour $ pTom phi
+        it (show t1)                                            $ isProvableT dfour $ pTom t1
+        it (show t2)                                            $ isProvableT dfour $ pTom t2
+        it (show t3)                                            $ isProvableT dfour $ pTom t3
+        it "conTopR 10"                                         $ isProvableT dfour $ pTom $ conTopR 10
+        it "conTopL 10"                                         $ isProvableT dfour $ pTom $ conTopL 10
+        it "disTopR 10"                                         $ isProvableT dfour $ pTom $ disTopR 10
+        it "disTopL 10"                                         $ isProvableT dfour $ pTom $ disTopL 10
+        it "conPieR 10"                                         $ isProvableT dfour $ pTom $ conPieR 10
+        it "conPieL 10"                                         $ isProvableT dfour $ pTom $ conPieL 10
+        it "disPieR 10"                                         $ isProvableT dfour $ pTom $ disPieR 10
+        it "disPieL 10"                                         $ isProvableT dfour $ pTom $ disPieL 10
+        it "disPhiPieR 10"                                      $ isProvableT dfour $ pTom $ disPhiPieR 10
+        it "disPhiPieL 10"                                      $ isProvableT dfour $ pTom $ disPhiPieL 10
+        it "phiImpPie 10"                                       $ isProvableT dfour $ pTom $ phiImpPie 10
+      describe "Modal formulas" $ do
+        it "k axiom"           $ isProvableT dfour kaxiom 
+        it "4 axiom"           $ isProvableT dfour fouraxiom      
+        it "Consistency"       $ isProvableT dfour consistency
+        it "Seriality"         $ isProvableT dfour seriality
+        it (show f1)           $ isProvableT dfour f1
+        it "boxesTop 10"       $ isProvableT dfour $ boxesTop 10
+        it "multiVerK 10"      $ isProvableT dfour $ multiVerK 10
+        it "boxToMoreBox 5"    $ isProvableT dfour $ boxToMoreBox 5
+    describe "not.D4.isProvableT" $ do
+      describe "Propositional formulas" $ do
+        it "Bot"                $ not $ isProvableT dfour BotM
+        it (show contradiction) $ not $ isProvableT dfour $ pTom contradiction
+        it (show t4)            $ not $ isProvableT dfour $ pTom t4
+        it (show t5)            $ not $ isProvableT dfour $ pTom t5
+        it (show t6)            $ not $ isProvableT dfour $ pTom t6
+        it "conBotR 10"         $ not $ isProvableT dfour $ pTom $ conBotR 10
+        it "conBotL 10"         $ not $ isProvableT dfour $ pTom $ conBotL 10
+        it "disBotR 10"         $ not $ isProvableT dfour $ pTom $ disBotR 10
+        it "disBotL 10"         $ not $ isProvableT dfour $ pTom $ disBotL 10
+      describe "Modal formulas" $ do
+        it "Lob axiom"          $ not $ isProvableT dfour lobaxiom
+        it "t axiom"            $ not $ isProvableT dfour taxiom
+        it "Density"            $ not $ isProvableT dfour density
+        it (show f2)            $ not $ isProvableT dfour f2
+        it "boxesBot 10"        $ not $ isProvableT dfour $ boxesBot 10
+        it "extraAtK 10"        $ not $ isProvableT dfour $ extraAtK 10
+        it "negBoxes 10"        $ not $ isProvableT dfour $ negBoxes 10        
+        it "lobBoxes 10"        $ not $ isProvableT dfour $ lobBoxes 10
+        it "boxToFewerBox 10"   $ not $ isProvableT dfour $ boxToFewerBox 5
 -- S4
     describe "S4.isProvableZ" $ do
       describe "Propositional formulas" $ do
@@ -817,6 +923,8 @@ main = hspec $ parallel $ do
         \ f -> discardAfter limit $ isProvableZ t f === isProvableT t f
       prop "In D" $
         \ f -> discardAfter limit $ isProvableZ d f === isProvableT d f
+      prop "In D4" $
+        \ f -> discardAfter limit $ isProvableZ dfour f === isProvableT dfour f
 
     describe "Proofs are at most binary" $ do
         let hasLeqTwoChildren (Node _ Nothing _) = True
@@ -853,10 +961,14 @@ main = hspec $ parallel $ do
           \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveZ d f
         prop "GenT for D" $
           \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveT d f
+        prop "GenZ for D4" $
+          \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveZ dfour f
+        prop "GenT for D4" $
+          \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveT dfour f
 
     conCheck [("CPL", classical), ("IPL", intui)]
 
-    conCheck [("K", k), ("K4", kfour), ("S4",sfour), ("GL",gl), ("T", t), ("D", d)]
+    conCheck [("K", k), ("K4", kfour), ("S4",sfour), ("GL",gl), ("T", t), ("D", d), ("D4", dfour)]
 
     agreeTestTranslated classical intui (negP . negP)
     agreeTestTranslated classical k pTom
@@ -865,7 +977,7 @@ main = hspec $ parallel $ do
     agreeTestTranslated classical gl pTom
     agreeTestTranslated classical t pTom
     agreeTestTranslated classical d pTom
-
+    agreeTestTranslated classical dfour pTom
 
     containTest k kfour
     containTest k sfour
@@ -873,6 +985,8 @@ main = hspec $ parallel $ do
     containTest t sfour
     containTest k d
     containTest d t
+    containTest d dfour
+    containTest dfour sfour
 
     agreeTestTranslated intui sfour translation
 
