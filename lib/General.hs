@@ -1,4 +1,4 @@
-{-# LANGUAGE InstanceSigs, DeriveGeneric, FlexibleInstances, LambdaCase #-}
+{-# LANGUAGE InstanceSigs, FlexibleInstances, LambdaCase #-}
 
 module General where
 
