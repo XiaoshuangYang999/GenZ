@@ -201,3 +201,20 @@ hards4FormulasM =
   [ ("boxToFewerBox", boxToFewerBox) -- T
   , ("lobBoxes", lobBoxes) -- F
   ]
+
+-- | Positive modal logic tests (in any ml)
+posModalTests :: [(String, FormM)]
+posModalTests = 
+      [ ("k axiom"          , kaxiom)                   
+      , (show f1            , f1)
+      , ("boxesTop 10"      , boxesTop 10)
+      , ("multiVerK 10"     , multiVerK 10)
+      ]
+
+-- | Negative modal logic tests (in any ml)
+negModalTests :: [(String, FormM)]
+negModalTests =
+      [ (show f2            , f2)
+      , ("negBoxes 10"      , negBoxes 10)
+      , ("boxesBot 10"      , boxesBot 10)
+      , ("extraAtK 10"      , extraAtK 10)]

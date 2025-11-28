@@ -167,3 +167,43 @@ allFormulasP =
 hardFormulasP :: [(String, Int -> FormP)]
 hardFormulasP =
    [ ("phiImpPie", phiImpPie) ]
+
+-- | Positive classical propositional logic tests
+posCPropTests :: [(String, FormP)]
+posCPropTests =
+      [ ( "Top"                                              , top )
+      , ( "Double negation: " ++ show doubleNegation         , doubleNegation )
+      , ( "Double negation right: " ++ show doubleNegationR  , doubleNegationR )
+      , ( "Excluded middle: " ++ show excludedMiddle         , excludedMiddle )
+      , ( "Pierce's law: " ++ show pierce                    , pierce )
+      , ( "Double negation of excluded middle " ++ show dnEM , dnEM )
+      , ( show phi                                           , phi )
+      , ( show t1                                            , t1 )
+      , ( show t2                                            , t2 )
+      , ( show t3                                            , t3 )
+      , ( "conTopR 10"                                       , conTopR 10 )
+      , ( "conTopL 10"                                       , conTopL 10 )
+      , ( "disTopR 10"                                       , disTopR 10 )
+      , ( "disTopL 10"                                       , disTopL 10 )
+      , ( "conPieR 10"                                       , conPieR 10 )
+      , ( "conPieL 10"                                       , conPieL 10 )
+      , ( "disPieR 10"                                       , disPieR 10 )
+      , ( "disPieL 10"                                       , disPieL 10 )
+      , ( "disPhiPieR 10"                                    , disPhiPieR 10 )
+      , ( "disPhiPieL 10"                                    , disPhiPieL 10 )
+      , ( "phiImpPie 10"                                     , phiImpPie 10 )
+      ]
+
+-- Negative classical propositional logic tests
+negCPropTests :: [(String, FormP)]
+negCPropTests =
+      [ ( "Bot"                , BotP)
+      , ( show contradiction   , contradiction)
+      , ( show t4              , t4)
+      , ( show t5              , t5)
+      , ( show t6              , t6)
+      , ( "conBotR 10"         , conBotR 10)
+      , ( "conBotL 10"         , conBotL 10)
+      , ( "disBotR 10"         , disBotR 10)
+      , ( "disBotL 10"         , disBotL 10)
+      ]
