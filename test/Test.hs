@@ -4,18 +4,19 @@ import Test.Hspec
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Data.Bifunctor
+
 import General
 import FormP
 import FormM
-import CPL
-import IPL
-import K
-import K4
-import GL
-import S4
-import T
-import D
-import D4
+import Logic.CPL
+import Logic.IPL
+import Logic.K
+import Logic.K4
+import Logic.GL
+import Logic.S4
+import Logic.T
+import Logic.D
+import Logic.D4
 
 -- | Set a time limit.
 -- Test cases will be discarded if they take more than 5 seconds.
@@ -46,7 +47,7 @@ conCheck = mapM_ $ \l -> do
     \ f g -> discardAfter limit $ (isProvableT l f && isProvableT l g) `implies` isProvableT l (con f g)
 
 containTest :: (Arbitrary f, Show f, Ord f, PropLog f) => Logic f -> Logic f -> SpecWith ()
-containTest l1 l2 = 
+containTest l1 l2 =
   describe ("What is provable in " ++ name l1 ++  " is also provable in " ++ name l2) $ do
     prop "GenZ" $
       \ f -> discardAfter limit $ isProvableZ l1 f `implies` isProvableZ l2 f
@@ -61,7 +62,7 @@ agreeTestTranslated l1 l2 tr = do
     \ f -> discardAfter limit $ isProvableT l1 f === isProvableT l2 (tr f)
 
 proverEqTest :: (Arbitrary f, Show f, Ord f, PropLog f) => Logic f -> SpecWith ()
-proverEqTest l = do      
+proverEqTest l = do
   prop (name l) $
         \ f -> discardAfter limit $ isProvableZ l f === isProvableT l f
 
@@ -97,7 +98,7 @@ main = hspec $ parallel $ do
       , ( show contradiction                                , contradiction)
       , ("Double negation: " ++ show doubleNegation         , doubleNegation)
       , ("Excluded middle: " ++ show excludedMiddle         , excludedMiddle)
-      , ("Pierce's law: " ++ show pierce                    , pierce)      
+      , ("Pierce's law: " ++ show pierce                    , pierce)
       , ( show t4                                           , t4)
       , ( show t5                                           , t5)
       , ( show t6                                           , t6)
@@ -111,8 +112,8 @@ main = hspec $ parallel $ do
       , ( "disPieL 10"                                      , disPieL 10)
       , ( "phiImpPie 10"                                    , phiImpPie 10)
       ]
-    testsFor k 
-              (map (Data.Bifunctor.second pTom) posCPropTests 
+    testsFor k
+              (map (Data.Bifunctor.second pTom) posCPropTests
                 ++  posModalTests)
               (map (Data.Bifunctor.second pTom) negCPropTests
                 ++  negModalTests
@@ -126,8 +127,8 @@ main = hspec $ parallel $ do
                     , ("boxToMoreBox 5"  , boxToMoreBox 5)
                     , ("boxToFewerBox 5"  , boxToFewerBox 5)
                     ])
-    testsFor kfour 
-              (map (Data.Bifunctor.second pTom) posCPropTests 
+    testsFor kfour
+              (map (Data.Bifunctor.second pTom) posCPropTests
                 ++  posModalTests
                 ++  [ ("4 axiom"          , fouraxiom)
                     , ("boxToMoreBox 5"  , boxToMoreBox 5)
@@ -142,10 +143,10 @@ main = hspec $ parallel $ do
                     , ("lobBoxes 5"       , lobBoxes 5)
                     , ("boxToFewerBox 5"   , boxToFewerBox 5)
                     ])
-    testsFor t 
-              (map (Data.Bifunctor.second pTom) posCPropTests 
+    testsFor t
+              (map (Data.Bifunctor.second pTom) posCPropTests
                 ++  posModalTests
-                ++  [ ("t axiom"           , taxiom)                    
+                ++  [ ("t axiom"           , taxiom)
                     , ("Consistency"       , consistency)
                     , ("Density"           , density)
                     , ("Seriality"         , seriality)
@@ -158,8 +159,8 @@ main = hspec $ parallel $ do
                     , ("lobBoxes 5"       , lobBoxes 5)
                     , ("boxToMoreBox 5"  , boxToMoreBox 5)
                     ])
-    testsFor d 
-              (map (Data.Bifunctor.second pTom) posCPropTests 
+    testsFor d
+              (map (Data.Bifunctor.second pTom) posCPropTests
                 ++  posModalTests
                 ++  [ ("Consistency"       , consistency)
                     , ("Seriality"         , seriality)
@@ -168,34 +169,34 @@ main = hspec $ parallel $ do
                 ++  negModalTests
                 ++  [ ("Lob axiom"         , lobaxiom)
                     , ("t axiom"           , taxiom)
-                    , ("4 axiom"          , fouraxiom)  
+                    , ("4 axiom"          , fouraxiom)
                     , ("Density"           , density)
                     , ("lobBoxes 5"       , lobBoxes 5)
                     , ("boxToMoreBox 5"  , boxToMoreBox 5)
                     , ("boxToFewerBox 5"   , boxToFewerBox 5)
                     ])
-    testsFor dfour 
-              (map (Data.Bifunctor.second pTom) posCPropTests 
-                ++  posModalTests
-                ++  [ ("4 axiom"          , fouraxiom) 
-                    , ("Consistency"       , consistency)
-                    , ("Seriality"         , seriality)
-                    , ("boxToMoreBox 5"  , boxToMoreBox 5)
-                    ])
-              (map (Data.Bifunctor.second pTom) negCPropTests
-                ++  negModalTests
-                ++  [ ("Lob axiom"         , lobaxiom)
-                    , ("t axiom"           , taxiom) 
-                    , ("Density"           , density)
-                    , ("lobBoxes 5"       , lobBoxes 5)
-                    , ("boxToFewerBox 5"   , boxToFewerBox 5)
-                    ])
-    testsFor sfour 
-              (map (Data.Bifunctor.second pTom) posCPropTests 
+    testsFor dfour
+              (map (Data.Bifunctor.second pTom) posCPropTests
                 ++  posModalTests
                 ++  [ ("4 axiom"          , fouraxiom)
-                    , ("t axiom"           , taxiom) 
-                    , ("Density"           , density) 
+                    , ("Consistency"       , consistency)
+                    , ("Seriality"         , seriality)
+                    , ("boxToMoreBox 5"  , boxToMoreBox 5)
+                    ])
+              (map (Data.Bifunctor.second pTom) negCPropTests
+                ++  negModalTests
+                ++  [ ("Lob axiom"         , lobaxiom)
+                    , ("t axiom"           , taxiom)
+                    , ("Density"           , density)
+                    , ("lobBoxes 5"       , lobBoxes 5)
+                    , ("boxToFewerBox 5"   , boxToFewerBox 5)
+                    ])
+    testsFor sfour
+              (map (Data.Bifunctor.second pTom) posCPropTests
+                ++  posModalTests
+                ++  [ ("4 axiom"          , fouraxiom)
+                    , ("t axiom"           , taxiom)
+                    , ("Density"           , density)
                     , ("Consistency"       , consistency)
                     , ("Seriality"         , seriality)
                     , ("boxToMoreBox 5"  , boxToMoreBox 5)
@@ -206,8 +207,8 @@ main = hspec $ parallel $ do
                 ++  [ ("Lob axiom"         , lobaxiom)
                     , ("lobBoxes 5"       , lobBoxes 5)
                     ])
-    testsFor gl 
-              (map (Data.Bifunctor.second pTom) posCPropTests 
+    testsFor gl
+              (map (Data.Bifunctor.second pTom) posCPropTests
                 ++  posModalTests
                 ++  [ ("4 axiom"          , fouraxiom)
                     , ("Lob axiom"         , lobaxiom)
@@ -271,13 +272,13 @@ main = hspec $ parallel $ do
 
     describe "f is provable in IPL iff its translation is provable in S4" $ do
       agreeTestTranslated intui sfour translation
-    
+
     describe "Modal logics contain tests" $ do
       containTest k kfour
-      containTest k d    
-      containTest d t    
-      containTest d dfour    
-      containTest t sfour   
+      containTest k d
+      containTest d t
+      containTest d dfour
+      containTest t sfour
       containTest dfour sfour
-      containTest kfour gl    
+      containTest kfour gl
       containTest kfour sfour

@@ -1,8 +1,8 @@
-module D where
+module Logic.D where
 
 import qualified Data.Set as Set
 import General
-import K
+import Logic.K
 import FormM
 
 d :: Logic FormM

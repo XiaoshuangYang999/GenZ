@@ -5,12 +5,12 @@ import Data.List
 import Weigh
 
 import General
-import IPL
-import K
-import K4
-import GL
-import CPL
-import S4
+import Logic.IPL
+import Logic.K
+import Logic.K4
+import Logic.GL
+import Logic.CPL
+import Logic.S4
 import FormM
 import FormP
 

@@ -16,12 +16,12 @@ import System.Directory
 import System.Environment (getArgs)
 
 import General
-import CPL
-import IPL
-import K
-import GL
-import K4
-import S4
+import Logic.CPL
+import Logic.IPL
+import Logic.K
+import Logic.GL
+import Logic.K4
+import Logic.S4
 import FormP
 import FormM
 

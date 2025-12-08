@@ -1,9 +1,9 @@
-module T where
+module Logic.T where
 
 import qualified Data.Set as Set
 import Data.List as List
 import General
-import K
+import Logic.K
 import FormM
 
 t :: Logic FormM

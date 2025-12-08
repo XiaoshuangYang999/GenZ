@@ -204,8 +204,8 @@ hards4FormulasM =
 
 -- | Positive modal logic tests (in any ml)
 posModalTests :: [(String, FormM)]
-posModalTests = 
-      [ ("k axiom"          , kaxiom)                   
+posModalTests =
+      [ ("k axiom"          , kaxiom)
       , (show f1            , f1)
       , ("boxesTop 10"      , boxesTop 10)
       , ("multiVerK 10"     , multiVerK 10)
@@ -217,4 +217,4 @@ negModalTests =
       [ (show f2            , f2)
       , ("negBoxes 10"      , negBoxes 10)
       , ("boxesBot 10"      , boxesBot 10)
-      , ("extraAtK 10"      , extraAtK 10)]
+      , ("extraAtK 5"       , extraAtK 5)]

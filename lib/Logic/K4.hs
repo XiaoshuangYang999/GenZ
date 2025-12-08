@@ -1,9 +1,9 @@
-module K4 where
+module Logic.K4 where
 
 import qualified Data.Set as Set
 
 import General
-import K
+import Logic.K
 import FormM
 
 kfour :: Logic FormM

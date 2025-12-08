@@ -8,7 +8,7 @@ import General.Lex
 import FormM.Parse
 
 -- TODO import multiple logics, qualified, add command line arg to choose it
-import S4
+import Logic.S4
 
 main :: IO ()
 main = do

@@ -1,9 +1,9 @@
-module D4 where
+module Logic.D4 where
 
 import General
-import K
-import D
-import K4
+import Logic.K
+import Logic.D
+import Logic.K4
 import FormM
 
 dfour :: Logic FormM

@@ -1,4 +1,4 @@
-module K where
+module Logic.K where
 
 import qualified Data.Set as Set
 

@@ -8,8 +8,8 @@ import General
 import General.Lex
 import FormM.Parse
 
-import K
-import S4
+import Logic.K as K
+import Logic.S4 as S4
 
 main :: IO ()
 main = do

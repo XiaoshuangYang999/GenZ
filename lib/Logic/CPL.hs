@@ -1,4 +1,4 @@
-module CPL (classical) where
+module Logic.CPL (classical) where
 
 import qualified Data.Set as Set
 

@@ -16,17 +16,14 @@ type Sequent f = Set (Either f f)
 
 type RuleName = String
 
+-- | A proof as a tree.
+-- The Bool flag should start as false and later turn true.
 data Proof f = Node (Sequent f) (Maybe (RuleName, [Proof f])) Bool
   deriving (Eq,Ord,Show)
--- always starts with false until turned true
 
--- Extract truth from a proof
+-- | Extract truth from a proof
 getTruth :: Proof f -> Bool
 getTruth (Node _ _ b) = b
-
--- Manipulate the parent truth
-allTrue :: [Proof f] -> Bool
-allTrue = all getTruth
 
 -- * Histories, Rules, Logics
 
@@ -77,6 +74,7 @@ instance HasProof ProofWithH where
 
 -- * Zip Proofs
 
+-- | Zipper version of the @Proof@ type.
 data ZipProof f = ZP (Proof f) (ZipPath f)
 -- only switch path when this branch is closed
 -- each sub-proof tree should remember whether it's closed
@@ -109,7 +107,7 @@ extendT l pt@(HP (h, Node fs Nothing _)) =
        , unsafeRules l ) of
   -- The safe rule r can be applied:
   (r:_ , _       ) ->
-    [ HP (h, Node fs (Just (therule, map proofOf ts)) $ allTrue $ map proofOf ts)
+    [ HP (h, Node fs (Just (therule, map proofOf ts)) $ all (getTruth . proofOf) ts)
     | (therule, result) <- r h fs f
     , ts <- pickOneOfEach [ extendT l (HP (fs : h, Node newSeqs Nothing False))
                           | newSeqs <- result ] ]
@@ -124,7 +122,7 @@ extendT l pt@(HP (h, Node fs Nothing _)) =
         where
           gs = Set.filter (\g -> isApplicable h fs g r) fs
           nps = concat $ List.concatMap tryExtendT gs
-          tryExtendT g = [ List.map (\pwh -> HP (h, Node fs (Just (therule, [proofOf pwh])) $ allTrue [proofOf pwh]))
+          tryExtendT g = [ List.map (\pwh -> HP (h, Node fs (Just (therule, [proofOf pwh])) $ getTruth (proofOf pwh)))
                            $ extendT l (HP (fs : h, Node (head result) Nothing False))
                            -- (Using head because we never have branching unsafeRules.)
                          | (therule, result) <- r (histOf pt) fs g ]
@@ -156,7 +154,7 @@ instance TreeLike ZipProof where
   move_right (ZP c (Step s r p xs (y:ys)))   = ZP y (Step s r p (c:xs) ys)
   move_right _                               = error "cannot go right"
   -- no need to change the Bool
-  move_up (ZP c@(Node _ _ t) (Step s r p xs ys)) = ZP (Node s (Just (r, c:xs ++ ys)) $ t && allTrue (xs ++ ys)) p
+  move_up (ZP c@(Node _ _ t) (Step s r p xs ys)) = ZP (Node s (Just (r, c:xs ++ ys)) $ t && all getTruth (xs ++ ys)) p
   move_up _                                  = error "cannot go up"
   -- dangerous! update parent's truth
   move_down (ZP (Node s (Just (r, x:xs)) _) p) = ZP x (Step s r p [] xs)
@@ -270,19 +268,20 @@ provePdfZ l f = pdf $ proveprintZ l f
 
 -- * GraphViz and LaTeX output
 
--- Pretty printing a list of f's
+-- | Pretty print a list of f's
 ppList :: Show f => [f] -> String
 ppList = intercalate " , " . map show
 
--- Pretty printing a set of f's
+-- | Pretty print a set of f's
 ppForm :: Show f => Set f -> String
 ppForm ms = ppList (Set.toList ms)
 
--- Pretty printing a sequent of f;s
+-- | Pretty print a sequent of f's
 ppSeq :: (Show f, Ord f) => Sequent f -> String
 ppSeq xs = ppForm (leftsSet xs) ++ " => " ++ ppForm (rightsSet xs)
 
--- Now the DispAble will not show Bool. But can be modified
+-- | Visualisation of proofs.
+-- Note that @toGraph@ does not show the Bool flag.
 instance (Show f,Ord f) => (DispAble (Proof f)) where
   toGraph = toGraph' "" where
     toGraph' pref (Node fs Nothing _) = do

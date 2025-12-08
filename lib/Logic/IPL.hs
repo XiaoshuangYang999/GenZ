@@ -1,4 +1,4 @@
-module IPL (intui) where
+module Logic.IPL (intui) where
 
 import Data.List as List
 import qualified Data.Set as Set

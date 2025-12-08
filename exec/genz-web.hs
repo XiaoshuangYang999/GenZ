@@ -23,14 +23,14 @@ import FormM.Parse (parseFormM)
 import FormP.Parse (parseFormP)
 
 -- Prop logics
-import qualified CPL
-import qualified IPL
+import qualified Logic.CPL as CPL
+import qualified Logic.IPL as IPL
 
 -- Modal logics
-import qualified K
-import qualified K4
-import qualified S4
-import qualified GL
+import qualified Logic.K as K
+import qualified Logic.K4 as K4
+import qualified Logic.S4 as S4
+import qualified Logic.GL as GL
 
 main :: IO ()
 main = do
