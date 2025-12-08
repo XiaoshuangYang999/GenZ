@@ -41,11 +41,10 @@ main = do
   let mySettings = Options 1 (setHost "127.0.0.1" $ setPort port defaultSettings)
   let index = html . TL.fromStrict $ embeddedFile "index.html"
   scottyOpts mySettings $ do
-    get (capture   path) index
-    get (capture $ path ++ "/") index
-    get (capture $ path ++ "/index.html") index
-    get (capture $ path ++ "/jquery.js") . (\t -> addHeader "Content-Type" "text/javascript" >> html t) . TL.fromStrict $ embeddedFile "jquery.js"
-    post (capture $ path ++ "/prove") $ do
+    get (capture path) index
+    get (capture $ path ++ "index.html") index
+    get (capture $ path ++ "jquery.js") . (\t -> addHeader "Content-Type" "text/javascript" >> html t) . TL.fromStrict $ embeddedFile "jquery.js"
+    post (capture $ path ++ "prove") $ do
       textinput <- param "textinput"
       let lexResult = alexScanTokensSafe textinput
       output <- case lexResult of
