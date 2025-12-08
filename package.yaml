@@ -47,20 +47,6 @@ executables:
       - base >= 4.8 && < 5
       - optparse-applicative
       - seqzip
-  lwb-k:
-    source-dirs: exec
-    main: lwb-k.hs
-    ghc-options: -Wall -threaded
-    dependencies:
-      - base >= 4.8 && < 5
-      - seqzip
-  lwb-s4:
-    source-dirs: exec
-    main: lwb-s4.hs
-    ghc-options: -Wall -threaded
-    dependencies:
-      - base >= 4.8 && < 5
-      - seqzip
   genz-web:
     source-dirs: exec
     main: genz-web.hs
