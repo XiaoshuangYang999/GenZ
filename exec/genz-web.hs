@@ -22,15 +22,15 @@ import General.Lex
 import FormM.Parse (parseFormM)
 import FormP.Parse (parseFormP)
 
--- Prop logics
 import qualified Logic.CPL as CPL
+import qualified Logic.D as D
+import qualified Logic.D4 as D4
+import qualified Logic.GL as GL
 import qualified Logic.IPL as IPL
-
--- Modal logics
 import qualified Logic.K as K
 import qualified Logic.K4 as K4
 import qualified Logic.S4 as S4
-import qualified Logic.GL as GL
+import qualified Logic.T as T
 
 main :: IO ()
 main = do
@@ -74,10 +74,14 @@ propLogic s = case s of "CPL" -> CPL.classical
                         _ -> error $ "Unknown propositional logic: " ++ s
 
 modLogic :: String -> Logic FormM
-modLogic s = case s of"K" -> K.k
+modLogic s = case s of
+                      "D"  -> D.d
+                      "D4" -> D4.dfour
+                      "GL" -> GL.gl
+                      "K" -> K.k
                       "K4" -> K4.kfour
                       "S4" -> S4.sfour
-                      "GL" -> GL.gl
+                      "T"  -> T.t
                       _ -> error $ "Unknown modal logic: " ++ s
 
 webProveWrap :: Either (Logic FormP) (Logic FormM) -> Either FormP FormM -> [String]
