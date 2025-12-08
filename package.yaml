@@ -45,6 +45,7 @@ executables:
     ghc-options: -Wall -threaded
     dependencies:
       - base >= 4.8 && < 5
+      - optparse-applicative
       - seqzip
   lwb-k:
     source-dirs: exec
