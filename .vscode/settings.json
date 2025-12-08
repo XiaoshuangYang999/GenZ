@@ -1,4 +1,7 @@
 {
     "makefile.configureOnOpen": false,
-    "haskell.plugin.importLens.codeLensOn": false
+    "haskell.plugin.importLens.codeLensOn": false,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "files.eol": "\n"
 }
