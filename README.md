@@ -1,22 +1,78 @@
-# Sequent Calculus with Zippers
+# genz - A Generic Sequent Calculus Prover with Zippers
 
-## References
+Covering the following logics:
 
-The code in this repository was originally developed as part of the following master thesis:
+- Propositional: CPL, IPL
+- Modal: K, K4, T, D, D4, S4, GL
 
-- Xiaoshuang Yang: *Sequent Calculus with Zippers*.
-  University of Amsterdam, 2024.
-  <https://eprints.illc.uva.nl/id/eprint/2354>
+## Web interface
 
-The original code from the thesis can be found in the `thesis-version` branch.
-Ongoing updates and improvements are included in the `main` branch.
+You can use the prover online at <https://tools.malv.in/genz-web/>.
 
-## How to
+## Building
 
 You should have the Haskell build tool `stack` installed, via [ghcup](https://www.haskell.org/ghcup/).
 For proof visualization, optonally you may want to install [`graphviz`](https://graphviz.org/).
 
 To build the project run `stack build`.
+
+## CLI program
+
+To install the `genz` and the `genz-web` binaries, just run `stack install` in this repository.
+
+### CLI examples
+
+We can prove a formula given directly with `-F` or from a file with `-f` or from standard input with `--stdin`.
+By default the modal logic `K` is used.
+
+```
+$ genz -F "[]p -> [][]p"
+False
+
+$ echo "p | ~p" > example.txt
+$ genz -f example.txt
+True
+$ genz -f example.txt --logic IPL
+False
+
+$ echo "[][]p -> [][][][]p" | genz --stdin --logic S4
+True
+```
+
+Get help:
+
+```
+$ genz --help
+genz - a generic sequent calculus prover with zippers
+
+Usage: genz ((-F|--formula FORMULA) | (-f|--file FILE) | (-s|--stdin))
+            [-t|--tree] [-p|--proof] [-l|--logic LOGIC]
+
+  Prove the given FORMULA or the formula in FILE or STDIN.
+
+Available options:
+  -F,--formula FORMULA     Formula
+  -f,--file FILE           Input file
+  -s,--stdin               Read from stdin
+  -t,--tree                Use standard trees (default is to use zippers).
+  -p,--proof               Print the (partial) proof (default is only
+                           True/False).
+  -l,--logic LOGIC         Logic to use: CPL, IPL, D, D4, GL, K, K4, S4, T
+                           (default: K)
+  -h,--help                Show this help text
+```
+
+Benchmarking zipper vs tree representation (for an unprovable formula):
+```
+$ /usr/bin/time -f%E genz -F "[]([]p->p) -> [][][][][][][][][][][][][][][][][][]p" --logic K4
+False
+0:00.01
+$ /usr/bin/time -f%E genz -F "[]([]p->p) -> [][][][][][][][][][][][][][][][][][]p" --logic K4 --tree
+False
+0:03.44
+```
+
+## Haskell examples
 
 You can use `stack ghci` to run examples like this:
 
@@ -73,3 +129,14 @@ Note: this runtime benchmark will take multiple hours.
 
 Example results are available at
 <https://github.com/XiaoshuangYang999/Sequent-Calculus-With-Zippers/releases>.
+
+## References
+
+The code in this repository was originally developed as part of the following master thesis:
+
+- Xiaoshuang Yang: *Sequent Calculus with Zippers*.
+  University of Amsterdam, 2024.
+  <https://eprints.illc.uva.nl/id/eprint/2354>
+
+The original code from the thesis can be found in the `thesis-version` branch.
+Ongoing updates and improvements are included in the `main` branch.
