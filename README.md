@@ -76,23 +76,23 @@ False
 
 You can use `stack ghci` to run examples like this:
 
-    stack ghci lib/K.hs lib/MForm.hs
+    stack ghci lib/Logic/K.hs lib/FormM.hs
 
-    ghci> formForK 3
-    (☐(c → (d → (e → a))) → (☐c → (☐d → (☐e → ☐a))))
-    ghci> nFormForK 3
-    (☐(c → (d → (e → (b → a)))) → (☐c → (☐d → (☐e → ☐a))))
+    ghci> FormM.multiVerK 3
+    (☐(3 → (4 → (5 → 1))) → (☐3 → (☐4 → (☐5 → ☐1))))
+    ghci> FormM.extraAtK 3
+    (☐(3 → (4 → (5 → (2 → 1)))) → (☐3 → (☐4 → (☐5 → ☐1))))
 
-    ghci> isProvableT K.k (MForm.formForK 3)
+    ghci> isProvableT k (FormM.multiVerK 3)
     True
-    λ> isProvableZ K.k (MForm.formForK 3)
+    ghci> isProvableZ k (FormM.multiVerK 3)
     True
-    λ> isProvableT K.k (MForm.nFormForK 3)
+    ghci> isProvableT k (FormM.extraAtK 3)
     False
-    λ> isProvableZ K.k (MForm.nFormForK 3)
+    ghci> isProvableZ k (FormM.extraAtK 3)
     False
 
-In the above `K.k` is the name of the `Logic`, i.e. the proof system.
+In the above `k` is `Logic.K.k :: Logic`, i.e. the proof system.
 
 ## LaTeX output
 
