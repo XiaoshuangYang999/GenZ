@@ -8,20 +8,20 @@ import General
 import General.Lex
 import General.Token
 
+import FormP
 import FormM
 import FormM.Parse
-import FormP
 import FormP.Parse
 
-import Logic.CPL
-import Logic.IPL
-import Logic.D
-import Logic.D4
-import Logic.GL
-import Logic.K
-import Logic.K4
-import Logic.S4
-import Logic.T
+import qualified Logic.Propositional.CPL as CPL
+import qualified Logic.Propositional.IPL as IPL
+import qualified Logic.Modal.D as D
+import qualified Logic.Modal.D4 as D4
+import qualified Logic.Modal.GL as GL
+import qualified Logic.Modal.K as K
+import qualified Logic.Modal.K4 as K4
+import qualified Logic.Modal.S4 as S4
+import qualified Logic.Modal.T as T
 
 data Input = FileInput FilePath | DirectInput String | StdInput
 
@@ -76,22 +76,22 @@ configP = Config
          <> short 'l'
          <> help "Logic to use: CPL, IPL, D, D4, GL, K, K4, S4, T"
          <> showDefaultWith (\ case Left l -> name l; Right l -> name l)
-         <> value (Right Logic.K.k)
+         <> value (Right K.k)
          <> metavar "LOGIC" )
 
 type MyLogic = (Either (Logic FormP) (Logic FormM))
 
 logicR :: String -> Maybe MyLogic
 logicR l_s = case l_s of
-  "CPL" -> return $ Left Logic.CPL.classical
-  "IPL" -> return $ Left Logic.IPL.intui
-  "D"   -> return $ Right Logic.D.d
-  "D4"  -> return $ Right Logic.D4.dfour
-  "GL"  -> return $ Right Logic.GL.gl
-  "K"   -> return $ Right Logic.K.k
-  "K4"  -> return $ Right Logic.K4.kfour
-  "S4"  -> return $ Right Logic.S4.sfour
-  "T"   -> return $ Right Logic.T.t
+  "CPL" -> return $ Left CPL.classical
+  "IPL" -> return $ Left IPL.intui
+  "D"   -> return $ Right D.d
+  "D4"  -> return $ Right D4.dfour
+  "GL"  -> return $ Right GL.gl
+  "K"   -> return $ Right K.k
+  "K4"  -> return $ Right K4.kfour
+  "S4"  -> return $ Right S4.sfour
+  "T"   -> return $ Right T.t
   _ -> error $ "Unknown logic: " ++ l_s
 
 fileInputP :: Parser Input

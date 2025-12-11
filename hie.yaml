@@ -1,22 +1,22 @@
 cradle:
   stack:
     - path: "./lib"
-      component: "seqzip:lib"
+      component: "GenZ:lib"
 
     - path: "./exec/genz.hs"
-      component: "seqzip:exe:genz"
+      component: "GenZ:exe:genz"
 
     - path: "./exec/genz-web.hs"
-      component: "seqzip:exe:genz-web"
+      component: "GenZ:exe:genz-web"
 
-    - path: "./exec/Paths_seqzip.hs"
-      component: "seqzip:exe:genz"
+    - path: "./exec/Paths_GenZ.hs"
+      component: "GenZ:exe:genz"
 
     - path: "./test"
-      component: "seqzip:test:Test"
+      component: "GenZ:test:Test"
 
     - path: "./bench/runtime.hs"
-      component: "seqzip:bench:runtime"
+      component: "GenZ:bench:runtime"
 
     - path: "./bench/memory.hs"
-      component: "seqzip:bench:memory"
+      component: "GenZ:bench:memory"

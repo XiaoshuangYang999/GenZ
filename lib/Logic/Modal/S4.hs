@@ -1,9 +1,9 @@
-module Logic.S4 (sfour) where
+module Logic.Modal.S4 (sfour) where
 
 import General
-import Logic.K
-import Logic.K4
-import Logic.T
+import Logic.Modal.K
+import Logic.Modal.K4
+import Logic.Modal.T
 import FormM
 
 sfour :: Logic FormM

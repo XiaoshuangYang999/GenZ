@@ -1,4 +1,3 @@
-
 {-# LANGUAGE DeriveGeneric, FlexibleInstances #-}
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 {-# LANGUAGE InstanceSigs #-}

@@ -1,13 +1,13 @@
-module Logic.D4 where
+module Logic.Modal.D4 where
 
 import General
-import Logic.K
-import Logic.D
-import Logic.K4
+import Logic.Modal.K
+import Logic.Modal.D
+import Logic.Modal.K4
 import FormM
 
 dfour :: Logic FormM
 dfour = Log { name = "D4"
             , safeRules   = [leftBot, isAxiom, replaceRule safeML]
             , unsafeRules = [fourrule,drule]}
--- Global and local loopchecks needed
+-- Global loopcheck needed for 4 rule

@@ -1,7 +1,6 @@
-module Logic.K where
+module Logic.Modal.K where
 
 import qualified Data.Set as Set
-
 import Basics
 import General
 import FormM

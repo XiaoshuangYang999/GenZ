@@ -1,8 +1,7 @@
-module Logic.IPL (intui) where
+module Logic.Propositional.IPL (intui) where
 
 import Data.List as List
 import qualified Data.Set as Set
-
 import General
 import Basics
 import FormP

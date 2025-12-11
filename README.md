@@ -76,7 +76,7 @@ False
 
 You can use `stack ghci` to run examples like this:
 
-    stack ghci lib/Logic/K.hs lib/FormM.hs
+    stack ghci lib/Logic/Modal/K.hs lib/FormM.hs
 
     ghci> FormM.multiVerK 3
     (☐(3 → (4 → (5 → 1))) → (☐3 → (☐4 → (☐5 → ☐1))))
@@ -92,7 +92,7 @@ You can use `stack ghci` to run examples like this:
     ghci> isProvableZ k (FormM.extraAtK 3)
     False
 
-In the above `k` is `Logic.K.k :: Logic`, i.e. the proof system.
+In the above `k` is `Logic.Modal.K.k :: Logic`, i.e. the proof system.
 
 ## LaTeX output
 

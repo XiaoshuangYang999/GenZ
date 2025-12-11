@@ -14,16 +14,15 @@ import qualified Data.Vector as V
 import Numeric
 import System.Directory
 import System.Environment (getArgs)
-
 import General
-import Logic.CPL
-import Logic.IPL
-import Logic.K
-import Logic.GL
-import Logic.K4
-import Logic.S4
-import FormP
+import Logic.Propositional.CPL
+import Logic.Propositional.IPL
+import Logic.Modal.K
+import Logic.Modal.K4
+import Logic.Modal.GL
+import Logic.Modal.S4
 import FormM
+import FormP
 
 type Case = (String, Int -> Bool, [Int])
 

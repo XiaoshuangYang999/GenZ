@@ -1,4 +1,4 @@
-name: seqzip
+name: GenZ
 version: 0.1.0.0
 synopsis: Sequent Calculus with Zippers
 description: See readme.
@@ -46,7 +46,7 @@ executables:
     dependencies:
       - base >= 4.8 && < 5
       - optparse-applicative
-      - seqzip
+      - GenZ
   genz-web:
     source-dirs: exec
     main: genz-web.hs
@@ -56,7 +56,7 @@ executables:
       - file-embed
       - js-jquery >= 3
       - scotty
-      - seqzip
+      - GenZ
       - template-haskell
       - text
       - warp
@@ -67,7 +67,7 @@ tests:
     ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
     source-dirs: test
     dependencies:
-      - seqzip
+      - GenZ
       - QuickCheck
       - hspec
 
@@ -82,7 +82,7 @@ benchmarks:
       - criterion
       - directory
       - scientific
-      - seqzip
+      - GenZ
       - split
       - vector
   memory:
@@ -91,5 +91,5 @@ benchmarks:
     main: memory.hs
     dependencies:
       - base >= 4.8 && < 5
-      - seqzip
+      - GenZ
       - weigh

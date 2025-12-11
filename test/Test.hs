@@ -8,15 +8,15 @@ import Data.Bifunctor
 import General
 import FormP
 import FormM
-import Logic.CPL
-import Logic.IPL
-import Logic.K
-import Logic.K4
-import Logic.GL
-import Logic.S4
-import Logic.T
-import Logic.D
-import Logic.D4
+import Logic.Propositional.CPL
+import Logic.Propositional.IPL
+import Logic.Modal.K
+import Logic.Modal.K4
+import Logic.Modal.GL
+import Logic.Modal.S4
+import Logic.Modal.T
+import Logic.Modal.D
+import Logic.Modal.D4
 
 -- | Set a time limit.
 -- Test cases will be discarded if they take more than 5 seconds.

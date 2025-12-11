@@ -1,7 +1,7 @@
-module Logic.GL (gl) where
+module Logic.Modal.GL (gl) where
 
 import qualified Data.Set as Set
-import Logic.K
+import Logic.Modal.K
 import General
 import FormM
 

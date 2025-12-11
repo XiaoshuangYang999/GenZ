@@ -22,15 +22,15 @@ import General.Lex
 import FormM.Parse (parseFormM)
 import FormP.Parse (parseFormP)
 
-import qualified Logic.CPL as CPL
-import qualified Logic.D as D
-import qualified Logic.D4 as D4
-import qualified Logic.GL as GL
-import qualified Logic.IPL as IPL
-import qualified Logic.K as K
-import qualified Logic.K4 as K4
-import qualified Logic.S4 as S4
-import qualified Logic.T as T
+import qualified Logic.Propositional.CPL as CPL
+import qualified Logic.Propositional.IPL as IPL
+import qualified Logic.Modal.D as D
+import qualified Logic.Modal.D4 as D4
+import qualified Logic.Modal.GL as GL
+import qualified Logic.Modal.K as K
+import qualified Logic.Modal.K4 as K4
+import qualified Logic.Modal.S4 as S4
+import qualified Logic.Modal.T as T
 
 main :: IO ()
 main = do

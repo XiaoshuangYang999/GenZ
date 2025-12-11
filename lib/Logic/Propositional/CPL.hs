@@ -1,7 +1,6 @@
-module Logic.CPL (classical) where
+module Logic.Propositional.CPL (classical) where
 
 import qualified Data.Set as Set
-
 import General
 import FormP
 
