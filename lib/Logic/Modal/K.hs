@@ -39,5 +39,6 @@ isLeftBox (Left (Box _)) = True
 isLeftBox _              = False
 
 fromBox :: Either FormM FormM -> Either FormM FormM
-fromBox (Left (Box g)) = Left g
+fromBox (Left  (Box g)) = Left g
+fromBox (Right (Box g)) = Right g
 fromBox g = g
