@@ -10,7 +10,12 @@ k = Log { name = "K"
         , safeRules   = [leftBot, isAxiom, replaceRule safeML]
         , unsafeRules = [krule] }
 
--- | Propositional rules for Modal Logic.
+{-
+CPL + k rule:
+              Γ ⇒ φ
+☐k       Γ', □Γ ⇒ □φ, ∆
+-}
+
 safeML :: Either FormM FormM -> [(RuleName,[Sequent FormM])]
 safeML (Left (ConM f g))  = [("∧L", [Set.fromList [Left f, Left g]])]
 safeML (Left (DisM f g))  = [("vL", map Set.singleton [Left f, Left g])]
@@ -20,7 +25,6 @@ safeML (Right (DisM f g)) = [("vR", [Set.fromList [Right g, Right f]])]
 safeML (Right (ImpM f g)) = [("→R", [Set.fromList [Right g, Left f]])]
 safeML _                  = []
 
--- | The K rule.
 krule :: Rule FormM
 krule _ fs (Right (Box f)) = Set.toList $ Set.map (func f) $ Set.powerSet . removeBoxLeft $ fs where
   func :: FormM -> Sequent FormM -> (RuleName,[Sequent FormM])

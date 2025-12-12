@@ -9,6 +9,21 @@ classical = Log { name = "CPL"
                 , safeRules   = [leftBot, isAxiom, replaceRule safeCPL]
                 , unsafeRules = [] }
 
+{-
+   Γ, φ, ψ  ⇒ ∆
+∧L Γ, φ ∧ ψ ⇒ ∆
+   Γ, φ ⇒ ∆    Γ, ψ ⇒ ∆
+∨L Γ, φ ∨ ψ ⇒ ∆
+   Γ ⇒ ∆, φ    Γ ⇒ ∆, ψ
+→L Γ, φ → ψ ⇒ ∆
+   Γ ⇒ ∆, φ    Γ ⇒ ∆, ψ
+∧R Γ ⇒ ∆, φ ∧ ψ
+   Γ ⇒ ∆, φ, ψ
+∨R Γ ⇒ ∆, φ ∨ ψ
+   Γ, φ ⇒ ∆, ψ
+→R Γ ⇒ ∆, φ → ψ
+-}
+
 safeCPL :: Either FormP FormP -> [(RuleName,[Sequent FormP])]
 safeCPL (Left (ConP f g))   = [("∧L", [Set.fromList [Left g, Left f]])]
 safeCPL (Left (DisP f g))   = [("vL", map Set.singleton [Left f, Left g])]

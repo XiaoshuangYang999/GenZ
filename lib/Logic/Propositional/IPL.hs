@@ -11,16 +11,30 @@ intui = Log { name = "IPL"
             , safeRules   = [leftBot, isAxiom, additionRule safeIPL]
             , unsafeRules = [additionRuleNoLoop unsafeIPL] }
 
--- | Safe rules
+{-
+-- Saturated saferules: local loopcheck needed
+    Γ, φ ∧ ψ, φ, ψ  ⇒ ∆
+∧L  Γ, φ ∧ ψ ⇒ ∆
+    Γ, φ ∨ ψ, φ ⇒ ∆    Γ, φ ∨ ψ, ψ ⇒ ∆
+∨L  Γ, φ ∨ ψ ⇒ ∆
+    Γ, φ → ψ ⇒ ∆, φ    Γ, φ → ψ, ψ ⇒ ∆
+→iL Γ, φ → ψ ⇒ ∆
+    Γ ⇒ ∆, φ ∧ ψ, φ    Γ ⇒ ∆, φ ∧ ψ, ψ
+∧R  Γ ⇒ ∆, φ ∧ ψ
+    Γ ⇒ ∆, φ ∨ ψ, φ, ψ
+∨R  Γ ⇒ ∆, φ ∨ ψ
+-- Unsaferule : local and global loopchecks needed
+    Γ, φ ⇒ ψ
+→iR Γ ⇒ ∆, φ → ψ
+-}
+
 safeIPL :: Either FormP FormP -> [(RuleName,[Sequent FormP])]
 safeIPL (Left (ConP f g))  = [("∧L", [Set.fromList [Left g, Left f]])]
 safeIPL (Left (DisP f g))  = [("vL", map Set.singleton [Left f, Left g])]
-safeIPL (Left (ImpP f g))  = [("→iL", map Set.singleton [Left g, Right f])] -- →iL ?
+safeIPL (Left (ImpP f g))  = [("→iL", map Set.singleton [Left g, Right f])]
 safeIPL (Right (ConP f g)) = [("∧R", map Set.singleton [Right f, Right g])]
 safeIPL (Right (DisP f g)) = [("vR", [Set.fromList [Right g, Right f]])]
 safeIPL _                  = []
-
--- TODO: where is the →iL rule?
 
 -- | The R-> rule.
 unsafeIPL :: Either FormP FormP -> [(RuleName,[Sequent FormP])]
@@ -34,7 +48,6 @@ localLoopCheck fs f = case safeIPL f of []              -> False
                                         ((_,results):_) -> not $ any (`Set.isSubsetOf` fs) results
 
 -- * IPL-specific versions of `replaceRule`.
-
 -- | Like `replaceRule` but keep active formula (built-in weakening), and block when localLoopCheck.
 additionRule :: (Either FormP FormP -> [(RuleName, [Sequent FormP])]) -> Rule FormP
 additionRule fun _ fs g =

@@ -20,10 +20,12 @@ instance PropLog FormM where
   con = ConM
   top = neg BotM
   iff f g = ConM (ImpM f g) (ImpM g f)
+  -- Axiom: Γ, p ⇒ ∆, p
   isAtom (AtM _) = True
   isAtom _ = False
   isAxiom _ fs _ = [ ("ax", [])
                   | any (\f -> swap f `Set.member` fs) fs ]
+  -- Rule ⊥L: from Γ, ⊥ ⇒ ∆
   leftBot _ fs _ = [ ("⊥L", []) | Left BotM `Set.member` fs ]
 
 dia :: FormM -> FormM

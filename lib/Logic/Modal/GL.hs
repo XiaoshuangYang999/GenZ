@@ -10,10 +10,16 @@ gl = Log { name = "GL"
          , safeRules   = [leftBot, isAxiom, isCycle, replaceRule safeML]
          , unsafeRules = [fourrule] }
 
+{-
+CPL + isCycle(safe) + 4 rule(without global loopcheck):
+       □Γ, Γ ⇒ φ
+☐4    □Γ, Γ' ⇒ ∆, □φ
+-}
+
 isCycle :: Rule FormM
 isCycle h fs _ = [("cycle", []) | fs `elem` h]
 
--- | The 4 box rule.
+-- | The 4 box rule: without global loopcheck
 fourrule :: Rule FormM
 fourrule _ fs (Right (Box f)) = concatMap func ss where
   func :: Sequent FormM -> [(RuleName,[Sequent FormM])]

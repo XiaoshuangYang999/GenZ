@@ -10,4 +10,11 @@ dfour :: Logic FormM
 dfour = Log { name = "D4"
             , safeRules   = [leftBot, isAxiom, replaceRule safeML]
             , unsafeRules = [fourrule,drule]}
--- Global loopcheck needed for 4 rule
+
+{-
+CPL + d rule + 4 rule(global loopcheck):
+          Γ, φ ⇒
+☐d  Γ', □Γ, □φ ⇒ ∆
+         Γ, □Γ ⇒ φ
+☐4      Γ', □Γ ⇒ □φ, ∆
+-}

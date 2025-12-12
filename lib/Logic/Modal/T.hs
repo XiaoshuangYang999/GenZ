@@ -11,6 +11,14 @@ t = Log { name = "T"
         , safeRules   = [leftBot, isAxiom, additionRule safeML,trule]
         , unsafeRules = [krule]}
 
+{-
+saturated CPL(local loopcheck) + k rule + t rule(safe +local loopcheck):
+           Γ ⇒ φ
+☐k    Γ', □Γ ⇒ □φ, ∆
+    φ, □φ, Γ ⇒ ∆
+☐t     □φ, Γ ⇒ ∆
+-}
+
 -- | The T box rule. Involve local loopcheck
 trule :: Rule FormM
 trule _ fs (Left (Box f)) = [("☐t", [Set.insert (Left f) fs]) | Left f `notElem` fs]

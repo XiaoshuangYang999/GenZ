@@ -10,7 +10,12 @@ kfour = Log { name = "K4"
             , safeRules   = [leftBot, isAxiom, replaceRule safeML]
             , unsafeRules = [fourrule] }
 
--- | The 4 box rule.
+{-
+CPL + 4 rule(global loopcheck):
+      Γ, □Γ ⇒ φ
+☐4   Γ', □Γ ⇒ □φ, ∆
+-}
+
 fourrule :: Rule FormM
 fourrule hs fs (Right (Box f)) = concatMap (globalLoopCheckMap (fs:hs)) ss where
   -- add fs as new seqs could be a subset of fs
@@ -18,6 +23,6 @@ fourrule hs fs (Right (Box f)) = concatMap (globalLoopCheckMap (fs:hs)) ss where
   ss' = Set.powerSet $ Set.filter isLeftBox fs
 fourrule _ _ _ = []
 
--- Global loopcheck: not already occur (as a subset) in the history.
+-- Global loopcheck: if not already occur (as a subset) in the history.
 globalLoopCheckMap :: History FormM -> Sequent FormM -> [(RuleName,[Sequent FormM])]
 globalLoopCheckMap h seqs = [("☐4", [seqs]) | not $ any (seqs `Set.isSubsetOf`) h]

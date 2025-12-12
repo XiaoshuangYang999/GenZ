@@ -20,10 +20,12 @@ instance PropLog FormP where
   con = ConP
   top = neg BotP
   iff f g = ConP (ImpP f g) (ImpP g f)
+  -- Axiom: Γ, p ⇒ ∆, p
   isAtom (AtP _) = True
   isAtom _ = False
   isAxiom _ fs _ = [ ("ax", [])
                   | any (\f -> swap f `Set.member` fs) fs ]
+  -- Rule ⊥L: from Γ, ⊥ ⇒ ∆
   leftBot _ fs _ = [ ("⊥L", []) | Left BotP `Set.member` fs ]
 
 instance Show FormP where
@@ -167,6 +169,7 @@ hardFormulasP :: [(String, Int -> FormP)]
 hardFormulasP =
    [ ("phiImpPie", phiImpPie) ]
 
+-- * Test formulas
 -- | Positive classical propositional logic tests
 posCPropTests :: [(String, FormP)]
 posCPropTests =
