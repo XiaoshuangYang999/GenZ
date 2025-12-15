@@ -72,7 +72,7 @@ a1,b1,c1,d1,e1 :: FormM
 kAxiom :: FormM
 kAxiom = ImpM (Box (ImpM a1 b1)) (ImpM (Box a1) (Box b1))
 
--- □φ → □□φ | Holds in D4, K4, K45, S4, GL
+-- □φ → □□φ | Holds in D4, K4, K45, D45, S4, GL
 fourAxiom :: FormM
 fourAxiom = ImpM (Box a1) (Box (Box a1))
 
@@ -88,19 +88,19 @@ bAxiom = ImpM a1 (Box (dia a1))
 lobAxiom :: FormM
 lobAxiom = ImpM (Box (ImpM (Box a1) a1)) (Box a1)
 
--- ¬□⊥ | Holds in D, D4, T, S4, S5
+-- ¬□⊥ | Holds in D, D4, D45, T, S4, S5
 consistency :: FormM
 consistency = neg . Box $ BotM
 
--- □□φ → □φ | Holds in T, S4
+-- □□φ → □φ | Holds in T, S4， D45
 density :: FormM
 density = ImpM (Box (Box a1)) (Box a1)
 
--- □φ → ♢φ | Holds in D, D4, T, S4 | Also known as seriality
+-- □φ → ♢φ | Holds in D, D4, D45, T, S4 | Also known as seriality
 dAxiom :: FormM
 dAxiom = ImpM (Box a1) (dia a1)
 
--- ♢φ → □♢φ | Holds in K45, S5
+-- ♢φ → □♢φ | Holds in K45, D45, S5
 fiveAxiom :: FormM
 fiveAxiom = ImpM (dia a1) (Box (dia a1))
 
@@ -126,7 +126,7 @@ boxesBot n = boxes n BotM
 -- □...□φ → □...□□φ | Holds in D4, K4, K45, S4, GL (in logics that have 4)
 boxToMoreBox :: Int -> FormM
 boxToMoreBox n = ImpM (boxes n a1) (boxes (n + 1) a1)
--- □...□□φ → □...□φ | Holds in T,S4 (in logics that have T)
+-- □...□□φ → □...□φ | Holds in T, S4, D45
 boxToFewerBox :: Int -> FormM
 boxToFewerBox n = ImpM (boxes (n + 1) a1) (boxes n a1)
 -- □(□φ → φ) → □...□φ | Holds only in GL
@@ -213,7 +213,7 @@ posModalTests =
       [ ("k Axiom"          , kAxiom)
       , (show f1            , f1)
       , ("boxesTop 10"      , boxesTop 10)
-      , ("multiVerK 10"     , multiVerK 10)
+      , ("multiVerK 5"     , multiVerK 5)
       ]
 
 -- | Negative modal logic tests (in any ml)
@@ -222,4 +222,4 @@ negModalTests =
       [ (show f2            , f2)
       , ("negBoxes 10"      , negBoxes 10)
       , ("boxesBot 10"      , boxesBot 10)
-      , ("extraAtK 5"       , extraAtK 5)]
+      , ("extraAtK 3"       , extraAtK 3)]

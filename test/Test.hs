@@ -18,6 +18,7 @@ import Logic.Modal.T
 import Logic.Modal.D
 import Logic.Modal.D4
 import Logic.Modal.K45
+import Logic.Modal.D45
 
 -- | Set a time limit.
 -- Test cases will be discarded if they take more than 5 seconds.
@@ -256,6 +257,24 @@ main = hspec $ parallel $ do
                     , ("lobBoxes 5"       , lobBoxes 5)
                     , ("boxToFewerBox 5"   , boxToFewerBox 5)
                     ])
+    testsFor dfourfive
+              (map (Data.Bifunctor.second pTom) posCPropTests
+                ++  posModalTests
+                ++  [ ("4 Axiom"          , fourAxiom)
+                    , ("5 Axiom"          , fiveAxiom)
+                    , ("d Axiom"            , dAxiom)
+                    , ("Consistency"       , consistency)
+                    , ("Density"           , density)
+                    , ("boxToMoreBox 5"  , boxToMoreBox 5)
+                    , ("boxToFewerBox 5"   , boxToFewerBox 5)
+                    ])
+              (map (Data.Bifunctor.second pTom) negCPropTests
+                ++  take 2 negModalTests
+                ++  [ ("Lob Axiom"         , lobAxiom)
+                    , ("t Axiom"           , tAxiom)
+                    , ("B Axiom"           , bAxiom)
+                    , ("lobBoxes 5"       , lobBoxes 5)
+                    ])
 
   describe "Integration tests" $ do
     describe "Equivalence between GenZ and GenT" $ modifyMaxSuccess (const 1000) $ do
@@ -269,6 +288,7 @@ main = hspec $ parallel $ do
       proverEqTest d
       proverEqTest dfour
       proverEqTest kfourfive
+      proverEqTest dfourfive
 
     describe "Proofs are at most binary" $ do
       atMostBinTest classical
@@ -281,10 +301,11 @@ main = hspec $ parallel $ do
       atMostBinTest d
       atMostBinTest dfour
       atMostBinTest kfourfive
+      atMostBinTest dfourfive
 
     describe "If f and g isProvable, then Con f g isProvable" $ do
       conCheck [classical,intui]
-      conCheck [k,kfour,sfour,gl,t,d,dfour,kfourfive]
+      conCheck [k,kfour,sfour,gl,t,d,dfour,kfourfive, dfourfive]
 
     describe "If f isProvable in CPL, then neg neg f isProvable in IPL" $ do
       agreeTestTranslated classical intui (neg . neg)
@@ -306,6 +327,8 @@ main = hspec $ parallel $ do
         agreeTestTranslated classical dfour pTom
       describe "K45" $ do
         agreeTestTranslated classical kfourfive pTom
+      describe "D45" $ do
+        agreeTestTranslated classical dfourfive pTom
 
     describe "f is provable in IPL iff its translation is provable in S4" $ do
       agreeTestTranslated intui sfour translation
@@ -320,3 +343,4 @@ main = hspec $ parallel $ do
       containTest kfour gl
       containTest kfour sfour
       containTest kfour kfourfive
+      containTest kfourfive dfourfive

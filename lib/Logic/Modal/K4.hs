@@ -17,12 +17,12 @@ CPL + 4 rule(global loopcheck):
 -}
 
 fourrule :: Rule FormM
-fourrule hs fs (Right (Box f)) = concatMap (globalLoopCheckMap (fs:hs)) ss where
+fourrule hs fs (Right (Box f)) = concatMap (globalLoopCheckMap "☐4" (fs:hs)) ss where
   -- add fs as new seqs could be a subset of fs
   ss = Set.map (\s -> Set.unions [Set.singleton (Right f), s, Set.map fromBox s]) ss'
   ss' = Set.powerSet $ Set.filter isLeftBox fs
 fourrule _ _ _ = []
 
 -- Global loopcheck: if not already occur (as a subset) in the history.
-globalLoopCheckMap :: History FormM -> Sequent FormM -> [(RuleName,[Sequent FormM])]
-globalLoopCheckMap h seqs = [("☐4", [seqs]) | not $ any (seqs `Set.isSubsetOf`) h]
+globalLoopCheckMap :: RuleName -> History FormM -> Sequent FormM -> [(RuleName,[Sequent FormM])]
+globalLoopCheckMap r h seqs = [(r, [seqs]) | not $ any (seqs `Set.isSubsetOf`) h]

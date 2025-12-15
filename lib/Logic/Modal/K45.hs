@@ -3,22 +3,23 @@ module Logic.Modal.K45 where
 import qualified Data.Set as Set
 import General
 import Logic.Modal.K
+import Logic.Modal.K4
 import FormM
 
 kfourfive :: Logic FormM
-kfourfive = Log { name = "K4"
+kfourfive = Log { name = "K45"
             , safeRules   = [leftBot, isAxiom, replaceRule safeML]
             , unsafeRules = [kfourfiverule] }
 
 {-
 CPL + k45 rule(global loopcheck):
           □Γ1, Γ2 ⇒ □∆, φ
-☐k45  Γ', □Γ1, □Γ2⇒ □∆, □φ, ∆'
+☐k45  Γ', □Γ1, □Γ2⇒ □∆, □φ, ∆'         ∆ must be nonempty
 -}
 
 kfourfiverule :: Rule FormM
 kfourfiverule hs fs (Right (Box f)) =
-  concatMap (globalLoopCheckMap (fs:hs)) premises
+  concatMap (globalLoopCheckMap "☐k45" (fs:hs)) premises
  where
   -- { □Γ1 ∪ □Γ2 }
   lBoxes = Set.filter isLeftBox fs
@@ -43,10 +44,6 @@ kfourfiverule hs fs (Right (Box f)) =
     , (boxGamma1, boxGamma2) <- boxGammaPartitions
     ]
 kfourfiverule _ _ _ = []
-
--- Global loopcheck: if not already occur (as a subset) in the history.
-globalLoopCheckMap :: History FormM -> Sequent FormM -> [(RuleName,[Sequent FormM])]
-globalLoopCheckMap h seqs = [("☐k45", [seqs]) | not $ any (seqs `Set.isSubsetOf`) h]
 
 -- Generate all ordered partitions of a set. O(n·2^n)
 partitionDrop :: Ord a => Set.Set a -> [(Set.Set a, Set.Set a)]
