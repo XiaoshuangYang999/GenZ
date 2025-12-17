@@ -9,6 +9,27 @@ Covering the following logics:
 
 You can use the prover online at <https://tools.malv.in/genz-web/>.
 
+## Formula Syntax
+
+Both ASCII and Unicode symbols are allowed. Here are some example formulas:
+
+- `[](p -> []p) -> []p`
+- `[]p & []q <-> []p | []q` which unfolds to `((☐p ∧ ☐q) → (☐p v ☐q)) ∧ ((☐p v ☐q) → (☐p ∧ ☐q))`.
+- `<><>p -> <>p` which unfolds to `(☐((☐(p → ⊥) → ⊥) → ⊥) → ⊥) → (☐(p → ⊥) → ⊥)`
+
+| Symbols                  | Meaning                 | Note                             |
+|--------------------------|-------------------------|----------------------------------|
+| `p`, `q`, `bla`, ...     | atomic propositions     |                                  |
+| `true`                   | top (constant true)     |                                  |
+| `false`                  | bottom (constant false) |                                  |
+| `~`, `¬`                 | negation (not)          | abreviation for `... -> false`   |
+| `&`                      | conjunction (and)       | primitive                        |
+| `\|`                     | disjunction (or)        | primitive                        |
+| `->`, `-->`, `=>`, `→`,  | implication (if-then)   | primitive                        |
+| `<->`, `<-->`, `<=>`,`↔` | bi-implication (iff)    | abbreviation using `->` and `&`. |
+| `<>`, `<a>`, `◇`         | diamond (possible)      | abbreviation for `~ [] ~ ...`    |
+| `[]`, `[a]`, `☐`         | box (necessary)         | primitive                        |
+
 ## Building
 
 You should have the Haskell build tool `stack` installed, via [ghcup](https://www.haskell.org/ghcup/).
