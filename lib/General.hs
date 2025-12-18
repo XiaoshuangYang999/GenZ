@@ -266,19 +266,29 @@ proveprintZ l f = case List.filter (\zp -> getTruth (proofOf zp) && isTop zp) $ 
 provePdfZ :: (Show f, Eq f,Ord f) => Logic f -> f -> IO FilePath
 provePdfZ l f = pdf $ proveprintZ l f
 
--- * GraphViz and LaTeX output
+-- * Pretty printing, GraphViz and LaTeX output
 
--- | Pretty print a list of f's
+-- | Pretty print a list of formulas.
 ppList :: Show f => [f] -> String
 ppList = intercalate " , " . map show
 
--- | Pretty print a set of f's
+-- | Pretty print a Set of formulas.
 ppForm :: Show f => Set f -> String
 ppForm ms = ppList (Set.toList ms)
 
--- | Pretty print a sequent of f's
+-- | Pretty print a Sequent.
 ppSeq :: (Show f, Ord f) => Sequent f -> String
 ppSeq xs = ppForm (leftsSet xs) ++ " => " ++ ppForm (rightsSet xs)
+
+-- | Pretty print a proof, with the root last.
+ppProof ::  (Show f,Ord f) => Proof f -> String
+ppProof = ppProof' 0 where
+  ppProof' k (Node xs Nothing _) = indent k ++ ppSeq xs
+  ppProof' k (Node xs (Just (rule',ts)) _) =
+    unlines (map (ppProof' (k + 1)) ts)  -- first children
+    ++ indent k ++ replicate (length (ppSeq xs)) '-' ++ " (" ++ rule' ++ ")\n" -- then rule
+    ++ indent k ++ ppSeq xs              -- then current sequent
+  indent k = concat (replicate k "  ")
 
 -- | Visualisation of proofs.
 -- Note that @toGraph@ does not show the Bool flag.

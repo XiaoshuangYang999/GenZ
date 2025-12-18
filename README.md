@@ -67,7 +67,7 @@ $ genz --help
 genz - a generic sequent calculus prover with zippers
 
 Usage: genz ((-F|--formula FORMULA) | (-f|--file FILE) | (-s|--stdin))
-            [-t|--tree] [-p|--proof] [-l|--logic LOGIC]
+            [-t|--tree] [-p|--proofFormat FORMAT] [-l|--logic LOGIC]
 
   Prove the given FORMULA or the formula in FILE or STDIN.
 
@@ -76,8 +76,7 @@ Available options:
   -f,--file FILE           Input file
   -s,--stdin               Read from stdin
   -t,--tree                Use standard trees (default is to use zippers).
-  -p,--proof               Print the (partial) proof (default is only
-                           True/False).
+  -p,--proofFormat FORMAT  Proof format: none, plain, buss (default: none)
   -l,--logic LOGIC         Logic to use: CPL, IPL, D, D4, GL, K, K4, S4, T
                            (default: K)
   -h,--help                Show this help text
