@@ -38,7 +38,7 @@ main = runGenZ =<< execParser opts where
     <> header "genz - a generic sequent calculus prover with zippers")
 
 runGenZ :: Config -> IO ()
-runGenZ (Config inp useTree negate prFormat myL) = do
+runGenZ (Config inp useTree negIn prFormat myL) = do
   form_s <- case inp of FileInput file  -> readFile file -- TODO: ignore "begin" and "end" here or in Lexer/Parser?
                         DirectInput f_s -> return f_s
                         StdInput        -> getContents -- TODO same
@@ -49,12 +49,12 @@ runGenZ (Config inp useTree negate prFormat myL) = do
       case myParse form_s tl parseFormP of
         Left errs -> error (unlines errs)
         Right f_prop -> prChoose useTree prFormat l_prop
-          ((if negate then neg else id) f_prop)
+          ((if negIn then neg else id) f_prop)
     Right l_mod ->
       case myParse form_s tl parseFormM of
         Left errs -> error (unlines errs)
         Right f_mod -> prChoose useTree prFormat l_mod
-          ((if negate then neg else id) f_mod)
+          ((if negIn then neg else id) f_mod)
 
 -- | Helper to chooe tree/zipper and bool/proof output
 prChoose :: (Show f, Ord f, TeX f) => Bool -> ProofFormat -> Logic f -> (f -> String)
