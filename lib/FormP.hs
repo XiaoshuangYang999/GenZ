@@ -27,6 +27,11 @@ instance PropLog FormP where
                   | any (\f -> swap f `Set.member` fs) fs ]
   -- Rule ⊥L: from Γ, ⊥ ⇒ ∆
   leftBot _ fs _ = [ ("⊥L", []) | Left BotP `Set.member` fs ]
+  size BotP         = 1
+  size (AtP _)      = 1
+  size (ConP f g)   = 1 + size f + size g
+  size (DisP f g)   = 1 + size f + size g
+  size (ImpP f g)   = 1 + size f + size g
 
 instance Show FormP where
   show BotP       = "⊥"

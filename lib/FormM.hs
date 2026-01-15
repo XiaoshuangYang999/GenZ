@@ -27,6 +27,12 @@ instance PropLog FormM where
                   | any (\f -> swap f `Set.member` fs) fs ]
   -- Rule ⊥L: from Γ, ⊥ ⇒ ∆
   leftBot _ fs _ = [ ("⊥L", []) | Left BotM `Set.member` fs ]
+  size BotM         = 1
+  size (AtM _)      = 1
+  size (ConM f g)   = 1 + size f + size g
+  size (DisM f g)   = 1 + size f + size g
+  size (ImpM f g)   = 1 + size f + size g
+  size (Box f)      = 1 + size f
 
 dia :: FormM -> FormM
 dia f = neg $ Box $ neg f

@@ -386,6 +386,7 @@ class PropLog f where
   isAtom :: f -> Bool
   isAxiom :: Rule f
   leftBot :: Rule f
+  size :: f -> Int
 
 swap :: Either a b -> Either b a
 swap (Left x) = Right x
