@@ -32,6 +32,11 @@ instance PropLog FormP where
   size (ConP f g)   = 1 + size f + size g
   size (DisP f g)   = 1 + size f + size g
   size (ImpP f g)   = 1 + size f + size g
+  subFormulas BotP         = [BotP]
+  subFormulas (AtP a)      = [AtP a]
+  subFormulas (ConP f g)   = ConP f g : (subFormulas f ++ subFormulas g)
+  subFormulas (DisP f g)   = DisP f g : (subFormulas f ++ subFormulas g)
+  subFormulas (ImpP f g)   = ImpP f g : (subFormulas f ++ subFormulas g)
 
 instance Show FormP where
   show BotP       = "⊥"

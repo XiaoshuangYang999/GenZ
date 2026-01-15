@@ -387,6 +387,7 @@ class PropLog f where
   isAxiom :: Rule f
   leftBot :: Rule f
   size :: f -> Int
+  subFormulas :: f -> [f]
 
 swap :: Either a b -> Either b a
 swap (Left x) = Right x

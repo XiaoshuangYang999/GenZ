@@ -33,6 +33,12 @@ instance PropLog FormM where
   size (DisM f g)   = 1 + size f + size g
   size (ImpM f g)   = 1 + size f + size g
   size (Box f)      = 1 + size f
+  subFormulas BotM         = [BotM]
+  subFormulas (AtM a)      = [AtM a]
+  subFormulas (ConM f g)   = ConM f g : (subFormulas f ++ subFormulas g)
+  subFormulas (DisM f g)   = DisM f g : (subFormulas f ++ subFormulas g)
+  subFormulas (ImpM f g)   = ImpM f g : (subFormulas f ++ subFormulas g)
+  subFormulas (Box f)      = Box f : subFormulas f
 
 dia :: FormM -> FormM
 dia f = neg $ Box $ neg f
