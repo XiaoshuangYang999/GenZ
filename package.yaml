@@ -61,6 +61,14 @@ executables:
       - text
       - warp
 
+  form-size:
+    source-dirs: exec
+    main: form-size.hs
+    ghc-options: -Wall -threaded
+    dependencies:
+      - base >= 4.8 && < 5
+      - GenZ
+
 tests:
   Test:
     main: Test.hs

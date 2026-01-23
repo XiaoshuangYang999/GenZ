@@ -9,6 +9,9 @@ cradle:
     - path: "./exec/genz-web.hs"
       component: "GenZ:exe:genz-web"
 
+    - path: "./exec/form-size.hs"
+      component: "GenZ:exe:form-size"
+
     - path: "./exec/Paths_GenZ.hs"
       component: "GenZ:exe:genz"
 

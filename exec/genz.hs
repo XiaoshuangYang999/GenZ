@@ -50,13 +50,13 @@ runGenZ (Config inp useTree negIn deb prFormat myL) = do
       case myParse form_s tl parseFormP of
         Left errs -> error (unlines errs)
         Right f_prop ->
-          (if deb then "Tree size of formula: " ++ show (size f_prop) ++ "\n" else "") ++
+          (if deb then "Tree size of formula: " ++ show (size $ neg f_prop) ++ "\n" else "") ++
           prChoose useTree prFormat l_prop ((if negIn then neg else id) f_prop)
     Right l_mod ->
       case myParse form_s tl parseFormM of
         Left errs -> error (unlines errs)
         Right f_mod ->
-          (if deb then "Tree size of formula: " ++ show (size f_mod) ++ "\n" else "") ++
+          (if deb then "Tree size of formula: " ++ show (size $ neg f_mod) ++ "\n" else "") ++
           prChoose useTree prFormat l_mod ((if negIn then neg else id) f_mod)
 
 -- | Helper to chooe tree/zipper and bool/proof output
