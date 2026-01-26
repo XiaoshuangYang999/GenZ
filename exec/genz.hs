@@ -17,9 +17,11 @@ import qualified Logic.Propositional.CPL as CPL
 import qualified Logic.Propositional.IPL as IPL
 import qualified Logic.Modal.D as D
 import qualified Logic.Modal.D4 as D4
+import qualified Logic.Modal.D45 as D45
 import qualified Logic.Modal.GL as GL
 import qualified Logic.Modal.K as K
 import qualified Logic.Modal.K4 as K4
+import qualified Logic.Modal.K45 as K45
 import qualified Logic.Modal.S4 as S4
 import qualified Logic.Modal.T as T
 
@@ -93,7 +95,7 @@ configP = Config
       <*> option (maybeReader logicR)
           ( long "logic"
          <> short 'l'
-         <> help "Logic to use: CPL, IPL, D, D4, GL, K, K4, S4, T"
+         <> help "Logic to use: CPL, IPL, D, D4, D45, GL, K, K4, K45, S4, T"
          <> showDefaultWith (\ case Left l -> name l; Right l -> name l)
          <> value (Right K.k)
          <> metavar "LOGIC" )
@@ -120,9 +122,11 @@ logicR l_s = case l_s of
   "IPL" -> return $ Left IPL.intui
   "D"   -> return $ Right D.d
   "D4"  -> return $ Right D4.dfour
+  "D45" -> return $ Right D45.dfourfive
   "GL"  -> return $ Right GL.gl
   "K"   -> return $ Right K.k
   "K4"  -> return $ Right K4.kfour
+  "K45" -> return $ Right K45.kfourfive
   "S4"  -> return $ Right S4.sfour
   "T"   -> return $ Right T.t
   _ -> error $ "Unknown logic: " ++ l_s

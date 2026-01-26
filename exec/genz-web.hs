@@ -26,9 +26,11 @@ import qualified Logic.Propositional.CPL as CPL
 import qualified Logic.Propositional.IPL as IPL
 import qualified Logic.Modal.D as D
 import qualified Logic.Modal.D4 as D4
+import qualified Logic.Modal.D45 as D45
 import qualified Logic.Modal.GL as GL
 import qualified Logic.Modal.K as K
 import qualified Logic.Modal.K4 as K4
+import qualified Logic.Modal.K45 as K45
 import qualified Logic.Modal.S4 as S4
 import qualified Logic.Modal.T as T
 
@@ -77,9 +79,11 @@ modLogic :: String -> Logic FormM
 modLogic s = case s of
                       "D"  -> D.d
                       "D4" -> D4.dfour
+                      "D45"-> D45.dfourfive
                       "GL" -> GL.gl
                       "K" -> K.k
                       "K4" -> K4.kfour
+                      "K45" -> K45.kfourfive
                       "S4" -> S4.sfour
                       "T"  -> T.t
                       _ -> error $ "Unknown modal logic: " ++ s

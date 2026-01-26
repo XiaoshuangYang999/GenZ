@@ -14,7 +14,7 @@ kfourfive = Log { name = "K45"
 {-
 CPL + k45 rule(global loopcheck):
           □Γ1, Γ2 ⇒ □∆, φ
-☐k45  Γ', □Γ1, □Γ2⇒ □∆, □φ, ∆'         ∆ must be nonempty
+☐k45  Γ', □Γ1, □Γ2⇒ □∆, □φ, ∆'         ∆ can be nonempty
 -}
 
 kfourfiverule :: Rule FormM
@@ -25,7 +25,7 @@ kfourfiverule hs fs (Right (Box f)) =
   lBoxes = Set.filter isLeftBox fs
   -- { □Δ }
   rBoxesRemove = Set.delete (Right (Box f)) (Set.filter isRightBox fs)
-  -- { Δ }
+  -- all possible □Δ
   deltaS :: [Set.Set (Either FormM FormM)]
   deltaS = Set.toList (Set.powerSet rBoxesRemove)
   -- [(□Γ1, □Γ2)]
