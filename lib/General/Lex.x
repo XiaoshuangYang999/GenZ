@@ -23,11 +23,14 @@ tokens :-
   ")"               { \ p _ -> TokenCB                p }
   -- Formulas:
   "true"            { \ p _ -> TokenTop               p }
+  "⊤"               { \ p _ -> TokenTop               p }
   "false"           { \ p _ -> TokenBot               p }
+  "⊥"               { \ p _ -> TokenBot               p }
   "~"               { \ p _ -> TokenNeg               p }
   "¬"               { \ p _ -> TokenNeg               p }
   "&"               { \ p _ -> TokenCon               p }
   "|"               { \ p _ -> TokenDis               p }
+  "v"               { \ p _ -> TokenDis               p }
   "=>"              { \ p _ -> TokenImpl              p }
   "→"               { \ p _ -> TokenImpl              p }
   "->"              { \ p _ -> TokenImpl              p }
@@ -40,11 +43,14 @@ tokens :-
   "<"               { \ p _ -> TokenDiaL              p }
   ">"               { \ p _ -> TokenDiaR              p }
   "☐"               { \ p _ -> TokenBox               p }
+  "◻"               { \ p _ -> TokenBox               p }
   "[]"              { \ p _ -> TokenBox               p }
   "["               { \ p _ -> TokenBoxL              p }
   "]"               { \ p _ -> TokenBoxR              p }
   -- Strings:
   [$alf $dig]+      { \ p s -> TokenString s          p }
+  -- Special chars:
+  "𝑝"               { \ p _ -> TokenString "p"        p }
 
 {
 type LexResult a = Either (Int,Int) a
