@@ -83,7 +83,8 @@
       <a href="https://github.com/XiaoshuangYang999/Sequent-Calculus-With-Zippers/">GenZ</a>.
     </p>
     <p>
-      <label  for="logic">Please choose a logic:</label>
+      Please choose
+      <label  for="logic">a logic:</label>
       <select name="logic" id="logic">
         <optgroup label="Modal">
           <option value="modal">K</option>
@@ -99,9 +100,15 @@
           <option value="prop">CPL</option>
         </optgroup>
       </select>
+      and a
+      <label  for="struct">data structure:</label>
+      <select name="struct" id="struct">
+        <option value="zipper">zipper</option>
+        <option value="tree">tree</option>
+      </select>
     </p>
     <p>
-      Then enter a formula below or <label for="examples">choose an example:</label>
+      Enter a formula below or <label for="examples">choose an example:</label>
       <select name="examples" id="examples">
         <optgroup label="IPL">
           <option value="IPL">p → p</option>
@@ -148,7 +155,9 @@
               url: "prove",
               data: { "syntax": $('#logic').val()
                     , "logic": $('#logic option:selected').text()
-                    , "textinput": $('#textinput').val() },
+                    , "textinput": $('#textinput').val()
+                    , "struct": $('#struct').val()
+                  },
               success:
               function(data,textStatus,jqXHR) {
                   $('#output').html(data);

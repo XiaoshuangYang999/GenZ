@@ -57,6 +57,7 @@ main = do
         Right tokenList -> do
           useProp <- (== ("prop" :: String)) <$> param "syntax"
           s_logic <- param "logic"
+          s_struct <- param "struct"
           let myParserLogic = if useProp
                 then (fmap Left . parseFormP, Left (propLogic s_logic))
                 else (fmap Right . parseFormM, Right (modLogic s_logic))
@@ -67,7 +68,7 @@ main = do
               , "<pre>" ++ replicate (col + length ("INPUT:" :: String)) ' ' ++ "^</pre>"
               , "<pre>Parse error in column " ++ show col ++ ".</pre>" ]
             Right lr_frm ->
-              return $ webProveWrap (snd myParserLogic) lr_frm
+              return $ webProveWrap (snd myParserLogic) lr_frm s_struct
       html $ mconcat $ map TL.pack output
 
 propLogic :: String -> Logic FormP
@@ -88,19 +89,23 @@ modLogic s = case s of
                       "T"  -> T.t
                       _ -> error $ "Unknown modal logic: " ++ s
 
-webProveWrap :: Either (Logic FormP) (Logic FormM) -> Either FormP FormM -> [String]
+webProveWrap :: Either (Logic FormP) (Logic FormM) -> Either FormP FormM -> String -> [String]
 webProveWrap (Left l) (Left f) = webProve l f
 webProveWrap (Right l) (Right f) = webProve l f
-webProveWrap _ _ = error "Wrong combination of logic an syntax."
+webProveWrap _ _ = error "Wrong combination of logic and syntax."
 
-webProve :: (Eq f, Ord f, Show f, TeX f) => Logic f -> f -> [String]
-webProve logic frm =
-  let p_tex = case proveZ logic frm of
+webProve :: (Eq f, Ord f, Show f, TeX f) => Logic f -> f -> String -> [String]
+webProve logic frm struct =
+  let (isPrv, prv) = case struct of
+        "zipper" -> (isProvableZ, proveZ)
+        "tree" -> (isProvableT, proveT)
+        _ -> error $ "Unknown data structure: " ++ struct
+      p_tex = case prv logic frm of
         [] -> ""
         (p1:_) -> tex p1
   in
     [ "<pre>Parsed input: " ++ show frm ++ "</pre>" -- TODO pretty? tex?
-    , if isProvableZ logic frm
+    , if isPrv logic frm
         then "PROVED. <style type='text/css'> #output { border-color: green; } </style>\n"
         else "NOT proved. <style type='text/css'> #output { border-color: red; } </style>\n"
     , if p_tex /= "" then "<div align='center'>\\( \\begin{prooftree}" ++ p_tex ++ " \\end{prooftree} \\)</div>" else ""
