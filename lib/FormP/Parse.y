@@ -4,14 +4,13 @@
 module FormP.Parse where
 
 import Data.String( IsString(..) )
+import Data.Char
+import Data.List
 
 import General.Token
 import General.Lex
 import FormP
 import General
-
-import Data.Char (isSpace)
-import Data.List (isPrefixOf, isSuffixOf)
 }
 
 %name parseFormP FormP
@@ -71,23 +70,21 @@ instance IsString FormP where
     Left e  -> error ("Error at " ++ show e ++ " when parsing " ++ s ++ " \n")
     Right f -> f
 
--- ========= TPTP FOF front-end（简化、只处理命题 FOF） =========
-
--- | 从一个 .tptp 文件的内容得到单个公式：
---   (A1 & ... & An) -> C
---   其中 Ai 是 role = axiom 的公式，C 是第一个 conjecture。
+-- NOTE: This tptp parser was assisted by ChatGPT
+-- | Parse .tptp file into a single formula: (A1 & ... & An) -> C
+--   where each Ai is a formula with role = axiom, and C is the first conjecture.
 parseTPTPProblem :: String -> ParseResult FormP
 parseTPTPProblem s = do
-  let blocks  = fofBlocks s                   -- 每个 fof(...) 块
+  let blocks  = fofBlocks s                   -- each fof(...) block
       triples = map parseFOFHeader blocks     -- [(name,role,formulaText)]
       axTexts = [ f | (_,r,f) <- triples, r == "axiom" ]
       conTexts = [ f | (_,r,f) <- triples, r == "conjecture" ]
 
   cText <- case conTexts of
-             []    -> Left (0,0)              -- 没有 conjecture
+             []    -> Left (0,0)              -- no conjecture found
              (x:_) -> Right x
 
-  -- 用你现有的 parser 解析每个公式
+  -- Parse each formula using the existing FormP parser
   as <- mapM (scanParseSafe parseFormP . normalizeFormula) axTexts
   c  <-        scanParseSafe parseFormP (normalizeFormula cText)
 
@@ -95,7 +92,8 @@ parseTPTPProblem s = do
     []       -> Right c
     (a:rest) -> Right (ImpP (foldl ConP a rest) c)
 
--- | 把整个文件按行切开，提取每个 fof(...) 的完整块（可能跨多行）
+-- | Split the whole file into lines and extract complete fof(...) blocks
+--   (each block may span multiple lines).
 fofBlocks :: String -> [String]
 fofBlocks = go [] [] . lines
   where
@@ -103,67 +101,65 @@ fofBlocks = go [] [] . lines
       reverse (if null cur then acc else unlines (reverse cur) : acc)
 
     go acc cur (l:ls)
-      -- 跳过注释行
+      -- Skip comment lines
       | "%" `isPrefixOf` dropWhile isSpace l =
           go acc cur ls
 
-      -- 新的 fof 开头：fof(
+      -- Start of a new fof block: line begins with "fof("
       | "fof(" `isPrefixOf` dropWhile isSpace l =
           let acc' = if null cur
                         then acc
                         else unlines (reverse cur) : acc
           in go acc' [l] ls
 
-      -- 还没开始任何 fof，继续找
+      -- No fof started yet; keep looking
       | null cur =
           go acc cur ls
 
-      -- 当前 fof 结束行：包含 "))."
+      -- End of current fof block: line contains "))."
       | "))." `isInfixOf` l =
           go (unlines (reverse (l:cur)) : acc) [] ls
 
-      -- 当前 fof 的中间部分
+      -- Middle line of the current fof block
       | otherwise =
           go acc (l:cur) ls
 
--- | 从一个 fof(...) 块里，抽出 (name, role, formulaText)
---   输入大致形如：fof(axiom1,axiom,( ( p1 <=> p2 ) => ( p1 & p2 ) )).
+-- | Extract (name, role, formulaText) from a fof(...) block.
+--   Input is roughly of the form:
+--   fof(axiom1,axiom,( ( p1 <=> p2 ) => ( p1 & p2 ) )).
 parseFOFHeader :: String -> (String, String, String)
 parseFOFHeader block =
-  let flat  = unwords (words block)          -- 压成一行，去掉多余空白
+  let flat  = unwords (words block)          -- flatten to a single line, normalize whitespace
       flat' = dropWhile isSpace flat
-      -- 去掉前面的 "fof("
+      -- Drop the leading "fof("
       rest1 = dropPrefix "fof(" flat'
       (name, rest2)     = break (== ',') rest1
-      rest3             = drop 1 rest2      -- 去掉第一个逗号
+      rest3             = drop 1 rest2      -- drop first comma
       (rolePart, rest4) = break (== ',') rest3
       role              = trim rolePart
-      rest5             = drop 1 rest4      -- 第二个逗号后面应该是 "( ... ))."
-      -- 去掉末尾的 "))."
+      rest5             = drop 1 rest4      -- after second comma we expect "( ... )."
+      -- Strip the trailing ")." (fof terminator), keeping the formula's final ')'
       (fmlPart, _)      = breakOn ")." rest5
       formulaText       = trim fmlPart
   in (trim name, role, formulaText)
 
--- | 把 TPTP 中的布尔常量换成你 lexer 能认的单词（如果将来遇到的话）
+-- | Map TPTP boolean constants to the identifiers understood by our lexer (in case they appear).
 normalizeFormula :: String -> String
 normalizeFormula =
       replace "$false" "false"
     . replace "$true"  "true"
 
--- ===== 一些小工具函数 =====
-
+-- | Small helper functions
 trim :: String -> String
 trim = dropWhile isSpace . dropWhileEnd isSpace
-
-dropWhileEnd :: (Char -> Bool) -> String -> String
-dropWhileEnd p = reverse . dropWhile p . reverse
 
 dropPrefix :: String -> String -> String
 dropPrefix pre s
   | pre `isPrefixOf` s = drop (length pre) s
   | otherwise          = s
 
--- 在字符串里按子串切分：返回 (前缀, 去掉 pat 后的剩余)
+-- Split the string at the first occurrence of the given substring.
+-- Returns (prefix, suffix-without-the-substring).
 breakOn :: String -> String -> (String, String)
 breakOn pat = go []
   where
@@ -180,15 +176,7 @@ replace old new = go
       | old `isPrefixOf` s = new ++ go (drop (length old) s)
       | otherwise          = c : go cs
 
--- 这两个为了不再 import Data.List.extra
-isInfixOf :: String -> String -> Bool
-isInfixOf pat s =
-  any (pat `isPrefixOf`) (tails s)
-
-tails :: [a] -> [[a]]
-tails [] = [[]]
-tails xs@(_:xs') = xs : tails xs'
-
+-- Debug helper: print the (name, role, formulaText) triples extracted from a tptp file.
 debugTPTP :: String -> IO ()
 debugTPTP s = do
   let blocks  = fofBlocks s

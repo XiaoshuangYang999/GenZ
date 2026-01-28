@@ -1,23 +1,12 @@
-module TestParseTPTP where
+-- NOTE: This test file was assisted by ChatGPT
+module TestParseILTP where
 
 import System.Directory
-  ( listDirectory
-  )
 import System.FilePath
-  ( (</>)
-  , takeExtension
-  )
 import Control.Monad
-  ( forM )
-import Data.List (isSuffixOf)
-
 import FormP.Parse
-  ( parseTPTPProblem
-  , ParseResult
-  )
-import FormP (FormP)
 
--- 只检查一个目录（不递归，因为你这层下面已经全是文件）
+-- check this directory
 checkOneDir :: FilePath -> IO ()
 checkOneDir dir = do
   putStrLn $ "=== Checking dir: " ++ dir ++ " ==="
@@ -41,7 +30,7 @@ checkOneDir dir = do
   putStrLn $ "Fail  : " ++ show fails
   putStrLn ""
 
--- 专门针对 benchmarks/ILTP 这三个文件夹
+-- specifically for checking "benchmarks/ILTP"
 checkILTPRoot :: FilePath -> IO ()
 checkILTPRoot root = do
   checkOneDir (root </> "theorem")
