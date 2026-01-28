@@ -1,0 +1,52 @@
+%------------------------------------------------------------------------------
+fof(axiom1,axiom,(
+    p9 )).
+
+fof(axiom2,axiom,
+    ( p1
+   => ( p1
+     => p0 ) )).
+
+fof(axiom3,axiom,
+    ( p2
+   => ( p2
+     => p1 ) )).
+
+fof(axiom4,axiom,
+    ( p3
+   => ( p3
+     => p2 ) )).
+
+fof(axiom5,axiom,
+    ( p4
+   => ( p4
+     => p3 ) )).
+
+fof(axiom6,axiom,
+    ( p5
+   => ( p5
+     => p4 ) )).
+
+fof(axiom7,axiom,
+    ( p6
+   => ( p6
+     => p5 ) )).
+
+fof(axiom8,axiom,
+    ( p7
+   => ( p7
+     => p6 ) )).
+
+fof(axiom9,axiom,
+    ( p8
+   => ( p8
+     => p7 ) )).
+
+fof(axiom10,axiom,
+    ( p9
+   => ( p9
+     => p8 ) )).
+
+fof(con,conjecture,(
+    p0 )).
+%------------------------------------------------------------------------------
