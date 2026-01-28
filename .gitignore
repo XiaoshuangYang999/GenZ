@@ -32,3 +32,4 @@ report.pdf
 bench/results*
 benchmarks/LWB/bench_raw.csv
 benchmarks/LWB/bench_table.csv
+/benchmarks/LWB/logs
