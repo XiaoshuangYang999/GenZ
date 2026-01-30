@@ -76,10 +76,12 @@ instance HasProof ProofWithH where
 
 -- | Zipper version of the @Proof@ type.
 data ZipProof f = ZP (Proof f) (ZipPath f)
+  deriving (Eq,Ord,Show)
 -- only switch path when this branch is closed
 -- each sub-proof tree should remember whether it's closed
 
 data ZipPath f = Top | Step (Sequent f) RuleName (ZipPath f) [Proof f] [Proof f]
+  deriving (Eq,Ord,Show)
 
 instance HasHistory ZipPath where
   histOf :: ZipPath f -> History f
@@ -148,13 +150,18 @@ provePdfT l f= pdf $ proveprintT l f
 
 instance TreeLike ZipProof where
   zsingleton x                               = ZP (Node (Set.singleton (Right x)) Nothing False) Top
-  move_left (ZP c (Step s r p (x:xs) ys))    = ZP x (Step s r p xs (c:ys))
+  move_left (ZP c (Step s r p xs ys))    =
+    if null xs
+      then error "cannot go left"
+      else ZP (last xs) (Step s r p (init xs) (c:ys))
   move_left _                                = error "cannot go left"
   -- no need to change the Bool
-  move_right (ZP c (Step s r p xs (y:ys)))   = ZP y (Step s r p (c:xs) ys)
+  move_right (ZP c (Step s r p xs (y:ys)))   = ZP y (Step s r p (xs ++ [c]) ys)
   move_right _                               = error "cannot go right"
   -- no need to change the Bool
-  move_up (ZP c@(Node _ _ t) (Step s r p xs ys)) = ZP (Node s (Just (r, c:xs ++ ys)) $ t && all getTruth (xs ++ ys)) p
+  move_up (ZP c@(Node _ _ t) (Step s r p xs ys)) =
+      let cs = reverse xs ++ [c] ++ ys
+      in ZP (Node s (Just (r, cs)) $ t && all getTruth cs) p
   move_up _                                  = error "cannot go up"
   -- dangerous! update parent's truth
   move_down (ZP (Node s (Just (r, x:xs)) _) p) = ZP x (Step s r p [] xs)
@@ -243,7 +250,6 @@ extendZ _ zp@(ZP (Node _ (Just _ ) _) _) = [zp] -- needed after switch
 -- Then to check the truth of the whole proof, we only need to check the truth condition at the top
 
 -- Return a list of proofs
--- getProof should do it as we should return to Top at the end
 proveZ :: (Eq f, Ord f) => Logic f -> f -> [Proof f]
 proveZ l f = List.map fromZip $ proveZZ l f
 
