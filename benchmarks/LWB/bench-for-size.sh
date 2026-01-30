@@ -27,7 +27,7 @@ group_formulas() {
 }
 
 # all logics
-LOGICS_ALL="K D D4 T K4 K45 D45 GL S4"
+LOGICS_ALL="K,K4,D,D4,T,S4,K45,D45,GL"
 
 # range of index n
 START_N=1
@@ -56,12 +56,12 @@ mk_time_log() {
 }
 
 # results files for size-limited runs
-SMALL_RAW="bench_small_raw.csv"
-SMALL_PERCENT="bench_small_percent.csv"
+SIZE_RAW="bench_size_raw.csv"
+SIZE_PERCENT="bench_size_percent.csv"
 
-echo "group,logic,prover,formula,n,size,runtime,expected,res,correct" > "$SMALL_RAW"
+echo "group,logic,prover,formula,index,size,runtime,expected,res,correct" > "$SIZE_RAW"
 
-# Loop：group -> logic -> prover -> formula -> n （仅跑 size <= SIZE_LIMIT 的）
+# Loop：group -> logic -> prover -> formula -> index
 for group in $ALL_GROUPS; do
   echo "===== Group $group ====="
 
@@ -80,7 +80,7 @@ for group in $ALL_GROUPS; do
       if [ "$prover" = "zip" ]; then
         GENZ_MODE=""
       else
-        GENZ_MODE="-t "
+        GENZ_MODE="-t"
       fi
 
       for formula in $FORMULAS; do
@@ -101,11 +101,16 @@ for group in $ALL_GROUPS; do
 
           echo "      running genz $prover: logic=$logic, formula=$formula, n=$n, size=$size_n, file=$file"
 
-          start=$(date +%s)
-          time (timeout ${TIMEOUT}s genz "$GENZ_MODE"-d -n -l "$logic" -f "$file" > "$out_log") &> "$time_log"
+          # 用 time 记录带小数的运行时间，输出写到 $time_log
+          /usr/bin/time -p timeout ${TIMEOUT}s genz $GENZ_MODE -d -n -l "$logic" -f "$file" > "$out_log" 2> "$time_log"
           status=$?
-          end=$(date +%s)
-          runtime=$((end - start))
+
+          # 从 time 的输出里抽取第一个字段作为运行时间（秒，可以带小数）
+          # macOS 上 /usr/bin/time 默认格式是：  0.02 real   0.00 user   0.00 sys
+          # 所以取第一个字段即可
+                    # 从 time 的输出里抽取 real 时间（单位秒，可以带小数）
+          runtime=$(awk '/^real / {print $2}' "$time_log")
+
 
           expected=""
           if [[ "$group" == *_p ]]; then
@@ -129,25 +134,24 @@ for group in $ALL_GROUPS; do
             correct="Y"
           fi
 
-          # 只对 size <= SIZE_LIMIT 的实例记录一行
-          echo "$group,$logic,$prover,$formula,$n,$size_n,$runtime,$expected,$res,$correct" >> "$SMALL_RAW"
+          echo "$group,$logic,$prover,$formula,$n,$size_n,$runtime,$expected,$res,$correct" >> "$SIZE_RAW"
         done
       done
     done
   done
 done
 
-# Step 2: aggregate percentage per logic, with zip/tree side by side,
-# and split by provable / unprovable / overall
-echo "logic,zip_total_all,zip_correct_all,zip_pct_all,zip_total_prov,zip_correct_prov,zip_pct_prov,zip_total_unprov,zip_correct_unprov,zip_pct_unprov,tree_total_all,tree_correct_all,tree_pct_all,tree_total_prov,tree_correct_prov,tree_pct_prov,tree_total_unprov,tree_correct_unprov,tree_pct_unprov" > "$SMALL_PERCENT"
+# Step 2: aggregate percentage per (logic, prover),
+# with preferred logic order and zip/tree on separate rows.
+echo "logic,prover,total_num,solved_num,solved_percent,_p_num,_p_solved,_p_solved_percent,_n_num,_n_solved,_n_solved_percent" > "$SIZE_PERCENT"
 
 awk -F, '
 NR>1 {
-  # SMALL_RAW: group,logic,prover,formula,n,size,runtime,expected,res,correct
+  # SIZE_RAW: group,logic,prover,formula,n,size,runtime,expected,res,correct
   logic    = $2
   prover   = $3
   expected = $8
-  corr     = $10  # correct 列 (Y/N)
+  corr     = $10  # Y/N
 
   # 我们只关心 expected 为 True/False 的条目
   if (expected != "True" && expected != "False") {
@@ -156,71 +160,74 @@ NR>1 {
 
   key = logic ":" prover
 
-  # overall 统计
+  # overall
   total_all[key]++
   if (corr == "Y") {
-    correct_all[key]++
+    solved_all[key]++
   }
 
-  # provable / unprovable 统计
+  # provable (expected = True)
   if (expected == "True") {
-    total_prov[key]++
+    total_p[key]++
     if (corr == "Y") {
-      correct_prov[key]++
-    }
-  } else if (expected == "False") {
-    total_unprov[key]++
-    if (corr == "Y") {
-      correct_unprov[key]++
+      solved_p[key]++
     }
   }
 
-  has_logic[logic] = 1
+  # unprovable (expected = False)
+  if (expected == "False") {
+    total_n[key]++
+    if (corr == "Y") {
+      solved_n[key]++
+    }
+  }
 }
 END {
-  for (logic in has_logic) {
-    # 为了把 zip / tree 放在同一行，先算 zip，再算 tree，最后一起 printf
+  # 固定逻辑顺序
+  logic_order[1] = "K"
+  logic_order[2] = "K4"
+  logic_order[3] = "D"
+  logic_order[4] = "D4"
+  logic_order[5] = "T"
+  logic_order[6] = "S4"
+  logic_order[7] = "K45"
+  logic_order[8] = "D45"
+  logic_order[9] = "GL"
 
-    # ----- zip -----
-    key_zip = logic ":zip"
+  provers[1] = "zip"
+  provers[2] = "tree"
 
-    tz_all = ((key_zip in total_all)     ? total_all[key_zip]     : 0)
-    cz_all = ((key_zip in correct_all)   ? correct_all[key_zip]   : 0)
-    pz_all = (tz_all > 0 ? 100.0 * cz_all / tz_all : 0)
+  for (i = 1; i <= 9; i++) {
+    logic = logic_order[i]
 
-    tz_prov = ((key_zip in total_prov)   ? total_prov[key_zip]    : 0)
-    cz_prov = ((key_zip in correct_prov) ? correct_prov[key_zip]  : 0)
-    pz_prov = (tz_prov > 0 ? 100.0 * cz_prov / tz_prov : 0)
+    for (j = 1; j <= 2; j++) {
+      prover = provers[j]
+      key = logic ":" prover
 
-    tz_unprov = ((key_zip in total_unprov)   ? total_unprov[key_zip]    : 0)
-    cz_unprov = ((key_zip in correct_unprov) ? correct_unprov[key_zip]  : 0)
-    pz_unprov = (tz_unprov > 0 ? 100.0 * cz_unprov / tz_unprov : 0)
+      # overall
+      ta = ((key in total_all)   ? total_all[key]   : 0)
+      sa = ((key in solved_all)  ? solved_all[key]  : 0)
+      pa = (ta > 0 ? 100.0 * sa / ta : 0)
 
-    # ----- tree -----
-    key_tree = logic ":tree"
+      # provable (_p)
+      tp = ((key in total_p)     ? total_p[key]     : 0)
+      sp = ((key in solved_p)    ? solved_p[key]    : 0)
+      pp = (tp > 0 ? 100.0 * sp / tp : 0)
 
-    tt_all = ((key_tree in total_all)     ? total_all[key_tree]     : 0)
-    ct_all = ((key_tree in correct_all)   ? correct_all[key_tree]   : 0)
-    pt_all = (tt_all > 0 ? 100.0 * ct_all / tt_all : 0)
+      # unprovable (_n)
+      tn = ((key in total_n)     ? total_n[key]     : 0)
+      sn = ((key in solved_n)    ? solved_n[key]    : 0)
+      pn = (tn > 0 ? 100.0 * sn / tn : 0)
 
-    tt_prov = ((key_tree in total_prov)   ? total_prov[key_tree]    : 0)
-    ct_prov = ((key_tree in correct_prov) ? correct_prov[key_tree]  : 0)
-    pt_prov = (tt_prov > 0 ? 100.0 * ct_prov / tt_prov : 0)
-
-    tt_unprov = ((key_tree in total_unprov)   ? total_unprov[key_tree]    : 0)
-    ct_unprov = ((key_tree in correct_unprov) ? correct_unprov[key_tree]  : 0)
-    pt_unprov = (tt_unprov > 0 ? 100.0 * ct_unprov / tt_unprov : 0)
-
-    # 输出一行：logic + zip(3×3列) + tree(3×3列)
-    printf "%s,%d,%d,%.2f,%d,%d,%.2f,%d,%d,%.2f,%d,%d,%.2f,%d,%d,%.2f,%d,%d,%.2f\n",
-      logic,
-      tz_all,   cz_all,   pz_all,
-      tz_prov,  cz_prov,  pz_prov,
-      tz_unprov,cz_unprov,pz_unprov,
-      tt_all,   ct_all,   pt_all,
-      tt_prov,  ct_prov,  pt_prov,
-      tt_unprov,ct_unprov,pt_unprov
+      # 一行一个 (logic, prover)
+      # logic,prover,total,solved,%,_p_num,_p_solved,_p_%,_n_num,_n_solved,_n_%
+      printf "%s,%s,%d,%d,%.2f,%d,%d,%.2f,%d,%d,%.2f\n",
+        logic, prover,
+        ta, sa, pa,
+        tp, sp, pp,
+        tn, sn, pn
+    }
   }
-}' "$SMALL_RAW" >> "$SMALL_PERCENT"
+}' "$SIZE_RAW" >> "$SIZE_PERCENT"
 
-echo "Size-limited percentages written to: $SMALL_PERCENT"
+echo "Size-limited percentages written to: $SIZE_PERCENT"
