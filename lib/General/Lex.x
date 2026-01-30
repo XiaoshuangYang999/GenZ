@@ -48,7 +48,7 @@ tokens :-
   "["               { \ p _ -> TokenBoxL              p }
   "]"               { \ p _ -> TokenBoxR              p }
   -- Strings:
-  [$alf $dig]+      { \ p s -> TokenString s          p }
+  [$alf $dig _]+      { \ p s -> TokenString s          p }
   -- Special chars:
   "𝑝"               { \ p _ -> TokenString "p"        p }
 
