@@ -4,7 +4,7 @@ module TestParseILTP where
 import System.Directory
 import System.FilePath
 import Control.Monad
-import FormP.Parse
+import FormP.ParseTPTP
 
 -- check this directory
 checkOneDir :: FilePath -> IO ()

@@ -12,6 +12,7 @@ import FormP
 import FormM
 import FormM.Parse
 import FormP.Parse
+import FormP.ParseTPTP
 
 import qualified Logic.Propositional.CPL as CPL
 import qualified Logic.Propositional.IPL as IPL
@@ -27,8 +28,11 @@ import qualified Logic.Modal.T as T
 
 data Input = FileInput FilePath | DirectInput String | StdInput
 
+data InputFormat = InSingle | InTPTP
+
 data Config = Config
   { input :: Input
+  , inFormat :: InputFormat
   , tree :: Bool
   , negate :: Bool
   , debug :: Bool
@@ -41,10 +45,15 @@ main = runGenZ =<< execParser opts where
     <> header "genz - a generic sequent calculus prover with zippers")
 
 runGenZ :: Config -> IO ()
-runGenZ (Config inp useTree negIn deb prFormat myL) = do
-  form_s <- case inp of FileInput file  -> readFile file -- TODO: ignore "begin" and "end" here or in Lexer/Parser?
-                        DirectInput f_s -> return f_s
-                        StdInput        -> getContents -- TODO same
+runGenZ (Config inp inf useTree negIn deb prFormat myL) = do
+  form_in <- case inp of FileInput file  -> readFile file -- TODO: ignore "begin" and "end" here or in Lexer/Parser?
+                         DirectInput f_s -> return f_s
+                         StdInput        -> getContents -- TODO same
+
+  let form_s = case inf of InSingle -> form_in
+                           InTPTP -> case rewriteTPTPProblem form_in of Left _ -> error "Could not parse TPTP file"
+                                                                        Right fs -> fs
+
   let tl = case myLex form_s of Left errs -> error $ unlines errs
                                 Right tl_ -> tl_
   putStrLn $ case myL of
@@ -73,6 +82,13 @@ prChoose False Buss  l = concatMap tex . take 1 . proveZ l
 configP :: Parser Config
 configP = Config
       <$> inputP
+      <*> option (maybeReader inputFormatR)
+          ( long "input"
+         <> short 'i'
+         <> help "Input format: single, tptp"
+         <> showDefaultWith ppInputFormat
+         <> value InSingle
+         <> metavar "INPUT" )
       <*> Options.Applicative.switch
           ( long "tree"
          <> short 't'
@@ -99,6 +115,17 @@ configP = Config
          <> showDefaultWith (\ case Left l -> name l; Right l -> name l)
          <> value (Right K.k)
          <> metavar "LOGIC" )
+
+ppInputFormat :: InputFormat -> String
+ppInputFormat InSingle = "single"
+ppInputFormat InTPTP  = "tptp"
+
+inputFormatR :: String -> Maybe InputFormat
+inputFormatR i_s = case i_s of
+  "single" -> return InSingle
+  "tptp" -> return InTPTP
+  "TPTP" -> return InTPTP
+  _ -> error $ "Unknown input format: " ++ i_s
 
 data ProofFormat = None | Plain | Buss
 
