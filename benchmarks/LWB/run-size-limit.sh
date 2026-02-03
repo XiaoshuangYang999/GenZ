@@ -34,7 +34,7 @@ START_N=1
 LAST_N=21
 
 # time limit
-TIMEOUT=1
+TIMEOUT=300
 
 # size limit
 SIZE_LIMIT=300
@@ -48,16 +48,16 @@ mk_input_file() {
 # output logs path
 mk_out_log() {
   local group="$1" logic="$2" prover="$3" formula="$4" n="$5"
-  echo "logs/${group}/${logic}/${prover}.${formula}.txt.${n}.log"
+  echo "logs/${TIMEOUT}s/${group}/${logic}/${prover}.${formula}.txt.${n}.log"
 }
 mk_time_log() {
   local group="$1" logic="$2" prover="$3" formula="$4" n="$5"
-  echo "logs/${group}/${logic}/${prover}.${formula}.txt.${n}.time"
+  echo "logs/${TIMEOUT}s/${group}/${logic}/${prover}.${formula}.txt.${n}.time"
 }
 
 # results files for size-limited runs
-SIZE_RAW="bench_size_raw.csv"
-SIZE_PERCENT="bench_size_percent.csv"
+SIZE_RAW="size${SIZE_LIMIT}_${TIMEOUT}s_raw.csv"
+SIZE_PERCENT="size${SIZE_LIMIT}_${TIMEOUT}s_percent.csv"
 
 echo "group,logic,prover,formula,index,size,runtime,expected,res,correct" > "$SIZE_RAW"
 
@@ -101,16 +101,9 @@ for group in $ALL_GROUPS; do
 
           echo "      running genz $prover: logic=$logic, formula=$formula, n=$n, size=$size_n, file=$file"
 
-          # 用 time 记录带小数的运行时间，输出写到 $time_log
           /usr/bin/time -p timeout ${TIMEOUT}s genz $GENZ_MODE -d -n -l "$logic" -f "$file" > "$out_log" 2> "$time_log"
           status=$?
-
-          # 从 time 的输出里抽取第一个字段作为运行时间（秒，可以带小数）
-          # macOS 上 /usr/bin/time 默认格式是：  0.02 real   0.00 user   0.00 sys
-          # 所以取第一个字段即可
-                    # 从 time 的输出里抽取 real 时间（单位秒，可以带小数）
           runtime=$(awk '/^real / {print $2}' "$time_log")
-
 
           expected=""
           if [[ "$group" == *_p ]]; then
@@ -121,6 +114,7 @@ for group in $ALL_GROUPS; do
 
           if [ "$status" -eq 124 ]; then
             res="Timeout"
+            runtime="$TIMEOUT"
           else
             if grep -q "True" "$out_log"; then
               res="True"
@@ -141,8 +135,7 @@ for group in $ALL_GROUPS; do
   done
 done
 
-# Step 2: aggregate percentage per (logic, prover),
-# with preferred logic order and zip/tree on separate rows.
+# Step 2: aggregate percentage per (logic, prover)
 echo "logic,prover,total_num,solved_num,solved_percent,_p_num,_p_solved,_p_solved_percent,_n_num,_n_solved,_n_solved_percent" > "$SIZE_PERCENT"
 
 awk -F, '
@@ -153,7 +146,6 @@ NR>1 {
   expected = $8
   corr     = $10  # Y/N
 
-  # 我们只关心 expected 为 True/False 的条目
   if (expected != "True" && expected != "False") {
     next
   }
@@ -183,7 +175,6 @@ NR>1 {
   }
 }
 END {
-  # 固定逻辑顺序
   logic_order[1] = "K"
   logic_order[2] = "K4"
   logic_order[3] = "D"
