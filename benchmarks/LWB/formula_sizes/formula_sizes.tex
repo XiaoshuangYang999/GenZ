@@ -1,0 +1,33 @@
+% This file was assisted by ChatGPT.
+\documentclass{article}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepackage{pgfplotstable}
+
+\begin{document}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=1.0\textwidth,
+      height=8cm,
+      xlabel={Formula size},
+      ylabel={Frequency},
+      xmin=0, xmax=5000,
+      ymin=0,
+      xtick distance=1000,
+      ytick distance=5,
+      grid=major,
+      grid style={dashed, gray!30},
+      thick,
+      enlargelimits=false,
+      smooth,
+      no markers,
+    ]
+      \addplot+[blue] table [x=size, y=count, col sep=comma] {size_histogram.csv};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Formula size distribution (up to size 5,000)}
+\end{figure}
+\end{document}
