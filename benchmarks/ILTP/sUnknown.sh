@@ -1,12 +1,15 @@
 #!/bin/bash
-#SBATCH --job-name=GenZ
+#SBATCH --job-name=GenZ-IPL-unknown
 #SBATCH --time 25:00:00
-#SBATCH --partition=rome
+#SBATCH --partition=genoa
 #SBATCH --output=../slurm_logs/%j.out
 #SBATCH --error=../slurm_logs/%j.err
+#SBATCH --mem=128G
+#SBATCH --nodes=1
+#SBATCH --exclusive
 
 LOG_DIR="../slurm_logs"
 mkdir -p "$LOG_DIR"
 
-chmond +x run-all-form-all.sh
-./run-all-form-all.sh
+
+sh run-unknown.sh

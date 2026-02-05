@@ -1,0 +1,83 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{tikz}
+
+\title{Size Distribution of ILTP Propositional Benchmarks}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=0.95\textwidth,
+      height=8cm,
+      xlabel={Formula size},
+      ylabel={Count},
+      grid=major,
+      grid style={dashed,gray!30},
+      legend style={at={(0.02,0.98)},anchor=north west},
+      legend cell align=left,
+      % 视情况打开/调整：
+      % xmax=5000,
+      % xmode=log,
+    ]
+
+      % Theorem group
+      \addplot+[mark=none, thick, blue]
+        table[
+          x=size,
+          y=count,
+          col sep=comma,
+          row predicate/.code={%
+            \ifnum\pdfstrcmp{\thisrow{group}}{theorem}=0
+            \else
+              \filterrowtrue
+            \fi
+          },
+        ]{size_counts.csv};
+      \addlegendentry{Theorem}
+
+      % Non-theorem group
+      \addplot+[mark=none, thick, red]
+        table[
+          x=size,
+          y=count,
+          col sep=comma,
+          row predicate/.code={%
+            \ifnum\pdfstrcmp{\thisrow{group}}{non_theorem}=0
+            \else
+              \filterrowtrue
+            \fi
+          },
+        ]{size_counts.csv};
+      \addlegendentry{Non-theorem}
+
+      % Unknown group
+      \addplot+[mark=none, thick, green!60!black]
+        table[
+          x=size,
+          y=count,
+          col sep=comma,
+          row predicate/.code={%
+            \ifnum\pdfstrcmp{\thisrow{group}}{unknown}=0
+            \else
+              \filterrowtrue
+            \fi
+          },
+        ]{size_counts.csv};
+      \addlegendentry{Unknown}
+
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Size distribution of ILTP benchmarks by group.}
+\end{figure}
+
+\end{document}
