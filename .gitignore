@@ -38,3 +38,6 @@ bench/results*
 /benchmarks/LWB/logs_300_600/k_n/K
 *.pdf
 *.numbers
+*.time
+*.err
+

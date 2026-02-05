@@ -12,6 +12,9 @@ cradle:
     - path: "./exec/form-size.hs"
       component: "GenZ:exe:form-size"
 
+    - path: "./exec/tptp-size.hs"
+      component: "GenZ:exe:tptp-size"
+
     - path: "./exec/Paths_GenZ.hs"
       component: "GenZ:exe:genz"
 
