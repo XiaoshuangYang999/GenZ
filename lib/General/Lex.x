@@ -40,10 +40,12 @@ tokens :-
   "<-->"            { \ p _ -> TokenEqui              p }
   "↔"               { \ p _ -> TokenEqui              p }
   "◇"               { \ p _ -> TokenDia               p }
+  "♢"               { \ p _ -> TokenDia               p }
   "<"               { \ p _ -> TokenDiaL              p }
   ">"               { \ p _ -> TokenDiaR              p }
   "☐"               { \ p _ -> TokenBox               p }
   "◻"               { \ p _ -> TokenBox               p }
+  "□"               { \ p _ -> TokenBox               p }
   "[]"              { \ p _ -> TokenBox               p }
   "["               { \ p _ -> TokenBoxL              p }
   "]"               { \ p _ -> TokenBoxR              p }
