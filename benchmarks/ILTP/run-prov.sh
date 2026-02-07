@@ -2,8 +2,8 @@
 # This script was assisted by ChatGPT.
 
 GROUP=theorem
-TIMEOUT=300
-SIZELIMIT=300
+TIMEOUT=600
+SIZELIMIT=500
 
 OUT_CSV="${SIZELIMIT}_${TIMEOUT}s_${GROUP}.csv"
 

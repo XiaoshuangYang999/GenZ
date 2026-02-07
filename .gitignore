@@ -31,13 +31,10 @@ temp.*
 report.pdf
 bench/results*
 /benchmarks/LWB/logs
-/benchmarks/LWB/logs_1000_2000
-/benchmarks/LWB/logs_300_600/k_p
-/benchmarks/LWB/logs_300_600/s4_n
-/benchmarks/LWB/logs_300_600/s4_p/S4
-/benchmarks/LWB/logs_300_600/k_n/K
+/benchmarks/LWB/old
+/benchmarks/ILTP/logs
+/benchmarks/ILTP/data
 *.pdf
 *.numbers
 *.time
 *.err
-

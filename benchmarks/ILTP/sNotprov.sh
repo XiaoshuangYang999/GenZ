@@ -4,7 +4,7 @@
 #SBATCH --partition=genoa
 #SBATCH --output=../slurm_logs/%j.out
 #SBATCH --error=../slurm_logs/%j.err
-#SBATCH --mem=128G
+#SBATCH --mem=0
 #SBATCH --nodes=1
 #SBATCH --exclusive
 
