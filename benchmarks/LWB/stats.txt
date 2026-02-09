@@ -1,0 +1,139 @@
+300_600s rates
+300, 92 formulas
+prover,D45,D4,D,GL,S4,T,K4,K,K45
+zip,52.17,64.13,91.30,69.57,52.17,70.65,66.30,91.30,75.00
+tree,40.22,45.65,63.04,72.83,48.91,68.48,64.13,93.48,83.70
+250, 79 formulas
+prover,D45,D4,D,GL,S4,T,K4,K,K45
+zip,55.70,65.82,94.94,72.15,53.16,69.62,68.35,93.67,79.75
+tree,43.04,46.84,64.56,73.42,50.63,68.35,65.82,93.67,87.34
+200, 49 formulas
+prover,D45,D4,D,GL,S4,T,K4,K,K45
+zip,67.35,85.71,97.96,91.84,71.43,87.76,87.76,97.96,93.88
+tree,53.06,67.35,77.55,95.92,67.35,87.76,87.76,100.00,95.92
+150, 38 formulas
+prover,D45,D4,D,GL,S4,T,K4,K,K45
+zip,76.32,97.37,100.00,94.74,86.84,94.74,97.37,100.00,97.37
+tree,63.16,78.95,84.21,97.37,84.21,94.74,94.74,100.00,97.37
+
+./gen-success-rate.sh 200 1_200_300s.csv
+prover,D45,D4,D,GL,S4,T,K4,K,K45
+zip,67.35,85.71,97.96,91.84,71.43,87.76,87.76,97.96,93.88
+tree,53.06,67.35,77.55,95.92,65.31,87.76,87.76,100.00,95.92
+
+./run-success-rate.sh 200 2_200_300s.csv
+prover,D45,D4,D,GL,S4,T,K4,K,K45
+zip,67.35,85.71,97.96,91.84,71.43,87.76,87.76,97.96,93.88
+tree,53.06,67.35,77.55,95.92,65.31,87.76,87.76,100.00,95.92
+
+./gen-success-rate.sh 200 all_300_300s.csv
+prover,D45,D4,D,GL,S4,T,K4,K,K45
+zip,67.35,85.71,97.96,91.84,71.43,87.76,87.76,97.96,93.88
+tree,55.10,67.35,81.63,95.92,65.31,87.76,87.76,100.00,95.92
+
+./gen-success-rate.sh 200 all_300_600s.csv
+prover,D45,D4,D,GL,S4,T,K4,K,K45
+zip,67.35,85.71,97.96,91.84,71.43,87.76,87.76,97.96,93.88
+tree,53.06,67.35,77.55,95.92,67.35,87.76,87.76,100.00,95.92
+
+$ ./run-mean-median.sh 1_200_300s_scattered.csv
+cat=zip  n=383  mean(average)=1.0337  median=0.0100
+cat=tree  n=358  mean(average)=1.4837  median=0.0100
+
+$ ./run-mean-median.sh 1_200_300s_classified_true.csv
+cat=zip  n=127  mean(average)=2.9484  median=0.0100
+cat=tree  n=126  mean(average)=2.9370  median=0.0100
+
+$ ./run-mean-median.sh 1_200_300s_classified_false.csv
+cat=zip  n=256  mean(average)=0.0838  median=0.0100
+cat=tree  n=232  mean(average)=0.6945  median=0.0100
+
+$ ./run-mean-median.sh 300_600s_scattered.csv
+cat=zip  n=582  mean(average)=3.9046  median=0.0100
+cat=tree  n=534  mean(average)=6.3965  median=0.0100
+
+$ ./run-mean-median.sh 300_600s_classified_true.csv
+cat=zip  n=210  mean(average)=3.4559  median=0.0100
+cat=tree  n=208  mean(average)=7.8816  median=0.0100
+
+$ ./run-mean-median.sh 300_600s_classified_false.csv
+cat=zip  n=372  mean(average)=4.1579  median=0.0100
+cat=tree  n=326  mean(average)=5.4489  median=0.0100
+
+$ ./run-mean-median-all.sh 300_600s.csv
+logic      prover n     mean         median
+D          zip    92    62.8185      0.0100
+D          tree   92    228.6055     0.1200
+D4         zip    92    220.7035     0.0400
+D4         tree   92    337.2412     600.0000
+D45        zip    92    287.2965     3.3300
+D45        tree   92    358.7880     600.0000
+GL         zip    92    183.5885     0.0100
+GL         tree   92    169.5291     0.0100
+K          zip    92    55.0632      0.0100
+K          tree   92    40.1759      0.0100
+K4         zip    92    202.5096     0.0100
+K4         tree   92    215.9671     0.0100
+K45        zip    92    150.2887     0.0100
+K45        tree   92    101.1200     0.0100
+S4         zip    92    289.9937     65.2200
+S4         tree   92    312.2587     600.0000
+T          zip    92    176.7865     0.1750
+T          tree   92    190.8330     1.1000
+
+# Overall (all logics combined)
+logic      prover n     mean         median
+ALL        zip    828   181.0054     0.0200
+ALL        tree   828   217.1687     0.1200
+
+$ ./run-mean-median-all.sh 1_200_300s.csv
+logic      prover n     mean         median
+D          zip    49    6.6543       0.0100
+D          tree   49    67.9806      0.0100
+D4         zip    49    43.5171      0.0100
+D4         tree   49    98.6343      0.0100
+D45        zip    49    98.5033      0.0200
+D45        tree   49    140.9798     0.6300
+GL         zip    49    26.2169      0.0100
+GL         tree   49    14.3159      0.0100
+K          zip    49    6.5853       0.0100
+K          tree   49    1.1580       0.0100
+K4         zip    49    37.3359      0.0100
+K4         tree   49    37.4592      0.0100
+K45        zip    49    18.8386      0.0100
+K45        tree   49    13.4665      0.0100
+S4         zip    49    88.6088      0.0700
+S4         tree   49    106.4851     0.4200
+T          zip    49    36.9212      0.0200
+T          tree   49    38.5243      0.0600
+
+# Overall (all logics combined)
+logic      prover n     mean         median
+ALL        zip    441   40.3535      0.0100
+ALL        tree   441   57.6671      0.0100
+
+$ ./run-mean-median-all.sh 2_200_300s.csv
+logic      prover n     mean         median
+D          zip    49    6.6584       0.0100
+D          tree   49    67.9933      0.0100
+D4         zip    49    43.5222      0.0100
+D4         tree   49    98.6373      0.0100
+D45        zip    49    98.5029      0.0200
+D45        tree   49    140.9788     0.6300
+GL         zip    49    26.2122      0.0100
+GL         tree   49    14.3218      0.0100
+K          zip    49    6.5873       0.0100
+K          tree   49    1.1543       0.0100
+K4         zip    49    37.3263      0.0100
+K4         tree   49    37.4590      0.0100
+K45        zip    49    18.8329      0.0100
+K45        tree   49    13.4359      0.0100
+S4         zip    49    88.6049      0.0700
+S4         tree   49    106.4812     0.4200
+T          zip    49    36.9206      0.0200
+T          tree   49    38.5206      0.0600
+
+# Overall (all logics combined)
+logic      prover n     mean         median
+ALL        zip    441   40.3520      0.0100
+ALL        tree   441   57.6647      0.0100
