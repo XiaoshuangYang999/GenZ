@@ -11,7 +11,7 @@ import FormP.Parse
 -- NOTE by MG: better would be to properly write a TPTP grammar into Parse.y.
 
 rewriteTPTPProblem :: String -> Either (Int,Int) String
-rewriteTPTPProblem s = do
+rewriteTPTPProblem s = normalizeFormula <$> do
   let blocks  = fofBlocks s                   -- each fof(...) block
       triples = map parseFOFHeader blocks     -- [(name,role,formulaText)]
       axTexts = [ f | (_,label,f) <- triples, label == "axiom" ]
