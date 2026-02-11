@@ -3,7 +3,7 @@
 Covering the following logics:
 
 - Propositional: CPL, IPL
-- Modal: K, K4, T, D, D4, S4, GL
+- Modal: K, K4, K45, T, D, D4, D45, S4, GL
 
 ## Web interface
 
@@ -67,7 +67,8 @@ $ genz --help
 genz - a generic sequent calculus prover with zippers
 
 Usage: genz ((-F|--formula FORMULA) | (-f|--file FILE) | (-s|--stdin))
-            [-t|--tree] [-p|--proofFormat FORMAT] [-l|--logic LOGIC]
+            [-i|--input INPUT] [-t|--tree] [-n|--negate] [-d|--debug]
+            [-p|--proofFormat FORMAT] [-l|--logic LOGIC]
 
   Prove the given FORMULA or the formula in FILE or STDIN.
 
@@ -75,10 +76,13 @@ Available options:
   -F,--formula FORMULA     Formula
   -f,--file FILE           Input file
   -s,--stdin               Read from stdin
+  -i,--input INPUT         Input format: single, tptp (default: single)
   -t,--tree                Use standard trees (default is to use zippers).
+  -n,--negate              Negate the input formula.
+  -d,--debug               Print additional debug information.
   -p,--proofFormat FORMAT  Proof format: none, plain, buss (default: none)
-  -l,--logic LOGIC         Logic to use: CPL, IPL, D, D4, GL, K, K4, S4, T
-                           (default: K)
+  -l,--logic LOGIC         Logic to use: CPL, IPL, D, D4, D45, GL, K, K4, K45,
+                           S4, T (default: K)
   -h,--help                Show this help text
 ```
 
@@ -118,14 +122,21 @@ In the above `k` is `Logic.Modal.K.k :: Logic`, i.e. the proof system.
 
 The prover can generate code for [bussproofs](https://ctan.org/pkg/bussproofs).
 
-    stack ghci lib/GL.hs lib/MForm.hs
+For example
 
-    ghci> texFile $ head $ proveZ GL.gl lobaxiom
+    stack exec genz -- -F "□(□p → p) → □p" -l GL -p buss
 
-This will write code into `temp.tex` and then run `pdflatex` on it.
-The result looks as follows.
+will print the LaTeX code for the following proof:
 
 ![](doc/GL-example.png)
+
+When using *ghci* instead of the `genz` executable, the following
+command can be used to write the code into `temp.tex` and then run
+`pdflatex` on it directly:
+
+    stack ghci lib/Logic/Modal/GL.hs lib/FormM.hs
+
+    ghci> texFile . head . proveZ gl $ ImpM (Box (ImpM (Box (AtM "p")) (AtM "p"))) (Box (AtM "p"))
 
 ## Tests
 
@@ -133,9 +144,13 @@ To run all tests locally, run `stack test`.
 This should not take more than five minutes.
 
 The tests are also run automatically for each commit,
-see <https://github.com/XiaoshuangYang999/Sequent-Calculus-With-Zippers/actions> for results.
+see <https://github.com/XiaoshuangYang999/GenZ/actions> for results.
 
-## Benchmarks
+## LWB Benchmarks
+
+See the `benchmarks` folder for bash scripts to run GenZ on these benchmarks.
+
+## Custom Benchmarks (`bench` folder)
 
 You should have LaTeX and [pandoc](https://pandoc.org/) installed.
 
@@ -148,7 +163,7 @@ run `make bench/runtime-all.pdf` and `make bench/memory-all.pdf`.
 Note: this runtime benchmark will take multiple hours.
 
 Example results are available at
-<https://github.com/XiaoshuangYang999/Sequent-Calculus-With-Zippers/releases>.
+<https://github.com/XiaoshuangYang999/GenZ/releases>.
 
 ## References
 
