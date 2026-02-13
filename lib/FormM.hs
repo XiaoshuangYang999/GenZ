@@ -145,6 +145,15 @@ boxToFewerBox n = ImpM (boxes (n + 1) a1) (boxes n a1)
 lobBoxes:: Int -> FormM
 lobBoxes n = ImpM (Box (ImpM (Box a1) a1)) (boxes n a1)
 
+-- | ◇...◇φ
+diamonds :: Int -> FormM -> FormM
+diamonds 0 f = f
+diamonds n f = Box (boxes (n-1) f)
+
+-- | ◇...◇φ → □...□φ | Holds in D
+boxesToDiamonds :: Int -> FormM
+boxesToDiamonds n = ImpM (boxes n a1) (diamonds n a1)
+
 -- Generate a list of n variables
 listOfAt :: Int -> [FormM]
 listOfAt n = map (AtM . show) $ take n [(3::Integer)..]

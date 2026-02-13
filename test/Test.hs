@@ -130,6 +130,8 @@ main = hspec $ parallel $ do
                     , ("lobBoxes 5"      , lobBoxes 5)
                     , ("boxToMoreBox 5"  , boxToMoreBox 5)
                     , ("boxToFewerBox 5"  , boxToFewerBox 5)
+                    , ("boxesToDiamonds 1" , boxToFewerBox 1)
+                    , ("boxesToDiamonds 5" , boxToFewerBox 5)
                     ])
     testsFor kfour
               (map (Data.Bifunctor.second pTom) posCPropTests
@@ -172,6 +174,8 @@ main = hspec $ parallel $ do
                 ++  posModalTests
                 ++  [ ("Consistency"       , consistency)
                     , ("d Axiom"           , dAxiom)
+                    , ("boxesToDiamonds 1" , boxesToDiamonds 1)
+                    , ("boxesToDiamonds 5" , boxesToDiamonds 5)
                     ])
               (map (Data.Bifunctor.second pTom) negCPropTests
                 ++  negModalTests
@@ -192,6 +196,8 @@ main = hspec $ parallel $ do
                     , ("Consistency"      , consistency)
                     , ("d Axiom"          , dAxiom)
                     , ("boxToMoreBox 5"  , boxToMoreBox 5)
+                    , ("boxesToDiamonds 1" , boxesToDiamonds 1)
+                    , ("boxesToDiamonds 5" , boxesToDiamonds 5)
                     ])
               (map (Data.Bifunctor.second pTom) negCPropTests
                 ++  negModalTests
@@ -267,6 +273,8 @@ main = hspec $ parallel $ do
                     , ("Density"           , density)
                     , ("boxToMoreBox 5"  , boxToMoreBox 5)
                     , ("boxToFewerBox 5"   , boxToFewerBox 5)
+                    , ("boxesToDiamonds 1" , boxesToDiamonds 1)
+                    , ("boxesToDiamonds 5" , boxesToDiamonds 5)
                     ])
               (map (Data.Bifunctor.second pTom) negCPropTests
                 ++  take 2 negModalTests
