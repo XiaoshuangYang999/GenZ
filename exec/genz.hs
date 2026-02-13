@@ -75,9 +75,11 @@ prChoose :: (Show f, Ord f, TeX f) => Bool -> ProofFormat -> Logic f -> (f -> St
 prChoose True  None  l = show . isProvableT l
 prChoose True  Plain l = ppProof        . head . proofsT l
 prChoose True  Buss  l = concatMap tex  . take 1 . proofsT l
+prChoose True  Size  l = show . proofSize . head . proofsT l
 prChoose False None  l = show . isProvableZ l
 prChoose False Plain l = ppProof       . head . proofsZ l
 prChoose False Buss  l = concatMap tex . take 1 . proofsZ l
+prChoose False Size  l = show . proofSize . head . proofsZ l
 
 configP :: Parser Config
 configP = Config
@@ -127,18 +129,20 @@ inputFormatR i_s = case i_s of
   "TPTP" -> return InTPTP
   _ -> error $ "Unknown input format: " ++ i_s
 
-data ProofFormat = None | Plain | Buss
+data ProofFormat = None | Plain | Buss | Size
 
 ppProofFormat :: ProofFormat -> String
 ppProofFormat None  = "none"
 ppProofFormat Plain = "plain"
 ppProofFormat Buss  = "buss"
+ppProofFormat Size  = "size"
 
 outputR :: String -> Maybe ProofFormat
 outputR o_s = case o_s of
   "none" -> return None
   "plain" -> return Plain
   "buss" -> return Buss
+  "size" -> return Size
   _ -> error $ "Unknown output format: " ++ o_s
 
 type MyLogic = (Either (Logic FormP) (Logic FormM))
