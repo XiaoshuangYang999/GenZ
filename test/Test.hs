@@ -5,6 +5,7 @@ import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Data.Bifunctor
 
+import Basics
 import General
 import FormP
 import FormM
@@ -77,8 +78,28 @@ atMostBinTest l = do
         prop ("GenT for " ++ name l) $
           \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveT l f
 
+-- | Check that "isProvable" implies that "proofs" only returns closed proofs.
+provabilityTest :: (Arbitrary f, Show f, Ord f, PropLog f) => Logic f -> SpecWith ()
+provabilityTest l = do
+  prop (name l) $
+    \ f -> discardAfter limit $ isProvableZ l f ==> all getTruth (proofsZ l f)
+  prop (name l) $
+    \ f -> discardAfter limit $ isProvableT l f ==> all getTruth (proofsT l f)
+
 main :: IO ()
 main = hspec $ parallel $ do
+
+  describe "Internal helper functions" $ do
+    prop "filterIfAny agrees with filterIfAny'" $
+      \ f xs -> filterIfAny (applyFun f) (xs :: [Int]) === filterIfAny' (applyFun f) xs
+    prop "filterIfAny agrees with filterIfAny' when actually filtering" $
+      \ f xs -> filterIfAny (applyFun f) xs /= xs ==>
+        filterIfAny (applyFun f) (xs :: [Int]) === filterIfAny' (applyFun f) xs
+    modifyMaxDiscardRatio (* 100) $
+      prop "filterIfAny agrees with filterIfAny' when changing nothing" $
+        \ f xs -> filterIfAny (applyFun f) xs == xs ==>
+          filterIfAny (applyFun f) (xs :: [Int]) === filterIfAny' (applyFun f) xs
+
   describe "Unit tests" $ do
     testsFor classical posCPropTests negCPropTests
     testsFor intui
@@ -130,6 +151,8 @@ main = hspec $ parallel $ do
                     , ("lobBoxes 5"      , lobBoxes 5)
                     , ("boxToMoreBox 5"  , boxToMoreBox 5)
                     , ("boxToFewerBox 5"  , boxToFewerBox 5)
+                    , ("boxesToDiamonds 1" , boxToFewerBox 1)
+                    , ("boxesToDiamonds 5" , boxToFewerBox 5)
                     ])
     testsFor kfour
               (map (Data.Bifunctor.second pTom) posCPropTests
@@ -172,6 +195,8 @@ main = hspec $ parallel $ do
                 ++  posModalTests
                 ++  [ ("Consistency"       , consistency)
                     , ("d Axiom"           , dAxiom)
+                    , ("boxesToDiamonds 1" , boxesToDiamonds 1)
+                    , ("boxesToDiamonds 5" , boxesToDiamonds 5)
                     ])
               (map (Data.Bifunctor.second pTom) negCPropTests
                 ++  negModalTests
@@ -192,6 +217,8 @@ main = hspec $ parallel $ do
                     , ("Consistency"      , consistency)
                     , ("d Axiom"          , dAxiom)
                     , ("boxToMoreBox 5"  , boxToMoreBox 5)
+                    , ("boxesToDiamonds 1" , boxesToDiamonds 1)
+                    , ("boxesToDiamonds 5" , boxesToDiamonds 5)
                     ])
               (map (Data.Bifunctor.second pTom) negCPropTests
                 ++  negModalTests
@@ -267,6 +294,8 @@ main = hspec $ parallel $ do
                     , ("Density"           , density)
                     , ("boxToMoreBox 5"  , boxToMoreBox 5)
                     , ("boxToFewerBox 5"   , boxToFewerBox 5)
+                    , ("boxesToDiamonds 1" , boxesToDiamonds 1)
+                    , ("boxesToDiamonds 5" , boxesToDiamonds 5)
                     ])
               (map (Data.Bifunctor.second pTom) negCPropTests
                 ++  take 2 negModalTests
@@ -302,6 +331,10 @@ main = hspec $ parallel $ do
       atMostBinTest dfour
       atMostBinTest kfourfive
       atMostBinTest dfourfive
+
+    describe "'isProvable' implies that all 'proofs' are closed" $ modifyMaxDiscardRatio (* 10) $ do
+      mapM_ provabilityTest [classical,intui]
+      mapM_ provabilityTest [k,kfour,sfour,gl,t,d,dfour,kfourfive, dfourfive]
 
     describe "If f and g isProvable, then Con f g isProvable" $ do
       conCheck [classical,intui]
