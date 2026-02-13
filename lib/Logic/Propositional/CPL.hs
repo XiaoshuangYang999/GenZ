@@ -7,7 +7,8 @@ import FormP
 classical :: Logic FormP
 classical = Log { name = "CPL"
                 , safeRules   = [leftBot, isAxiom, replaceRule safeCPL]
-                , unsafeRules = [] }
+                , unsafeRules = []
+                }
 
 {-
    Γ, φ, ψ  ⇒ ∆

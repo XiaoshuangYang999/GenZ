@@ -9,20 +9,20 @@ import FormM
 
 dfourfive :: Logic FormM
 dfourfive = Log { name = "D45"
-            , safeRules   = [leftBot, isAxiom, replaceRule safeML]
-            , unsafeRules = [kfourfiverule,dfourfiverule] }
+                , safeRules   = [leftBot, isAxiom, replaceRule safeML]
+                , unsafeRules = [boxK45rule,boxD45rule]
+                }
 
 {-
-CPL + k45 rule(global loopcheck) + d45 rule(global loopcheck):
+CPL(safe) + ☐k45 rule(unsafe + global loopcheck) + ☐d45 rule(unsafe + global loopcheck):
           □Γ1, Γ2 ⇒ □∆, φ
-☐k45  Γ', □Γ1, □Γ2⇒ □∆, □φ, ∆'        ∆ must be nonempty
+☐k45  Γ', □Γ1, □Γ2⇒ □∆, □φ, ∆'
           □Γ1, Γ2 ⇒ □∆
-☐d45  Γ', □Γ1, □Γ2⇒ □∆, ∆'            ∆ must be nonempty
-
+☐d45  Γ', □Γ1, □Γ2⇒ □∆, ∆'
 -}
 
-dfourfiverule :: Rule FormM
-dfourfiverule hs fs _ =
+boxD45rule :: Rule FormM
+boxD45rule hs fs _ =
   concatMap (globalLoopCheckMap "☐d45" (fs:hs)) premises
  where
   -- { □Γ1 ∪ □Γ2 }

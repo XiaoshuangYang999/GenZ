@@ -9,10 +9,11 @@ import FormP
 intui :: Logic FormP
 intui = Log { name = "IPL"
             , safeRules   = [leftBot, isAxiom, additionRule safeIPL]
-            , unsafeRules = [additionRuleNoLoop unsafeIPL] }
+            , unsafeRules = [additionRuleNoLoop unsafeIPL]
+            }
 
 {-
--- Saturated saferules: local loopcheck needed
+-- Saturated saferules(local loopcheck)
     Γ, φ ∧ ψ, φ, ψ  ⇒ ∆
 ∧L  Γ, φ ∧ ψ ⇒ ∆
     Γ, φ ∨ ψ, φ ⇒ ∆    Γ, φ ∨ ψ, ψ ⇒ ∆
@@ -23,7 +24,7 @@ intui = Log { name = "IPL"
 ∧R  Γ ⇒ ∆, φ ∧ ψ
     Γ ⇒ ∆, φ ∨ ψ, φ, ψ
 ∨R  Γ ⇒ ∆, φ ∨ ψ
--- Unsaferule : local and global loopchecks needed
+-- Unsaferule(local + global loopcheck)
     Γ, φ ⇒ ψ
 →iR Γ ⇒ ∆, φ → ψ
 -}

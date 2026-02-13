@@ -8,18 +8,19 @@ import FormM
 d :: Logic FormM
 d = Log { name = "D"
         , safeRules   = [leftBot, isAxiom, replaceRule safeML]
-        , unsafeRules = [krule,drule]}
+        , unsafeRules = [boxKrule,boxDrule]
+        }
 
 {-
-CPL + k rule + d rule:
+CPL(safe) + ☐k rule(unsafe) + ☐d rule(unsafe):
               Γ ⇒ φ
 ☐k       Γ', □Γ ⇒ □φ, ∆
            Γ, φ ⇒
 ☐d   Γ', □Γ, □φ ⇒ ∆
 -}
 
-drule :: Rule FormM
-drule _ fs (Left (Box f)) = Set.toList $ Set.map (func f) $ Set.powerSet . removeBoxLeft $ Set.delete (Left (Box f)) fs where
+boxDrule :: Rule FormM
+boxDrule _ fs (Left (Box f)) = Set.toList $ Set.map (func f) $ Set.powerSet . removeBoxLeft $ Set.delete (Left (Box f)) fs where
   func :: FormM -> Sequent FormM -> (RuleName,[Sequent FormM])
   func g seqs = ("☐d", [Set.insert (Left g) seqs])
-drule _ _ _ = []
+boxDrule _ _ _ = []

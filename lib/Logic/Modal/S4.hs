@@ -8,11 +8,12 @@ import FormM
 
 sfour :: Logic FormM
 sfour = Log { name = "S4"
-            , safeRules   = [leftBot, isAxiom, additionRule safeML, trule]
-            , unsafeRules = [fourrule] }
+            , safeRules   = [leftBot, isAxiom, additionRule safeML, boxTrule]
+            , unsafeRules = [box4rule]
+            }
 
 {-
-saturated CPL(local loopcheck) + t rule(safe + local loopcheck) + 4 rule(global loopcheck):
+saturated CPL(safe + local loopcheck) + ☐t rule(safe + local loopcheck) + ☐4 rule(unsafe + global loopcheck):
     φ, □φ, Γ ⇒ ∆
 ☐t     □φ, Γ ⇒ ∆
        Γ, □Γ ⇒ φ

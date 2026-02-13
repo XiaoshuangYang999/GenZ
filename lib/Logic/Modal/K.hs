@@ -8,10 +8,11 @@ import FormM
 k :: Logic FormM
 k = Log { name = "K"
         , safeRules   = [leftBot, isAxiom, replaceRule safeML]
-        , unsafeRules = [krule] }
+        , unsafeRules = [boxKrule]
+        }
 
 {-
-CPL + k rule:
+CPL(safe) + ☐k rule(unsafe):
               Γ ⇒ φ
 ☐k       Γ', □Γ ⇒ □φ, ∆
 -}
@@ -25,11 +26,11 @@ safeML (Right (DisM f g)) = [("vR", [Set.fromList [Right g, Right f]])]
 safeML (Right (ImpM f g)) = [("→R", [Set.fromList [Right g, Left f]])]
 safeML _                  = []
 
-krule :: Rule FormM
-krule _ fs (Right (Box f)) = Set.toList $ Set.map (func f) $ Set.powerSet . removeBoxLeft $ fs where
+boxKrule :: Rule FormM
+boxKrule _ fs (Right (Box f)) = Set.toList $ Set.map (func f) $ Set.powerSet . removeBoxLeft $ fs where
   func :: FormM -> Sequent FormM -> (RuleName,[Sequent FormM])
   func g seqs = ("☐k", [Set.insert (Right g) seqs])
-krule _ _ _ = []
+boxKrule _ _ _ = []
 
 removeBoxLeft :: Sequent FormM -> Sequent FormM
 removeBoxLeft  = setComprehension isLeftBox fromBox

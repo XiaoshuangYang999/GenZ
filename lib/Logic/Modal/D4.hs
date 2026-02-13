@@ -9,10 +9,11 @@ import FormM
 dfour :: Logic FormM
 dfour = Log { name = "D4"
             , safeRules   = [leftBot, isAxiom, replaceRule safeML]
-            , unsafeRules = [fourrule,drule]}
+            , unsafeRules = [boxDrule,box4rule]
+            }
 
 {-
-CPL + d rule + 4 rule(global loopcheck):
+CPL(safe) + ☐d rule(unsafe) + ☐4 rule(unsafe + global loopcheck):
           Γ, φ ⇒
 ☐d  Γ', □Γ, □φ ⇒ ∆
          Γ, □Γ ⇒ φ

@@ -8,21 +8,22 @@ import FormM
 
 t :: Logic FormM
 t = Log { name = "T"
-        , safeRules   = [leftBot, isAxiom, additionRule safeML,trule]
-        , unsafeRules = [krule]}
+        , safeRules   = [leftBot, isAxiom, additionRule safeML,boxTrule]
+        , unsafeRules = [boxKrule]
+        }
 
 {-
-saturated CPL(local loopcheck) + k rule + t rule(safe +local loopcheck):
-           Γ ⇒ φ
-☐k    Γ', □Γ ⇒ □φ, ∆
+saturated CPL(safe + local loopcheck) + ☐t rule(safe +local loopcheck) + ☐k rule(unsafe):
     φ, □φ, Γ ⇒ ∆
 ☐t     □φ, Γ ⇒ ∆
+           Γ ⇒ φ
+☐k    Γ', □Γ ⇒ □φ, ∆
 -}
 
 -- | The T box rule. Involve local loopcheck
-trule :: Rule FormM
-trule _ fs (Left (Box f)) = [("☐t", [Set.insert (Left f) fs]) | Left f `notElem` fs]
-trule _ _ _ = []
+boxTrule :: Rule FormM
+boxTrule _ fs (Left (Box f)) = [("☐t", [Set.insert (Left f) fs]) | Left f `notElem` fs]
+boxTrule _ _ _ = []
 
 -- | Local loopcheck: Is this sequent saturated?
 localLoopCheck :: Sequent FormM -> Either FormM FormM -> Bool

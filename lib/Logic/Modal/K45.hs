@@ -8,17 +8,18 @@ import FormM
 
 kfourfive :: Logic FormM
 kfourfive = Log { name = "K45"
-            , safeRules   = [leftBot, isAxiom, replaceRule safeML]
-            , unsafeRules = [kfourfiverule] }
+                , safeRules   = [leftBot, isAxiom, replaceRule safeML]
+                , unsafeRules = [boxK45rule]
+                }
 
 {-
-CPL + k45 rule(global loopcheck):
+CPL(safe) + ☐k45 rule(unsafe + global loopcheck):
           □Γ1, Γ2 ⇒ □∆, φ
-☐k45  Γ', □Γ1, □Γ2⇒ □∆, □φ, ∆'         ∆ can be nonempty
+☐k45  Γ', □Γ1, □Γ2⇒ □∆, □φ, ∆'
 -}
 
-kfourfiverule :: Rule FormM
-kfourfiverule hs fs (Right (Box f)) =
+boxK45rule :: Rule FormM
+boxK45rule hs fs (Right (Box f)) =
   concatMap (globalLoopCheckMap "☐k45" (fs:hs)) premises
  where
   -- { □Γ1 ∪ □Γ2 }
@@ -43,7 +44,7 @@ kfourfiverule hs fs (Right (Box f)) =
     | delta <- deltaS
     , (boxGamma1, boxGamma2) <- boxGammaPartitions
     ]
-kfourfiverule _ _ _ = []
+boxK45rule _ _ _ = []
 
 -- Generate all ordered partitions of a set. O(n·2^n)
 partitionDrop :: Ord a => Set.Set a -> [(Set.Set a, Set.Set a)]
