@@ -25,6 +25,11 @@ data Proof f = Node (Sequent f) (Maybe (RuleName, [Proof f])) Bool
 getTruth :: Proof f -> Bool
 getTruth (Node _ _ b) = b
 
+-- | Proof size
+proofSize :: Proof f -> Int
+proofSize (Node _ Nothing _) = 1
+proofSize (Node _ (Just (_, ts)) _) = 1 + sum (map proofSize ts)
+
 -- * Histories, Rules, Logics
 
 type History f = [Sequent f]
