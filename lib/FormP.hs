@@ -86,9 +86,9 @@ doubleNegation = iff (neg (neg p)) p
 doubleNegationR :: FormP
 doubleNegationR = ImpP p (neg (neg p))
 
--- | Pierce's Law
-pierce :: FormP
-pierce = ImpP (ImpP (ImpP p q) p) p
+-- | Peirce's Law
+peirce :: FormP
+peirce = ImpP (ImpP (ImpP p q) p) p
 
 -- | Double negation of excluded middle
 dnEM :: FormP
@@ -98,7 +98,7 @@ dnEM = neg $ neg excludedMiddle
 t1,t2,t3,t4,t5,t6:: FormP
 [t1,t2,t3,t4,t5,t6] = [ ImpP p p
                 , ImpP (ImpP p (ImpP p q)) (ImpP p q)
-                , ImpP (ImpP pierce q) q
+                , ImpP (ImpP peirce q) q
                 , ConP r excludedMiddle
                 , neg $ neg $ ImpP p (ImpP q r)
                 , neg $ neg $ DisP p $ neg q
@@ -134,36 +134,36 @@ disTopR k = foldr DisP top (replicate k top )
 disTopL :: Int -> FormP
 disTopL k = foldl DisP top (replicate k top )
 -- True in CPL, false in IPL
-conPieR :: Int -> FormP
-conPieR k = foldr ConP pierce (replicate (2*k) pierce )
+conPeiR :: Int -> FormP
+conPeiR k = foldr ConP peirce (replicate (2*k) peirce )
 -- True in CPL, false in IPL
-conPieL :: Int -> FormP
-conPieL k = foldl ConP pierce (replicate (2*k) pierce )
+conPeiL :: Int -> FormP
+conPeiL k = foldl ConP peirce (replicate (2*k) peirce )
 -- True in CPL, false in IPL
-disPieR :: Int -> FormP
-disPieR k = foldr DisP pierce (replicate (2*k) pierce )
+disPeiR :: Int -> FormP
+disPeiR k = foldr DisP peirce (replicate (2*k) peirce )
 -- True in CPL, false in IPL
-disPieL :: Int -> FormP
-disPieL k = foldl DisP pierce (replicate (2*k) pierce )
+disPeiL :: Int -> FormP
+disPeiL k = foldl DisP peirce (replicate (2*k) peirce )
 -- True in CPL, IPL
-disPhiPieR :: Int -> FormP
-disPhiPieR k = foldr DisP phi (replicate (2*k) pierce )
+disPhiPeiR :: Int -> FormP
+disPhiPeiR k = foldr DisP phi (replicate (2*k) peirce )
 -- True in CPL, IPL
-disPhiPieL :: Int -> FormP
-disPhiPieL k = foldl DisP phi (replicate (2*k) pierce )
+disPhiPeiL :: Int -> FormP
+disPhiPeiL k = foldl DisP phi (replicate (2*k) peirce )
 -- True in CPL, false in IPL
-phiImpPie :: Int -> FormP
-phiImpPie 0 = pierce
-phiImpPie n = ImpP phi $ phiImpPie (n-1)
+phiImpPei :: Int -> FormP
+phiImpPei 0 = peirce
+phiImpPei n = ImpP phi $ phiImpPei (n-1)
 
 allFormulasP :: [(String, Int -> FormP)]
 allFormulasP =
-  [ ("disPhiPie-R", disPhiPieR)
-  , ("disPhiPie-L", disPhiPieL)
-  , ("disPie-R", disPieR)
-  , ("disPie-L", disPieL)
-  , ("conPie-R", conPieR)
-  , ("conPie-L", conPieL)
+  [ ("disPhiPei-R", disPhiPeiR)
+  , ("disPhiPei-L", disPhiPeiL)
+  , ("disPei-R", disPeiR)
+  , ("disPei-L", disPeiL)
+  , ("conPei-R", conPeiR)
+  , ("conPei-L", conPeiL)
   , ("conBot-R", conBotR)
   , ("conBot-L", conBotL)
   , ("disBot-R", disBotR)
@@ -177,7 +177,7 @@ allFormulasP =
 -- | Only go until 20 or you will run out of memory.
 hardFormulasP :: [(String, Int -> FormP)]
 hardFormulasP =
-   [ ("phiImpPie", phiImpPie) ]
+   [ ("phiImpPei", phiImpPei) ]
 
 -- * Test formulas
 -- | Positive classical propositional logic tests
@@ -187,7 +187,7 @@ posCPropTests =
       , ( "Double negation: " ++ show doubleNegation         , doubleNegation )
       , ( "Double negation right: " ++ show doubleNegationR  , doubleNegationR )
       , ( "Excluded middle: " ++ show excludedMiddle         , excludedMiddle )
-      , ( "Pierce's law: " ++ show pierce                    , pierce )
+      , ( "Peirce's law: " ++ show peirce                    , peirce )
       , ( "Double negation of excluded middle " ++ show dnEM , dnEM )
       , ( show phi                                           , phi )
       , ( show t1                                            , t1 )
@@ -197,13 +197,13 @@ posCPropTests =
       , ( "conTopL 10"                                       , conTopL 10 )
       , ( "disTopR 10"                                       , disTopR 10 )
       , ( "disTopL 10"                                       , disTopL 10 )
-      , ( "conPieR 10"                                       , conPieR 10 )
-      , ( "conPieL 10"                                       , conPieL 10 )
-      , ( "disPieR 10"                                       , disPieR 10 )
-      , ( "disPieL 10"                                       , disPieL 10 )
-      , ( "disPhiPieR 10"                                    , disPhiPieR 10 )
-      , ( "disPhiPieL 10"                                    , disPhiPieL 10 )
-      , ( "phiImpPie 10"                                     , phiImpPie 10 )
+      , ( "conPeiR 10"                                       , conPeiR 10 )
+      , ( "conPeiL 10"                                       , conPeiL 10 )
+      , ( "disPeiR 10"                                       , disPeiR 10 )
+      , ( "disPeiL 10"                                       , disPeiL 10 )
+      , ( "disPhiPeiR 10"                                    , disPhiPeiR 10 )
+      , ( "disPhiPeiL 10"                                    , disPhiPeiL 10 )
+      , ( "phiImpPei 10"                                     , phiImpPei 10 )
       ]
 
 -- Negative classical propositional logic tests

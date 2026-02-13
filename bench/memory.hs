@@ -29,7 +29,7 @@ main = do
       makeCases [ ("S4", sfour) ] s4FormulasM [5]
     else do
       -- selected four formulas:
-      makeCases [ ("IPL", intui) ] [("conPieL",conPieL), ("conPieR",conPieR)] [100] -- not provable
+      makeCases [ ("IPL", intui) ] [("conPeiL",conPeiL), ("conPeiR",conPeiR)] [100] -- not provable
       makeCases [ ("K", k) ] [("boxesTop",boxesTop)] [1000] -- provable
       makeCases [ ("K4", kfour) ] [("lobBoxes",lobBoxes)] [10] -- not provable
       makeCases [ ("GL", gl) ] [("lobBoxes",lobBoxes)] [100] -- provable
