@@ -106,7 +106,7 @@ configP = Config
       <*> option (maybeReader outputR)
           ( long "proofFormat"
          <> short 'p'
-         <> help "Proof format: none, plain, buss"
+         <> help "Proof format: none, plain, buss, size"
          <> showDefaultWith ppProofFormat
          <> value None
          <> metavar "FORMAT" )

@@ -80,7 +80,7 @@ Available options:
   -t,--tree                Use standard trees (default is to use zippers).
   -n,--negate              Negate the input formula.
   -d,--debug               Print additional debug information.
-  -p,--proofFormat FORMAT  Proof format: none, plain, buss (default: none)
+  -p,--proofFormat FORMAT  Proof format: none, plain, buss, size (default: none)
   -l,--logic LOGIC         Logic to use: CPL, IPL, D, D4, D45, GL, K, K4, K45,
                            S4, T (default: K)
   -h,--help                Show this help text
