@@ -132,19 +132,20 @@ extendT l pt@(HP (h, Node fs Nothing _)) =
   ([], []      ) -> [HP (h, Node fs Nothing False)]
 extendT _ (HP (_,Node _ (Just _) _)) = error "already extended"
 
+-- | Generate a list of (possibly open) proofs.
 proveT :: (Eq f, Show f,Ord f) => Logic f -> f -> [Proof f]
 proveT l f = List.map proofOf $ extendT l (startForT f)
 
+-- | Check whether there is a closed proof.
 isProvableT :: (Eq f, Show f, Ord f) => Prover f
 isProvableT l f = any getTruth (proveT l f)
 
-proveprintT :: (Eq f, Show f,Ord f) => Logic f -> f -> Proof f
-proveprintT l f = case List.filter getTruth (proveT l f) of
-                    pf:_ -> pf
-                    []   -> head (proveT l f)
+-- | Generate a list of proofs, only keeping the closed ones if there is any.
+proofsT :: (Eq f, Show f,Ord f) => Logic f -> f -> [Proof f]
+proofsT l f = filterIfAny' getTruth (proveT l f)
 
 provePdfT :: (Ord f,Show f, Eq f) => Logic f -> f -> IO FilePath
-provePdfT l f= pdf $ proveprintT l f
+provePdfT l f= pdf $ head $ proofsT l f
 
 -- * Zipper-based prover
 
@@ -249,28 +250,28 @@ extendZ _ zp@(ZP (Node _ (Just _ ) _) _) = [zp] -- needed after switch
 -- The easiest way to check whether a zipproof is closed is by always going back to Top and manipulate the truth on the way
 -- Then to check the truth of the whole proof, we only need to check the truth condition at the top
 
--- Return a list of proofs
-proveZ :: (Eq f, Ord f) => Logic f -> f -> [Proof f]
-proveZ l f = List.map fromZip $ proveZZ l f
-
+-- | Generate a list of (possibly open) zip proofs.
 proveZZ :: (Eq f, Ord f) => Logic f -> f -> [ZipProof f]
 proveZZ l f = extendZ l (startForZ f)
 
+-- | Generate a list of (possibly open) proofs.
+proveZ :: (Eq f, Ord f) => Logic f -> f -> [Proof f]
+proveZ l f = List.map fromZip $ proveZZ l f
+
+-- | Check whether there is a closed proof.
 isProvableZ :: (Eq f, Ord f) => Prover f
 isProvableZ l f = any (getTruth . proofOf) $ List.filter isTop $ proveZZ l f
+
+-- | Generate a list of proofs, only keeping the closed ones if there is any.
+proofsZ :: (Eq f, Show f,Ord f) => Logic f -> f -> [Proof f]
+proofsZ l f = filterIfAny' getTruth (proveZ l f)
 
 isTop :: ZipProof f -> Bool
 isTop (ZP _ Top) = True
 isTop _ = False
 
-proveprintZ :: (Eq f, Ord f) => Logic f -> f -> Proof f
-proveprintZ l f = case List.filter (\zp -> getTruth (proofOf zp) && isTop zp) $ proveZZ l f of
-                    zf:_ -> proofOf zf
-                    []   -> fromZip . head $ proveZZ l f
--- perhaps improve it later
-
-provePdfZ :: (Show f, Eq f,Ord f) => Logic f -> f -> IO FilePath
-provePdfZ l f = pdf $ proveprintZ l f
+provePdfZ :: (Ord f,Show f, Eq f) => Logic f -> f -> IO FilePath
+provePdfZ l f= pdf $ head $ proofsZ l f
 
 -- * Pretty printing, GraphViz and LaTeX output
 

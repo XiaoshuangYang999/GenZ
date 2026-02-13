@@ -78,13 +78,13 @@ atMostBinTest l = do
         prop ("GenT for " ++ name l) $
           \ f -> discardAfter limit $ all hasLeqTwoChildren $ proveT l f
 
--- | Check that "isProvable" implies that "prove" only returns closed proofs.
+-- | Check that "isProvable" implies that "proofs" only returns closed proofs.
 provabilityTest :: (Arbitrary f, Show f, Ord f, PropLog f) => Logic f -> SpecWith ()
 provabilityTest l = do
   prop (name l) $
-    \ f -> discardAfter limit $ isProvableZ l f ==> all (getTruth . proofOf) (proveZZ l f)
+    \ f -> discardAfter limit $ isProvableZ l f ==> all getTruth (proofsZ l f)
   prop (name l) $
-    \ f -> discardAfter limit $ isProvableT l f ==> all getTruth (proveT l f)
+    \ f -> discardAfter limit $ isProvableT l f ==> all getTruth (proofsT l f)
 
 main :: IO ()
 main = hspec $ parallel $ do
@@ -332,7 +332,7 @@ main = hspec $ parallel $ do
       atMostBinTest kfourfive
       atMostBinTest dfourfive
 
-    describe "provability iff returning closed proofs" $ do
+    describe "'isProvable' implies that all 'proofs' are closed" $ modifyMaxDiscardRatio (* 10) $ do
       mapM_ provabilityTest [classical,intui]
       mapM_ provabilityTest [k,kfour,sfour,gl,t,d,dfour,kfourfive, dfourfive]
 

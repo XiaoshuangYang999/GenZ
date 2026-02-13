@@ -97,8 +97,8 @@ webProveWrap _ _ = error "Wrong combination of logic and syntax."
 webProve :: (Eq f, Ord f, Show f, TeX f) => Logic f -> f -> String -> [String]
 webProve logic frm struct =
   let (isPrv, prv) = case struct of
-        "zipper" -> (isProvableZ, proveZ)
-        "tree" -> (isProvableT, proveT)
+        "zipper" -> (isProvableZ, proofsZ)
+        "tree" -> (isProvableT, proofsT)
         _ -> error $ "Unknown data structure: " ++ struct
       p_tex = case prv logic frm of
         [] -> ""
