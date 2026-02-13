@@ -8,6 +8,7 @@ import System.IO.Temp
 import System.IO.Unsafe
 import qualified Data.ByteString as BS
 import Data.Either
+import Data.List (filter)
 import Data.Set
 import qualified Data.Set as Set
 
@@ -40,6 +41,17 @@ class TreeLike z where
 pickOneOfEach :: [[a]] -> [[a]]
 pickOneOfEach [] = [[]]
 pickOneOfEach (l:ls) = [ x:xs | x <- l, xs <- pickOneOfEach ls ]
+
+-- | Filter if any element has the propery, otherwise keep all.
+filterIfAny :: (a -> Bool) -> [a] -> [a]
+filterIfAny f xs = if any f xs then Data.List.filter f xs else xs
+
+-- | Same as @filterIfAny@ but only traversing the list once.
+filterIfAny' :: (a -> Bool) -> [a] -> [a]
+filterIfAny' f xs = loop xs where
+  loop []     = []
+  loop [y]    = if f y then [y] else xs -- return original list
+  loop (y:ys) = if f y then y : Data.List.filter f ys else loop ys
 
 -- * Helper functions for Set & Either
 fromEither :: Either a a -> a

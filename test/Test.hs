@@ -5,6 +5,7 @@ import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Data.Bifunctor
 
+import Basics
 import General
 import FormP
 import FormM
@@ -87,6 +88,18 @@ provabilityTest l = do
 
 main :: IO ()
 main = hspec $ parallel $ do
+
+  describe "Internal helper functions" $ do
+    prop "filterIfAny agrees with filterIfAny'" $
+      \ f xs -> filterIfAny (applyFun f) (xs :: [Int]) === filterIfAny' (applyFun f) xs
+    prop "filterIfAny agrees with filterIfAny' when actually filtering" $
+      \ f xs -> filterIfAny (applyFun f) xs /= xs ==>
+        filterIfAny (applyFun f) (xs :: [Int]) === filterIfAny' (applyFun f) xs
+    modifyMaxDiscardRatio (* 100) $
+      prop "filterIfAny agrees with filterIfAny' when changing nothing" $
+        \ f xs -> filterIfAny (applyFun f) xs == xs ==>
+          filterIfAny (applyFun f) (xs :: [Int]) === filterIfAny' (applyFun f) xs
+
   describe "Unit tests" $ do
     testsFor classical posCPropTests negCPropTests
     testsFor intui
