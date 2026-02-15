@@ -352,8 +352,8 @@ texRuleName r = "$" ++ concatMap f r ++ "$" where
     'v' -> "\\lor"
     '→' -> "\\to"
     '∧' -> "\\land"
-    'R' -> "_{\\mathsf{R}}"
-    'L' -> "_{\\mathsf{L}}"
+    'R' -> "{}_{\\mathsf{R}}"
+    'L' -> "{}_{\\mathsf{L}}"
     'i' -> "^{i}"
     'T' -> "\\mathsf{T}"
     'a' -> "\\mathsf{a}"
@@ -363,8 +363,9 @@ texRuleName r = "$" ++ concatMap f r ++ "$" where
     'l' -> "\\mathsf{l}"
     'e' -> "\\mathsf{e}"
     '⊥' -> "\\bot"
-    '4' -> "_{\\mathsf{4}}"
-    'k' -> "_{\\mathsf{k}}"
+    '4' -> "{}_{\\mathsf{4}}"
+    '5' -> "{}_{\\mathsf{5}}"
+    'k' -> "{}_{\\mathsf{k}}"
     '☐' -> "\\Box "
     c -> [c]
 
