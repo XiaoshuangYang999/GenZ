@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-out="2_200_300s.csv"
+out="prov_200_300s.csv"
 
 logics=(K K4 K45 D D4 D45 T S4 GL)
 families=(k_p k_n s4_p s4_n)
