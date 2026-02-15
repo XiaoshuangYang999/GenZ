@@ -11,6 +11,7 @@ import qualified Data.Set as Set
 import System.IO (hGetContents)
 import System.Process
 import Basics
+import Data.Maybe (fromJust)
 
 type Sequent f = Set (Either f f)
 
@@ -149,8 +150,14 @@ isProvableT l f = any getTruth (proveT l f)
 proofsT :: (Eq f, Show f,Ord f) => Logic f -> f -> [Proof f]
 proofsT l f = filterIfAny' getTruth (proveT l f)
 
+-- | Generate the first closed proof, if there is one
+proofT :: (Eq f, Show f,Ord f) => Logic f -> f -> Maybe (Proof f)
+proofT l f = case dropWhile (not . getTruth) (proveT l f) of
+              []      -> Nothing
+              (p : _) -> Just p
+
 provePdfT :: (Ord f,Show f, Eq f) => Logic f -> f -> IO FilePath
-provePdfT l f= pdf $ head $ proofsT l f
+provePdfT l f= pdf $ fromJust $ proofT l f
 
 -- * Zipper-based prover
 
@@ -271,12 +278,19 @@ isProvableZ l f = any (getTruth . proofOf) $ List.filter isTop $ proveZZ l f
 proofsZ :: (Eq f, Show f,Ord f) => Logic f -> f -> [Proof f]
 proofsZ l f = filterIfAny' getTruth (proveZ l f)
 
+-- | Generate the first closed proof, if there is one
+proofZ :: (Eq f, Show f,Ord f) => Logic f -> f -> Maybe (Proof f)
+proofZ l f = case dropWhile (not . getTruth) (proveZ l f) of
+              []      -> Nothing
+              (p : _) -> Just p
+
+
 isTop :: ZipProof f -> Bool
 isTop (ZP _ Top) = True
 isTop _ = False
 
 provePdfZ :: (Ord f,Show f, Eq f) => Logic f -> f -> IO FilePath
-provePdfZ l f= pdf $ head $ proofsZ l f
+provePdfZ l f= pdf $ fromJust $ proofZ l f
 
 -- * Pretty printing, GraphViz and LaTeX output
 

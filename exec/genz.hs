@@ -3,6 +3,7 @@
 module Main where
 
 import Options.Applicative
+import Data.Maybe
 
 import General
 import General.Lex
@@ -73,13 +74,13 @@ runGenZ (Config inp inf useTree negIn deb prFormat myL) = do
 -- | Helper to chooe tree/zipper and bool/proof output
 prChoose :: (Show f, Ord f, TeX f) => Bool -> ProofFormat -> Logic f -> (f -> String)
 prChoose True  None  l = show . isProvableT l
-prChoose True  Plain l = ppProof        . head . proofsT l
-prChoose True  Buss  l = concatMap tex  . take 1 . proofsT l
-prChoose True  Size  l = show . proofSize . head . proofsT l
+prChoose True  Plain l = ppProof        . fromJust . proofT l
+prChoose True  Buss  l = tex  . fromJust . proofT l
+prChoose True  Size  l = show . proofSize . fromJust . proofT l
 prChoose False None  l = show . isProvableZ l
-prChoose False Plain l = ppProof       . head . proofsZ l
-prChoose False Buss  l = concatMap tex . take 1 . proofsZ l
-prChoose False Size  l = show . proofSize . head . proofsZ l
+prChoose False Plain l = ppProof       . fromJust . proofZ l
+prChoose False Buss  l = tex . fromJust . proofZ l
+prChoose False Size  l = show . proofSize . fromJust . proofZ l
 
 configP :: Parser Config
 configP = Config

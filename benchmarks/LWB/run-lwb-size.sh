@@ -92,13 +92,13 @@ for prover in zip tree; do
       else
         if grep -q "True" "$out_log"; then
           res="True"
-          proofsize=$(timeout 600s genz $GENZ_MODE -d -n -l "$LOGIC" -f "$file" -p size 2>/dev/null | tail -n 1)
+          proofsize=$(timeout 1000s genz $GENZ_MODE -d -n -l "$LOGIC" -f "$file" -p size 2>/dev/null | tail -n 1)
+        elif grep -q "False" "$out_log"; then
+          res="False"
         fi
       fi
 
-      if [ "$res" = "True" ]; then
-        echo "$GROUP,$LOGIC,$prover,$formula,$n,$size_n,$runtime,$res,$proofsize" >> "$SIZE_RAW"
-      fi
+      echo "$GROUP,$LOGIC,$prover,$formula,$n,$size_n,$runtime,$res,$proofsize" >> "$SIZE_RAW"
     done
   done
 done

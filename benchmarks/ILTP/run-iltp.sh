@@ -63,7 +63,7 @@ for path in "${GROUP}"/*.tptp; do
     else
         if grep -q "True" "$out_log"; then
             res="True"
-            proofsize=$(timeout 600s genz $GENZ_MODE -d -l "$LOGIC" -i tptp -f "$path" -p size 2>/dev/null | tail -n 1)
+            proofsize=$(timeout 1000s genz $GENZ_MODE -d -l "$LOGIC" -i tptp -f "$path" -p size 2>/dev/null | tail -n 1)
         elif grep -q "False" "$out_log"; then
             res="False"
         fi
