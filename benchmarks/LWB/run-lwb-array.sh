@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=LWB-bench
-#SBATCH --time=3:00:00
+#SBATCH --time=5:00:00
 #SBATCH --partition=genoa
 #SBATCH --nodes=1
 #SBATCH --exclusive
-#SBATCH --array=20-33%10
+#SBATCH --array=0-35%15
 #SBATCH --output=../slurm_logs/%A_%a.out
 #SBATCH --error=../slurm_logs/%A_%a.err
 
@@ -27,4 +27,4 @@ group=${groups[$group_idx]}
 echo "[$(date)] Task $SLURM_ARRAY_TASK_ID: logic=$logic group=$group on $(hostname)"
 echo "TIMEOUT=${TIMEOUT}s SIZE_LIMIT=${SIZE_LIMIT}"
 
-bash ./run-general.sh "$group" "$logic" "$TIMEOUT" "$SIZE_LIMIT"
+bash ./run-lwb-size.sh "$group" "$logic" "$TIMEOUT" "$SIZE_LIMIT"

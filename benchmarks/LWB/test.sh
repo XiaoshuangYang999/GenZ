@@ -2,18 +2,18 @@
 # This script measures runtime and proof size for a few selected benchmarks.
 # It tests both zip and tree provers and writes a plain text summary file.
 
-TIMEOUT=600    # seconds, change if you want
+TIMEOUT=14400    # seconds, change if you want
 OUT_FILE="special_time_size.txt"
 
 # Benchmarks to test: GROUP LOGIC FORMULA INDEX
 BENCHES=(
-  "k_p D  k_ph_p 2"
-  "k_p D  k_ph_p 3"
+  # "k_p D  k_ph_p 2"
+  # "k_p D  k_ph_p 3"
   "k_p D4 k_ph_p 2"
   "k_p D4 k_ph_p 3"
-  "k_p D45 k_dum_p 1"
-  "k_p D45 k_ph_p 2"
-  "k_n D45 k_d4_n 1"
+  # "k_p D45 k_dum_p 1"
+  # "k_p D45 k_ph_p 2"
+  # "k_n D45 k_d4_n 1"
 )
 
 echo "# group logic prover formula index size runtime result proofsize" > "$OUT_FILE"
@@ -32,7 +32,7 @@ for bench in "${BENCHES[@]}"; do
   # compute formula size
   size=$(printf '%s\n' "$file" | stack exec form-size -- 2>/dev/null | tail -n 1)
 
-  for prover in zip tree; do
+  for prover in tree; do
     if [ "$prover" = "zip" ]; then
       GENZ_MODE=""
     else
