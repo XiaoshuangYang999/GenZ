@@ -4,7 +4,7 @@ module Main (main) where
 
 import Prelude
 import Data.FileEmbed
-import Data.Maybe (fromMaybe)
+import Data.Maybe
 import Web.Scotty
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as E
@@ -97,12 +97,12 @@ webProveWrap _ _ = error "Wrong combination of logic and syntax."
 webProve :: (Eq f, Ord f, Show f, TeX f) => Logic f -> f -> String -> [String]
 webProve logic frm struct =
   let (isPrv, prv) = case struct of
-        "zipper" -> (isProvableZ, proofsZ)
-        "tree" -> (isProvableT, proofsT)
+        "zipper" -> (isProvableZ, proofZ)
+        "tree" -> (isProvableT, proofT)
         _ -> error $ "Unknown data structure: " ++ struct
       p_tex = case prv logic frm of
-        [] -> ""
-        (p1:_) -> tex p1
+        Nothing -> ""
+        Just p1 -> tex p1
   in
     [ "<pre>Parsed input: " ++ show frm ++ "</pre>" -- TODO pretty? tex?
     , if isPrv logic frm
