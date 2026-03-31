@@ -1,4 +1,4 @@
-# genz - A Generic Sequent Calculus Prover with Zippers
+# genz - A Generic Sequent Calculus Prover using the Zipper
 
 Covering the following logics:
 
@@ -8,6 +8,37 @@ Covering the following logics:
 ## Web interface
 
 You can use the prover online at <https://tools.malv.in/genz-web/>.
+
+## The Zipper Data Structure
+
+GenZ uses the **zipper**, a data structure introduced by [Huet (1997)](https://doi.org/10.1017/S0956796897002864), to efficiently navigate and modify proof trees during proof search. The idea is to split a tree into a **focus** (the subtree being worked on) and a **path** (everything above and around it), enabling constant-time navigation and modification without reconstructing the entire tree.
+
+A standard tree and its zipper in Haskell:
+```haskell
+data Tree a    = Node a [Tree a]
+data ZipTree a = ZT (Tree a) (Path a)
+data Path a    = Top | Step a (Path a) [Tree a] [Tree a]
+```
+
+A `ZipTree` focuses on a subtree, while `Path` records the parent node, the path further up, and the left/right siblings. For example, in this tree with focus at node `2`:
+```
+      0
+    / | \ \
+   1 [2] 3  4
+     |      / \
+     5     6   7
+
+ZT (Node 2 [Node 5 []])
+   (Step 0 Top [Node 1 []] [Node 3 [], Node 4 [Node 6 [], Node 7 []]])
+```
+
+GenZ applies this to proof search trees via `ZipProof` and `ZipPath`:
+```haskell
+data ZipProof f = ZP (Proof f) (ZipPath f)
+data ZipPath  f = Top | Step (Sequent f) RuleName (ZipPath f) [Proof f] [Proof f]
+```
+
+This makes backtracking efficient: when a rule application fails, GenZ moves the focus back up and tries a different rule without rebuilding the tree.
 
 ## Formula Syntax
 
@@ -118,6 +149,48 @@ You can use `stack ghci` to run examples like this:
 
 In the above `k` is `Logic.Modal.K.k :: Logic`, i.e. the proof system.
 
+## Defining Your Own Logic
+
+A `Logic` in GenZ is a collection of **safeRules** (invertible, applied greedily) and **unsafeRules** (non-invertible, requiring backtracking and possibly loopchecks):
+```haskell
+data Logic f = Log { name :: String
+                   , safeRules :: [Rule f]
+                   , unsafeRules :: [Rule f] }
+```
+
+Each rule takes a history, the current sequent, and a principal formula, and returns possibly multiple branches:
+```haskell
+type Rule f = History f -> Sequent f -> Either f f -> [(RuleName, [Sequent f])]
+```
+
+As an example, CPL has only safe rules:
+```haskell
+classical :: Logic FormP
+classical = Log { name = "CPL"
+                , safeRules   = [leftBot, isAxiom, replaceRule safeCPL]
+                , unsafeRules = []
+                }
+
+safeCPL :: Either FormP FormP -> [(RuleName,[Sequent FormP])]
+safeCPL (Left (ConP f g))   = [("∧L", [Set.fromList [Left g, Left f]])]
+safeCPL (Left (DisP f g))   = [("vL", map Set.singleton [Left f, Left g])]
+safeCPL (Left (ImpP f g))   = [("→L", map Set.singleton [Right f, Left g])]
+safeCPL (Right (ConP f g))  = [("∧R", map Set.singleton [Right f, Right g])]
+safeCPL (Right (DisP f g))  = [("vR", [Set.fromList [Right g, Right f]])]
+safeCPL (Right (ImpP f g))  = [("→R", [Set.fromList [Right g, Left f]])]
+safeCPL _                   = []
+```
+
+For logics that require backtracking (e.g. IPL, modal logics), place non-invertible rules in `unsafeRules`. See `lib/Logic/` for all implemented calculi.
+Implementation for loopchecks can be found in `lib/Logic/Propositional/IPL.hs` for reference.
+
+To try your own logic, create a new module under `lib/Logic/`, following the structure above. Then load it in ghci. Below is an example of a modal logic. You can also define your own language and your own formula examples.
+```
+$ stack ghci lib/General.hs lib/FormM.hs lib/Logic/YourLogic.hs
+ghci> isProvableZ yourLogic (ImpM (AtM '1') (AtM '1'))
+True
+```
+
 ## LaTeX output
 
 The prover can generate code for [bussproofs](https://ctan.org/pkg/bussproofs).
@@ -146,7 +219,7 @@ This should not take more than five minutes.
 The tests are also run automatically for each commit,
 see <https://github.com/XiaoshuangYang999/GenZ/actions> for results.
 
-## LWB Benchmarks
+## LWB and ILTP Benchmarks
 
 See the `benchmarks` folder for bash scripts to run GenZ on these benchmarks.
 
@@ -167,7 +240,7 @@ Example results are available at
 
 ## References
 
-The code in this repository was originally developed as part of the following master thesis:
+The code in this repository was originally developed as part of the following master's thesis:
 
 - Xiaoshuang Yang: *Sequent Calculus with Zippers*.
   University of Amsterdam, 2024.
