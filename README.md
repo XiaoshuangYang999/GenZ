@@ -9,37 +9,6 @@ Covering the following logics:
 
 You can use the prover online at <https://tools.malv.in/genz-web/>.
 
-## The Zipper Data Structure
-
-GenZ uses the **zipper**, a data structure introduced by [Huet (1997)](https://doi.org/10.1017/S0956796897002864), to efficiently navigate and modify proof trees during proof search. The idea is to split a tree into a **focus** (the subtree being worked on) and a **path** (everything above and around it), enabling constant-time navigation and modification without reconstructing the entire tree.
-
-A standard tree and its zipper in Haskell:
-```haskell
-data Tree a    = Node a [Tree a]
-data ZipTree a = ZT (Tree a) (Path a)
-data Path a    = Top | Step a (Path a) [Tree a] [Tree a]
-```
-
-A `ZipTree` focuses on a subtree, while `Path` records the parent node, the path further up, and the left/right siblings. For example, in this tree with focus at node `2`:
-```
-      0
-    / | \ \
-   1 [2] 3  4
-     |      / \
-     5     6   7
-
-ZT (Node 2 [Node 5 []])
-   (Step 0 Top [Node 1 []] [Node 3 [], Node 4 [Node 6 [], Node 7 []]])
-```
-
-GenZ applies this to proof search trees via `ZipProof` and `ZipPath`:
-```haskell
-data ZipProof f = ZP (Proof f) (ZipPath f)
-data ZipPath  f = Top | Step (Sequent f) RuleName (ZipPath f) [Proof f] [Proof f]
-```
-
-This makes backtracking efficient: when a rule application fails, GenZ moves the focus back up and tries a different rule without rebuilding the tree.
-
 ## Formula Syntax
 
 Both ASCII and Unicode symbols are allowed. Here are some example formulas:
@@ -210,6 +179,37 @@ command can be used to write the code into `temp.tex` and then run
     stack ghci lib/Logic/Modal/GL.hs lib/FormM.hs
 
     ghci> texFile . head . proveZ gl $ ImpM (Box (ImpM (Box (AtM "p")) (AtM "p"))) (Box (AtM "p"))
+
+## The Zipper Data Structure
+
+GenZ uses the **zipper**, a data structure introduced by [Huet (1997)](https://doi.org/10.1017/S0956796897002864), to efficiently navigate and modify proof trees during proof search. The idea is to split a tree into a **focus** (the subtree being worked on) and a **path** (everything above and around it), enabling constant-time navigation and modification without reconstructing the entire tree.
+
+A standard tree and its zipper in Haskell:
+```haskell
+data Tree a    = Node a [Tree a]
+data ZipTree a = ZT (Tree a) (Path a)
+data Path a    = Top | Step a (Path a) [Tree a] [Tree a]
+```
+
+A `ZipTree` focuses on a subtree, while `Path` records the parent node, the path further up, and the left/right siblings. For example, in this tree with focus at node `2`:
+```
+      0
+    / | \ \
+   1 [2] 3  4
+     |      / \
+     5     6   7
+
+ZT (Node 2 [Node 5 []])
+   (Step 0 Top [Node 1 []] [Node 3 [], Node 4 [Node 6 [], Node 7 []]])
+```
+
+GenZ applies this to proof search trees via `ZipProof` and `ZipPath`:
+```haskell
+data ZipProof f = ZP (Proof f) (ZipPath f)
+data ZipPath  f = Top | Step (Sequent f) RuleName (ZipPath f) [Proof f] [Proof f]
+```
+
+This makes backtracking efficient: when a rule application fails, GenZ moves the focus back up and tries a different rule without rebuilding the tree.
 
 ## Tests
 
