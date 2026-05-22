@@ -28,6 +28,7 @@ tokens :-
   "⊥"               { \ p _ -> TokenBot               p }
   "~"               { \ p _ -> TokenNeg               p }
   "¬"               { \ p _ -> TokenNeg               p }
+  "!"               { \ p _ -> TokenNeg               p }
   "&"               { \ p _ -> TokenCon               p }
   "|"               { \ p _ -> TokenDis               p }
   "v"               { \ p _ -> TokenDis               p }

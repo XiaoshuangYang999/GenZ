@@ -20,6 +20,14 @@
           padding: 0.1em;
           width:50%;
       }
+      #help {
+          border:1px solid gray;
+          display:none;
+          margin-bottom:1em;
+      }
+      #help pre {
+          font-size:120%;
+      }
       #runbutton {
           font-size:110%;
           width:40%;
@@ -110,7 +118,7 @@
       </select>
     </p>
     <p>
-      Enter a formula below or <label for="examples">choose an example:</label>
+      Enter a formula below <a href="#" onClick='$("#help").slideToggle()'>using this syntax</a> or <label for="examples">choose an example:</label>
       <select name="examples" id="examples">
         <optgroup label="CPL">
           <option value="CPL">p → p</option>
@@ -167,6 +175,22 @@
         </optgroup>
       </select>
     </p>
+    <div id="help">
+<pre>
+| Symbols            | Meaning                 | Note                             |
+|--------------------|-------------------------|----------------------------------|
+| p, q, bla, ...     | atomic propositions     |                                  |
+| true, ⊤            | top (constant true)     |                                  |
+| false, ⊥           | bottom (constant false) |                                  |
+| !, ~, ¬            | negation (not)          | abreviation for ... -&gt; false     |
+| &                  | conjunction (and)       | primitive                        |
+| |, v               | disjunction (or)        | primitive                        |
+| -&gt;, --&gt;, =&gt;, →     | implication (if-then)   | primitive                        |
+| &lt;-&gt;, &lt;--&gt;, &lt;=&gt;, ↔  | bi-implication (iff)    | abbreviation using -&gt; and &      |
+| &lt;>, &lt;a&gt;, ◇         | diamond (possible)      | abbreviation for ~ [] ~ ...      |
+| [], [a], ☐, ◻      | box (necessary)         | primitive                        |
+</pre>
+    </div>
     <div>
       <input id="textinput" name="textinput" value="☐(p1 &amp; p2) → (☐p1 | ☐p2)" />
       <input id="runbutton" type="submit" value="Try to prove this!" onclick="prove()" />

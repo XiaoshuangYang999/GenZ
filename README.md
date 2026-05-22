@@ -22,7 +22,7 @@ Both ASCII and Unicode symbols are allowed. Here are some example formulas:
 | `p`, `q`, `bla`, ...     | atomic propositions     |                                  |
 | `true`, ⊤                | top (constant true)     |                                  |
 | `false`, ⊥               | bottom (constant false) |                                  |
-| `~`, `¬`                 | negation (not)          | abreviation for `... -> false`   |
+| `!`, `~`, `¬`            | negation (not)          | abreviation for `... -> false`   |
 | `&`                      | conjunction (and)       | primitive                        |
 | `\|`, `v`                | disjunction (or)        | primitive                        |
 | `->`, `-->`, `=>`, `→`,  | implication (if-then)   | primitive                        |
