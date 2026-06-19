@@ -1,4 +1,4 @@
-# genz - A Generic Sequent Calculus Prover using the Zipper
+# GenZ - A Generic Sequent Calculus Prover using the Zipper
 
 Covering the following logics:
 

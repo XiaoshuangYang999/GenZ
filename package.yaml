@@ -1,8 +1,10 @@
 name: GenZ
 version: 0.1.0.0
-synopsis: Sequent Calculus with Zippers
-description: See readme.
+synopsis: A Generic Sequent Calculus Prover using the Zipper
+description: See README.md for example usage and documentation.
 maintainer: Xiaoshuang Yang <thuyxs17@gmail.com>
+license: GPL-3
+github: XiaoshuangYang999/GenZ
 category: Logic
 
 ghc-options: -Wall
