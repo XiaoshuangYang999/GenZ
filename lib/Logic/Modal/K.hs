@@ -19,9 +19,9 @@ CPL(safe) + ☐k rule(unsafe):
 
 safeML :: Either FormM FormM -> [(RuleName,[Sequent FormM])]
 safeML (Left (ConM f g))  = [("∧L", [Set.fromList [Left f, Left g]])]
-safeML (Left (DisM f g))  = [("vL", map Set.singleton [Left f, Left g])]
-safeML (Left (ImpM f g))  = [("→L", map Set.singleton [Right f, Left g])]
-safeML (Right (ConM f g)) = [("∧R", map Set.singleton [Right f, Right g])]
+safeML (Left (DisM f g))  = [("vL", [Set.singleton (Left f), Set.singleton (Left g)])]
+safeML (Left (ImpM f g))  = [("→L", [Set.singleton (Right f), Set.singleton (Left g)])]
+safeML (Right (ConM f g)) = [("∧R", [Set.singleton (Right f), Set.singleton (Right g)])]
 safeML (Right (DisM f g)) = [("vR", [Set.fromList [Right g, Right f]])]
 safeML (Right (ImpM f g)) = [("→R", [Set.fromList [Right g, Left f]])]
 safeML _                  = []

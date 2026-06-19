@@ -30,11 +30,11 @@ intui = Log { name = "IPL"
 -}
 
 safeIPL :: Either FormP FormP -> [(RuleName,[Sequent FormP])]
-safeIPL (Left (ConP f g))  = [("∧L", [Set.fromList [Left g, Left f]])]
-safeIPL (Left (DisP f g))  = [("vL", map Set.singleton [Left f, Left g])]
-safeIPL (Left (ImpP f g))  = [("→iL", map Set.singleton [Right f, Left g])]
-safeIPL (Right (ConP f g)) = [("∧R", map Set.singleton [Right f, Right g])]
-safeIPL (Right (DisP f g)) = [("vR", [Set.fromList [Right g, Right f]])]
+safeIPL (Left (ConP f g))  = [("∧L" , [Set.fromList [Left g, Left f]])]
+safeIPL (Left (DisP f g))  = [("vL" , [Set.singleton (Left f), Set.singleton (Left g)])]
+safeIPL (Left (ImpP f g))  = [("→iL", [Set.singleton (Right f), Set.singleton (Left g)])]
+safeIPL (Right (ConP f g)) = [("∧R" , [Set.singleton (Right f), Set.singleton (Right g)])]
+safeIPL (Right (DisP f g)) = [("vR" , [Set.fromList [Right g, Right f]])]
 safeIPL _                  = []
 
 -- | The R-> rule.

@@ -182,15 +182,8 @@ instance TreeLike ZipProof where
   zdelete (ZP _ (Step s _ Top _ _))          = ZP (Node s Nothing False) Top
   zdelete (ZP _ (Step s _ p _ _))            = ZP (Node s Nothing False) p
   zdelete _                                  = error "cannot delete top"
-    -- parent true iff both children true
-    -- parent's truth condition does not affect the child
-    -- closed proof/ true -> ax or Lbot -> Just ("",[])
-    -- for genT, then parent's truth condition should be decided by eventually checking the truth condition of children
-    -- for genZ, truth is manipulated eventually by closing branches and switching branches, eventually going to the top
-    -- whenever moving to a higher node (a parent node), change the truth condition by checking the children.
-    -- Done by move_up!
 
--- Was it used?
+-- | Convert a ziper proof to a tree proof by going to the root.
 fromZip :: ZipProof f -> Proof f
 fromZip (ZP x Top) = x
 fromZip zp = fromZip (move_up zp)
