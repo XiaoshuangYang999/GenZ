@@ -1,6 +1,6 @@
 name: GenZ
 version: 0.1.0.0
-synopsis: A Generic Sequent Calculus Prover using the Zipper
+synopsis: Generic Sequent Calculus Prover using the Zipper
 description: See README.md for example usage and documentation.
 maintainer: Xiaoshuang Yang <thuyxs17@gmail.com>
 license: GPL-3
@@ -20,20 +20,20 @@ extra-source-files:
   - exec/index.html
 
 dependencies:
-  - array
-  - base
-  - random
-  - QuickCheck
-  - graphviz
-  - temporary
-  - bytestring
-  - tagged
-  - hspec
-  - multiset
-  - process
-  - containers
-  - directory
-  - filepath
+  - array >= 0.5.4 && < 0.6
+  - base >= 4.8 && < 5
+  - bytestring >= 0.11.5 && < 0.12
+  - containers >= 0.6.7 && < 0.7
+  - directory >= 1.3.7 && < 1.4
+  - filepath >= 1.4.2 && < 1.5
+  - graphviz >= 2999.20.2 && < 2999.21
+  - hspec >= 2.10.10 && < 2.12
+  - multiset >= 0.3.4 && < 0.4
+  - process >= 1.6.18 && < 1.7
+  - QuickCheck >= 2.4.3 && < 2.19
+  - random >= 1.2.1 && < 1.4
+  - tagged >= 0.8.7 && < 0.9
+  - temporary >= 1.3 && < 1.4
 
 build-tools:
   - alex
@@ -49,7 +49,7 @@ executables:
     ghc-options: -Wall -threaded
     dependencies:
       - base >= 4.8 && < 5
-      - optparse-applicative
+      - optparse-applicative >= 0.17.1 && < 0.18
       - GenZ
   genz-web:
     source-dirs: exec
@@ -57,13 +57,13 @@ executables:
     ghc-options: -Wall -threaded
     dependencies:
       - base >= 4.8 && < 5
-      - file-embed
-      - js-jquery >= 3
-      - scotty
+      - file-embed >= 0.0.15 && < 0.1
+      - js-jquery >= 3.3.1 && < 4
+      - scotty >= 0.12 && < 0.13
       - GenZ
-      - template-haskell
-      - text
-      - warp
+      - template-haskell >= 2.19.0 && < 2.21
+      - text >= 2.0.2 && < 2.1
+      - warp >= 3.3.25 && < 3.5
 
   form-size:
     source-dirs: exec
@@ -88,7 +88,7 @@ tests:
     source-dirs: test
     dependencies:
       - GenZ
-      - QuickCheck
+      - QuickCheck >= 2.14.3 && < 2.15
       - hspec
 
 benchmarks:
