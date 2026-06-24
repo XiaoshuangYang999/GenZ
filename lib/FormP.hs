@@ -25,7 +25,6 @@ instance PropLog FormP where
   isAtom _ = False
   isAxiom _ fs _ = [ ("ax", [])
                   | any (\f -> swap f `Set.member` fs) fs ]
-  -- Rule ⊥L: from Γ, ⊥ ⇒ ∆
   leftBot _ fs _ = [ ("⊥L", []) | Left BotP `Set.member` fs ]
   size BotP         = 1
   size (AtP _)      = 1

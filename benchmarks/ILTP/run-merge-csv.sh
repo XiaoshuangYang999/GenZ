@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# This script was assisted by ChatGPT.
 
 out="ILTP_200_300s.csv"
 

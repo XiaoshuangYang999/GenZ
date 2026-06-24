@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# This script was assisted by ChatGPT.
+
 set -euo pipefail
 
 if [ "$#" -ne 1 ]; then

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# This script was assisted by ChatGPT.
+
 set -euo pipefail
 
 # Usage:

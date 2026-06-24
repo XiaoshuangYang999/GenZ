@@ -42,14 +42,14 @@ unsafeIPL :: Either FormP FormP -> [(RuleName,[Sequent FormP])]
 unsafeIPL (Right (ImpP f g)) = [("→iR", [Set.fromList [Right g, Left f]])]
 unsafeIPL  _                 = []
 
--- | Local loopcheck: Is this sequent saturated?
+-- | Local loopcheck: is this sequent saturated?
 localLoopCheck :: Sequent FormP -> Either FormP FormP -> Bool
 localLoopCheck fs f@(Right (ImpP _ _)) = not $ any (`Set.isSubsetOf` fs) (snd . head . unsafeIPL $ f)
 localLoopCheck fs f = case safeIPL f of []              -> False
                                         ((_,results):_) -> not $ any (`Set.isSubsetOf` fs) results
 
 -- * IPL-specific versions of `replaceRule`.
--- | Like `replaceRule` but keep active formula (built-in weakening), and block when localLoopCheck.
+-- | Like `replaceRule` but keep principal formula (built-in weakening), and block when localLoopCheck.
 additionRule :: (Either FormP FormP -> [(RuleName, [Sequent FormP])]) -> Rule FormP
 additionRule fun _ fs g =
   [ ( fst . head $ fun g

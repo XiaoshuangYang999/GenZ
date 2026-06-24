@@ -3,7 +3,7 @@ module Main where
 import General
 import FormP.ParseTPTP
 
-
+-- | Compute the size of tptp formulas
 main :: IO ()
 main = do
   putStrLn "Give me the filepath: "

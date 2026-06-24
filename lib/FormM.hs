@@ -25,7 +25,6 @@ instance PropLog FormM where
   isAtom _ = False
   isAxiom _ fs _ = [ ("ax", [])
                   | any (\f -> swap f `Set.member` fs) fs ]
-  -- Rule ⊥L: from Γ, ⊥ ⇒ ∆
   leftBot _ fs _ = [ ("⊥L", []) | Left BotM `Set.member` fs ]
   size BotM         = 1
   size (AtM _)      = 1
@@ -154,21 +153,21 @@ diamonds n f = Box (boxes (n-1) f)
 boxesToDiamonds :: Int -> FormM
 boxesToDiamonds n = ImpM (boxes n a1) (diamonds n a1)
 
--- Generate a list of n variables
+-- | Generate a list of n variables
 listOfAt :: Int -> [FormM]
 listOfAt n = map (AtM . show) $ take n [(3::Integer)..]
 
--- Multi-version of the K Axiom
+-- | Multi-version of the K Axiom
 multiVerK :: Int -> FormM
 multiVerK n = ImpM (Box (List.foldr ImpM (AtM "1") (listOfAt n)))
                 $ foldr (ImpM . Box) (Box (AtM "1")) (listOfAt n)
 
--- Similar to multiVerK, but with an extra atom in the premise. False
+-- | Similar to multiVerK, but with an extra atom in the premise. Not provable
 extraAtK :: Int -> FormM
 extraAtK n = ImpM (Box (List.foldr ImpM (AtM "1") (listOfAt n ++ [AtM "2"])))
                 $ foldr (ImpM . Box) (Box (AtM "1")) (listOfAt n)
 
--- Bench formula for S4. Not provable
+-- | Bench formula for S4. Not provable
 negBoxes :: Int -> FormM
 negBoxes n = neg $ Box $ neg $ boxes n a1
 
@@ -228,7 +227,7 @@ hards4FormulasM =
   , ("lobBoxes", lobBoxes) -- F
   ]
 
--- | Positive modal logic tests (in any ml)
+-- | Positive modal logic tests
 posModalTests :: [(String, FormM)]
 posModalTests =
       [ ("k Axiom"          , kAxiom)
@@ -237,7 +236,7 @@ posModalTests =
       , ("multiVerK 5"     , multiVerK 5)
       ]
 
--- | Negative modal logic tests (in any ml)
+-- | Negative modal logic tests
 negModalTests :: [(String, FormM)]
 negModalTests =
       [ (show f2            , f2)

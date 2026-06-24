@@ -4,7 +4,7 @@ import General
 import General.Lex
 import FormM.Parse
 
-
+-- | Compute the size of lwb formulas (with extra negation)
 main :: IO ()
 main = do
   putStrLn "Give me the filepath: "

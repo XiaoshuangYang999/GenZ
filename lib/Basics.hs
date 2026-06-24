@@ -53,7 +53,7 @@ filterIfAny' f xs = loop xs where
   loop [y]    = if f y then [y] else xs -- return original list
   loop (y:ys) = if f y then y : Data.List.filter f ys else loop ys
 
--- * Helper functions for Set & Either
+-- | Helper functions for Set & Either
 fromEither :: Either a a -> a
 fromEither (Left x) = x
 fromEither (Right x) = x

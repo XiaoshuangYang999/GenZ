@@ -1,4 +1,5 @@
 # This script was assisted by ChatGPT.
+
 awk -F, '
 BEGIN {
   bin_width = 100

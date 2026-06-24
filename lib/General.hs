@@ -17,8 +17,7 @@ type Sequent f = Set (Either f f)
 
 type RuleName = String
 
--- | A proof as a tree.
--- The Bool flag should start as false and later turn true.
+-- | A proof as a tree: the Bool flag should start as false and later turn true if provable
 data Proof f = Node (Sequent f) (Maybe (RuleName, [Proof f])) Bool
   deriving (Eq,Ord,Show)
 
@@ -41,11 +40,11 @@ class HasHistory a where
 class HasProof a where
   proofOf :: a f -> Proof f
 
--- | A `Rule` takes the history/branch, current sequent and an active formula.
+-- | A `Rule` takes the history/branch, current sequent and a principal formula.
 -- It returns ways to apply a rule, each resulting in possibly multiple branches.
 type Rule f = History f -> Sequent f -> Either f f -> [(RuleName, [Sequent f])]
 
--- | A replace rule only takes an active formula.
+-- | A replace rule only takes a principal formula.
 replaceRule :: (Eq f, Ord f) => (Either f f -> [(RuleName, [Sequent f])]) -> Rule f
 replaceRule fun _ fs g =
   [ ( fst . head $ fun g
@@ -83,8 +82,6 @@ instance HasProof ProofWithH where
 -- | Zipper version of the @Proof@ type.
 data ZipProof f = ZP (Proof f) (ZipPath f)
   deriving (Eq,Ord,Show)
--- only switch path when this branch is closed
--- each sub-proof tree should remember whether it's closed
 
 data ZipPath f = Top | Step (Sequent f) RuleName (ZipPath f) [Proof f] [Proof f]
   deriving (Eq,Ord,Show)
@@ -100,9 +97,6 @@ instance HasHistory ZipProof where
 
 instance HasProof ZipProof where
   proofOf (ZP pf _) = pf
-  -- proofOf (ZP pf Top) = pf  -- extract the proof at top
-  -- proofOf _ = error "Did not go back to Top"
--- to check for errors
 
 -- * Tree-based prover
 
@@ -168,22 +162,19 @@ instance TreeLike ZipProof where
       then error "cannot go left"
       else ZP (last xs) (Step s r p (init xs) (c:ys))
   move_left _                                = error "cannot go left"
-  -- no need to change the Bool
   move_right (ZP c (Step s r p xs (y:ys)))   = ZP y (Step s r p (xs ++ [c]) ys)
   move_right _                               = error "cannot go right"
-  -- no need to change the Bool
   move_up (ZP c@(Node _ _ t) (Step s r p xs ys)) =
       let cs = reverse xs ++ [c] ++ ys
-      in ZP (Node s (Just (r, cs)) $ t && all getTruth cs) p
+      in ZP (Node s (Just (r, cs)) $ t && all getTruth cs) p   -- update parent's truth
   move_up _                                  = error "cannot go up"
-  -- dangerous! update parent's truth
   move_down (ZP (Node s (Just (r, x:xs)) _) p) = ZP x (Step s r p [] xs)
   move_down _                                = error "cannot go down"
   zdelete (ZP _ (Step s _ Top _ _))          = ZP (Node s Nothing False) Top
   zdelete (ZP _ (Step s _ p _ _))            = ZP (Node s Nothing False) p
   zdelete _                                  = error "cannot delete top"
 
--- | Convert a ziper proof to a tree proof by going to the root.
+-- | Convert a zipper proof to a tree proof by going to the root.
 fromZip :: ZipProof f -> Proof f
 fromZip (ZP x Top) = x
 fromZip zp = fromZip (move_up zp)
@@ -199,7 +190,7 @@ hasLsibi (Step _ _ _ (_:_) _ )= True
 hasLsibi _ = False
 
 -- | Switch path, left-biased
--- all the truth manipulations are done by TreeLike method
+-- All the truth manipulations are done by TreeLike method
 switch :: ZipProof f -> ZipProof f
 switch (ZP pf Top) = ZP pf Top
 switch (ZP pf p) = if hasRsibi p
@@ -249,7 +240,6 @@ extendZ l zp@(ZP (Node fs Nothing _) p) =
   -- No rule can be applied, leave proof unfinished:
   ([], []      )    -> [ZP (Node fs Nothing False) p] -- we won't return to top in this case
   -- if provable, will return to top. Not otherwise
-
 extendZ _ zp@(ZP (Node _ (Just _ ) _) _) = [zp] -- needed after switch
 
 -- The easiest way to check whether a zipproof is closed is by always going back to Top and manipulate the truth on the way

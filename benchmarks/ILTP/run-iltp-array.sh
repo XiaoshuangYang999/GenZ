@@ -7,6 +7,7 @@
 #SBATCH --array=0-11
 #SBATCH --output=../slurm_logs/%A_%a.out
 #SBATCH --error=../slurm_logs/%A_%a.err
+# This script was assisted by ChatGPT.
 
 set -euo pipefail
 
